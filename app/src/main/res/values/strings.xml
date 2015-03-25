@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">DataCollector</string>
+
+
+    <string name="title_section1">Workflow</string>
+    <string name="title_section2">DataIterm</string>
+    <string name="title_section3">Collection</string>
+
+    <string name="hello_world">Hello world!</string>
+
+    <string name="action_settings">Settings</string>
+</resources>
