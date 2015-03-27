@@ -1,25 +1,36 @@
 package de.mpg.mpdl.www.datacollector.app;
 
 import java.util.Locale;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Arrays;
 
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.app.ActionBar;
+import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.Gravity;
 import android.view.LayoutInflater;
+
+//import android.support.v4.app.FragmentTransaction;
+
+import android.widget.ArrayAdapter;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.TextView;
 
 
-public class MainActivity extends ActionBarActivity implements ActionBar.TabListener {
+
+
+//public class MainActivity extends ActionBarActivity implements ActionBar.TabListener {
+public class MainActivity extends FragmentActivity implements ActionBar.TabListener {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -42,12 +53,17 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         setContentView(R.layout.activity_main);
 
         // Set up the action bar.
-        final ActionBar actionBar = getSupportActionBar();
+        final ActionBar actionBar = getActionBar();
+        //final ActionBar actionBar = getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+
+        // Specify that the Home/Up button should not be enabled, since there is no hierarchical
+        // parent.
+        actionBar.setHomeButtonEnabled(false);
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.pager);
@@ -84,20 +100,20 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        // Handle action bar item clicks here. The action bar will
+//        // automatically handle clicks on the Home/Up button, so long
+//        // as you specify a parent activity in AndroidManifest.xml.
+//        int id = item.getItemId();
+//
+//        //noinspection SimplifiableIfStatement
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
+//
+//        return super.onOptionsItemSelected(item);
+//    }
 
     @Override
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
@@ -118,7 +134,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
      */
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+    public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
 
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -126,10 +142,37 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
         @Override
         public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1);
+
+            Fragment fragment = null;
+            Bundle args = null;
+            switch (position) {
+                case 0:
+                    // The first section of the app is the most interesting -- it offers
+                    // a launchpad into the other demonstrations in this example application.
+                    return new LaunchpadSectionFragment();
+
+                case 1:
+                    fragment = new ListSectionFragment();
+                    args = new Bundle();
+                    args.putInt(ListSectionFragment.ARG_SECTION_NUMBER, position + 1);
+                    //args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+                    fragment.setArguments(args);
+                    return fragment;
+
+                case 2:
+                    // The other sections of the app are dummy placeholders.
+                    fragment = new DummySectionFragment();
+                    args = new Bundle();
+                    args.putInt(DummySectionFragment.ARG_SECTION_NUMBER, position + 1);
+                    fragment.setArguments(args);
+                    return fragment;
+                default:
+                    // getItem is called to instantiate the fragment for the given page.
+                    // Return a PlaceholderFragment (defined as a static inner class below).
+                    return PlaceholderFragment.newInstance(position + 1);
+             }
         }
+
 
         @Override
         public int getCount() {
@@ -142,15 +185,120 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
             Locale l = Locale.getDefault();
             switch (position) {
                 case 0:
-                    return getString(R.string.title_section1).toUpperCase(l);
+                    return getString(R.string.title_section1);
                 case 1:
-                    return getString(R.string.title_section2).toUpperCase(l);
+                    return getString(R.string.title_section2);
                 case 2:
                     return getString(R.string.title_section3).toUpperCase(l);
             }
             return null;
         }
     }
+
+    /**
+     * A fragment that launches other parts of the demo application.
+     */
+    public static class LaunchpadSectionFragment extends Fragment {
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.fragment_section_launchpad, container, false);
+
+            // Demonstration of a collection-browsing activity.
+            rootView.findViewById(R.id.section_number)
+                    .setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(getActivity(), CollectionActivity.class);
+                            startActivity(intent);
+                        }
+                    });
+
+            // Demonstration of navigating to external activities.
+            rootView.findViewById(R.id.demo_external_activity)
+                    .setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            // Create an intent that asks the user to pick a photo, but using
+                            // FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET, ensures that relaunching
+                            // the application from the device home screen does not return
+                            // to the external activity.
+                            Intent externalActivityIntent = new Intent(Intent.ACTION_PICK);
+                            externalActivityIntent.setType("image/*");
+                            externalActivityIntent.addFlags(
+                                    Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+                            startActivity(externalActivityIntent);
+                        }
+                    });
+
+            return rootView;
+        }
+    }
+
+    /**
+     * A dummy fragment representing a section of the app, but that simply displays dummy text.
+     */
+    public static class DummySectionFragment extends Fragment {
+
+        public static final String ARG_SECTION_NUMBER = "section_number";
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.fragment_section_dummy, container, false);
+            Bundle args = getArguments();
+            System.out.println("text View ID: "+android.R.id.text1);
+            ((TextView) rootView.findViewById(android.R.id.text1)).setText(
+                    getString(R.string.dummy_section_text, args.getInt(ARG_SECTION_NUMBER)));
+
+            return rootView;
+        }
+    }
+
+
+    /**
+     * A ListView fragment representing a section of the app.
+     * We must create a FrameLayout in fragment_section_list.xml
+     * Why?
+     *
+     *
+     */
+    public static class ListSectionFragment extends Fragment {
+
+        public static final String ARG_SECTION_NUMBER = "section_number";
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            ArrayAdapter<String> mForecastAdapter;
+            String[] dummyData = {
+                    "data iterm 1",
+                    "data iterm 2",
+                    "data iterm 3",
+                    "data iterm 4",
+                    "data iterm 5",
+            };
+
+            List<String> dataList = new ArrayList<String>(Arrays.asList(dummyData));
+            // Now that we have some dummy forecast data, create an ArrayAdapter.
+            // The ArrayAdapter will take data from a source (like our dummy forecast) and
+            // use it to populate the ListView it's attached to.
+            mForecastAdapter = new ArrayAdapter<String>(
+                            getActivity(), // The current context (this activity)
+                            R.layout.list_item_forecast, // The name of the layout.
+                            R.id.list_item_forecast_textview, // The ID of the textview to populate.
+                            dataList);
+
+            View rootView = inflater.inflate(R.layout.fragment_section_list, container, false);
+            ListView listView = (ListView) rootView.findViewById(R.id.item_list);
+            listView.setAdapter(mForecastAdapter);
+
+            return rootView;
+        }
+    }
+
+
 
     /**
      * A placeholder fragment containing a simple view.

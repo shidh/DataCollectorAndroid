@@ -1,12 +1,15 @@
 <resources>
     <string name="app_name">DataCollector</string>
-
+    <string name="action_settings">Settings</string>
 
     <string name="title_section1">Workflow</string>
     <string name="title_section2">DataIterm</string>
     <string name="title_section3">Collection</string>
 
     <string name="hello_world">Hello world!</string>
+    <string name="dummy_section_text">Section %1d is just a dummy section.</string>
 
-    <string name="action_settings">Settings</string>
+    <string name="demo_external_activity">External Activity</string>
+    <string name="demo_collection">Collection</string>
+
 </resources>
