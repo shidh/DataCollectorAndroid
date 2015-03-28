@@ -8,6 +8,8 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="dummy_section_text">Section %1d is just a dummy section.</string>
+    <string name="refresh">Refresh</string>
+
 
     <string name="demo_external_activity">External Activity</string>
     <string name="demo_collection">Collection</string>
