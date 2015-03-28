@@ -16,8 +16,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,7 +45,7 @@ public class ListSectionFragment extends Fragment {
 
     public static final String ARG_SECTION_NUMBER = "section_number";
 
-    private ArrayAdapter<String> mForecastAdapter;
+    public ArrayAdapter<String> mForecastAdapter;
 
     public ListSectionFragment() {
     }
@@ -78,7 +80,6 @@ public class ListSectionFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         // Create some dummy data for the ListView.  Here's a sample weekly forecast
-        ArrayAdapter<String> mForecastAdapter;
         String[] dummyData = {
                 "data iterm 1",
                 "data iterm 2",
@@ -100,6 +101,18 @@ public class ListSectionFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_section_list, container, false);
         ListView listView = (ListView) rootView.findViewById(R.id.item_list);
         listView.setAdapter(mForecastAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                String forecast = mForecastAdapter.getItem(position);
+                //Context context = getActivity();
+                int duration = Toast.LENGTH_SHORT;
+                Toast toast = Toast.makeText(getActivity(), forecast, duration);
+                toast.show();
+            }
+        });
+
+
 
         return rootView;
     }
@@ -211,6 +224,19 @@ public class ListSectionFragment extends Fragment {
             }
             return null;
         }
+
+        @Override
+        protected void onPostExecute(String[] result) {
+            if (result != null) {
+                mForecastAdapter.clear();
+                for(String dayForecastStr : result) {
+                    mForecastAdapter.add(dayForecastStr);
+                }
+            // New data is back from the server.  Hooray!
+            }
+        }
+
+
 
         /* The date/time conversion code is going to be moved outside the asynctask later,
          * so for convenience we're breaking it out into its own method now.
