@@ -1,10 +1,5 @@
 package de.mpg.mpdl.www.datacollector.app;
 
-import java.util.Locale;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Arrays;
-
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
 import android.content.Intent;
@@ -16,15 +11,16 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
-
-//import android.support.v4.app.FragmentTransaction;
-
-import android.widget.ArrayAdapter;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.TextView;
+
+import java.util.Locale;
+
+import de.mpg.mpdl.www.datacollector.app.AsyncTask.ListSectionFragment;
+
+//import android.support.v4.app.FragmentTransaction;
 
 
 
@@ -55,6 +51,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         // Set up the action bar.
         final ActionBar actionBar = getActionBar();
         //final ActionBar actionBar = getSupportActionBar();
+        assert actionBar != null;
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
         // Create the adapter that will return a fragment for each of the three
@@ -143,8 +140,8 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         @Override
         public Fragment getItem(int position) {
 
-            Fragment fragment = null;
-            Bundle args = null;
+            Fragment fragment = new ListSectionFragment();
+            Bundle args = new Bundle();
             switch (position) {
                 case 0:
                     // The first section of the app is the most interesting -- it offers
@@ -152,8 +149,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                     return new LaunchpadSectionFragment();
 
                 case 1:
-                    fragment = new ListSectionFragment();
-                    args = new Bundle();
                     args.putInt(ListSectionFragment.ARG_SECTION_NUMBER, position + 1);
                     //args.putInt(ARG_SECTION_NUMBER, sectionNumber);
                     fragment.setArguments(args);
@@ -264,39 +259,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
      *
      *
      */
-    public static class ListSectionFragment extends Fragment {
 
-        public static final String ARG_SECTION_NUMBER = "section_number";
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            ArrayAdapter<String> mForecastAdapter;
-            String[] dummyData = {
-                    "data iterm 1",
-                    "data iterm 2",
-                    "data iterm 3",
-                    "data iterm 4",
-                    "data iterm 5",
-            };
-
-            List<String> dataList = new ArrayList<String>(Arrays.asList(dummyData));
-            // Now that we have some dummy forecast data, create an ArrayAdapter.
-            // The ArrayAdapter will take data from a source (like our dummy forecast) and
-            // use it to populate the ListView it's attached to.
-            mForecastAdapter = new ArrayAdapter<String>(
-                            getActivity(), // The current context (this activity)
-                            R.layout.list_item_forecast, // The name of the layout.
-                            R.id.list_item_forecast_textview, // The ID of the textview to populate.
-                            dataList);
-
-            View rootView = inflater.inflate(R.layout.fragment_section_list, container, false);
-            ListView listView = (ListView) rootView.findViewById(R.id.item_list);
-            listView.setAdapter(mForecastAdapter);
-
-            return rootView;
-        }
-    }
 
 
 
