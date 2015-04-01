@@ -22,8 +22,27 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".CollectionActivity" android:label="@string/demo_collection" />
+        <activity
+            android:name=".CollectionActivity"
+            android:label="@string/demo_collection" />
+        <activity
+            android:name=".SectionList.DetailActivity"
+            android:label="@string/title_activity_detail"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:label="ItemDetail"
+                android:value=".MainActivity" />
+        </activity>
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:label="Settings"
+                android:value=".MainActivity" />
+        </activity>
     </application>
 
 </manifest>
