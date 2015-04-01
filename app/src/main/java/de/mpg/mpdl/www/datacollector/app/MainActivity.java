@@ -107,6 +107,12 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent showSettingIntent = new Intent(this, SettingsActivity.class);
+            //showSettingIntent.putExtra(Intent.EXTRA_TEXT, forecast);
+            //showDetailIntent.setData();
+            //startService(showDetailIntent);
+            startActivity(showSettingIntent);
+
             return true;
         }
         return super.onOptionsItemSelected(item);

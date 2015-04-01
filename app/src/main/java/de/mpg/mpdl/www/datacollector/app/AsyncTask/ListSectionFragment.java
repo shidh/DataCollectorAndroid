@@ -4,9 +4,12 @@
 
 package de.mpg.mpdl.www.datacollector.app.AsyncTask;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.format.Time;
 import android.util.Log;
@@ -33,10 +36,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import de.mpg.mpdl.www.datacollector.app.R;
+import de.mpg.mpdl.www.datacollector.app.SectionList.DetailActivity;
 
 public class ListSectionFragment extends Fragment {
     /**
@@ -69,8 +71,7 @@ public class ListSectionFragment extends Fragment {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_refresh) {
-            FetchWeatherTask fetchTask = new FetchWeatherTask();
-            fetchTask.execute("80805");
+            updateWeather();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -78,17 +79,16 @@ public class ListSectionFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         // Create some dummy data for the ListView.  Here's a sample weekly forecast
-        String[] dummyData = {
-                "data iterm 1",
-                "data iterm 2",
-                "data iterm 3",
-                "data iterm 4",
-                "data iterm 5",
-        };
-
-        List<String> dataList = new ArrayList<String>(Arrays.asList(dummyData));
+//        String[] dummyData = {
+//                "data iterm 1",
+//                "data iterm 2",
+//                "data iterm 3",
+//                "data iterm 4",
+//                "data iterm 5",
+//        };
+//
+//        List<String> dataList = new ArrayList<String>(Arrays.asList(dummyData));
         // Now that we have some dummy forecast data, create an ArrayAdapter.
         // The ArrayAdapter will take data from a source (like our dummy forecast) and
         // use it to populate the ListView it's attached to.
@@ -96,7 +96,7 @@ public class ListSectionFragment extends Fragment {
                 getActivity(), // The current context (this activity)
                 R.layout.list_item_forecast, // The name of the layout.
                 R.id.list_item_forecast_textview, // The ID of the textview to populate.
-                dataList);
+                new ArrayList<String>());
 
         View rootView = inflater.inflate(R.layout.fragment_section_list, container, false);
         ListView listView = (ListView) rootView.findViewById(R.id.item_list);
@@ -109,16 +109,39 @@ public class ListSectionFragment extends Fragment {
                 int duration = Toast.LENGTH_SHORT;
                 Toast toast = Toast.makeText(getActivity(), forecast, duration);
                 toast.show();
+
+                Intent showDetailIntent = new Intent(getActivity(), DetailActivity.class);
+                showDetailIntent.putExtra(Intent.EXTRA_TEXT, forecast);
+                //showDetailIntent.setData();
+                //startService(showDetailIntent);
+                startActivity(showDetailIntent);
             }
         });
-
-
 
         return rootView;
     }
 
+
+    private void updateWeather() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        // then you use
+        String locationFromSetting = prefs.getString(getString(R.string.pref_location_key),
+                getString(R.string.pref_location_default));
+
+        FetchWeatherTask fetchTask = new FetchWeatherTask();
+        fetchTask.execute(locationFromSetting);
+        }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        updateWeather();
+        }
+
+
     /*AsyncTask<String, Void, String[]>
-      String:   as the input
+      String:   as the input， in our case is location
       Void:     is the percentage of the background job， can be called onProgressUpdate() in Main UI
       String[]: as the output result
       *

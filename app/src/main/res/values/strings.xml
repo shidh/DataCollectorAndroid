@@ -3,15 +3,16 @@
     <string name="action_settings">Settings</string>
 
     <string name="title_section1">Workflow</string>
-    <string name="title_section2">DataIterm</string>
+    <string name="title_section2">DataItem</string>
     <string name="title_section3">Collection</string>
 
     <string name="hello_world">Hello world!</string>
-    <string name="dummy_section_text">Section %1d is just a dummy section.</string>
+    <string name="dummy_section_text">Section %1d is a dummy section.</string>
     <string name="refresh">Refresh</string>
 
 
-    <string name="demo_external_activity">External Activity</string>
+    <string name="demo_external_activity">Photo Library</string>
     <string name="demo_collection">Collection</string>
+    <string name="title_activity_detail">DetailActivity</string>
 
 </resources>
