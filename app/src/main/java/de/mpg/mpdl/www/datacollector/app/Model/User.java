@@ -14,6 +14,6 @@ public class User {
     private Blob image;
     private String password;
     private String userId;
-    private Collection collections;
+    private ImejiCollection collections;
     private ArrayList<DataItem> items;
 }

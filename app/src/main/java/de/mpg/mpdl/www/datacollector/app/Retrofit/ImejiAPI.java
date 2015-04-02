@@ -2,7 +2,9 @@ package de.mpg.mpdl.www.datacollector.app.Retrofit;
 
 import java.util.List;
 
+import de.mpg.mpdl.www.datacollector.app.Model.DataItem;
 import de.mpg.mpdl.www.datacollector.app.Model.User;
+import retrofit.Callback;
 import retrofit.client.Response;
 import retrofit.http.GET;
 import retrofit.http.Path;
@@ -20,10 +22,16 @@ public interface ImejiAPI {
     public User fetchUser(@Path("user") String user);
 
     //or if there are some special cases you can process your response manually
-    @GET("/users/{user}")
-    public Response fetchUsers(@Path("user") String user);
+    //@GET("/users/{user}")
+    //public Response fetchUsers(@Path("user") String user);
 
-    @GET("/users/{user}/repos")
-    List<User> listRepos(@Path("user") String user);
+    //get all items
+    //http://dev-faces.mpdl.mpg.de/imeji/rest/items
+    @GET("/items")
+    List<DataItem> getItems();
 
+    //get one item by itemId
+    //http://dev-faces.mpdl.mpg.de/imeji/rest/items/ju1rYDIm1EFE1f5
+    @GET("/items/{itemId}")
+    List<DataItem> getItemById(@Path("itemId") String itemId, Callback<Response> callback);
 }
