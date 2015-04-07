@@ -18,6 +18,10 @@ public class DataItem {
     private ArrayList<MetaData> metadata;
     private String collectionId;
 
+    public DataItem(){
+
+    }
+
     public DataItem(String id, String filename, String createdDate, String fileUrl, String webResolutionUrlUrl, String thumbnailUrl, User createdBy, ArrayList<MetaData> metadata, String collectionId) {
         this.id = id;
         this.filename = filename;

@@ -3,19 +3,24 @@ package de.mpg.mpdl.www.datacollector.app;
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Locale;
 
@@ -38,6 +43,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     SectionsPagerAdapter mSectionsPagerAdapter;
+    private final String LOG_TAG = MainActivity.class.getSimpleName();
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -114,6 +120,8 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
             startActivity(showSettingIntent);
 
             return true;
+        } else if (id == R.id.action_map){
+            openPreferredLocationInMap();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -133,6 +141,34 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
     }
 
+
+    private void openPreferredLocationInMap(){
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String location = sharedPrefs.getString(
+                                getString(R.string.pref_location_key),
+                                getString(R.string.pref_location_default));
+
+        // Using the URI scheme for showing a location found on a map.  This super-handy
+        // intent can is detailed in the "Common Intents" page of Android's developer site:
+        // http://developer.android.com/guide/components/intents-common.html#Maps
+        Uri geoLocation = Uri.parse("geo:0,0?").buildUpon()
+                             .appendQueryParameter("q", location)
+                             .build();
+
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(geoLocation);
+
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        } else {
+            int duration = Toast.LENGTH_SHORT;
+            Toast toast = Toast.makeText(this,  "Couldn't call " + location +
+                    ", no receiving apps installed!", duration);
+            toast.show();
+            Log.d(LOG_TAG, "Couldn't call " + location + ", no receiving apps installed!");
+        }
+    }
+
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
@@ -150,15 +186,15 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
             Bundle args = new Bundle();
             switch (position) {
                 case 0:
-                    // The first section of the app is the most interesting -- it offers
-                    // a launchpad into the other demonstrations in this example application.
-                    return new LaunchpadSectionFragment();
-
-                case 1:
                     args.putInt(ListSectionFragment.ARG_SECTION_NUMBER, position + 1);
                     //args.putInt(ARG_SECTION_NUMBER, sectionNumber);
                     fragment.setArguments(args);
                     return fragment;
+
+                case 1:
+                    // The first section of the app is the most interesting -- it offers
+                    // a launchpad into the other demonstrations in this example application.
+                    return new LaunchpadSectionFragment();
 
                 case 2:
                     // The other sections of the app are dummy placeholders.

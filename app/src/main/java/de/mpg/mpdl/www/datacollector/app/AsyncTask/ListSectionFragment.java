@@ -1,6 +1,7 @@
 package de.mpg.mpdl.www.datacollector.app.AsyncTask;
 
-        import android.content.Intent;
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -29,9 +30,18 @@ import java.util.concurrent.TimeUnit;
 import de.mpg.mpdl.www.datacollector.app.Model.DataItem;
 import de.mpg.mpdl.www.datacollector.app.R;
 import de.mpg.mpdl.www.datacollector.app.Retrofit.ImejiAPI;
+import de.mpg.mpdl.www.datacollector.app.Retrofit.RetrofitClient;
+import de.mpg.mpdl.www.datacollector.app.SectionList.CustomListAdapter;
 import de.mpg.mpdl.www.datacollector.app.SectionList.DetailActivity;
+import retrofit.Callback;
 import retrofit.RestAdapter;
+import retrofit.RetrofitError;
 import retrofit.client.OkClient;
+import retrofit.client.Response;
+
+//import de.mpg.mpdl.www.datacollector.app.SectionList.DetailActivity;
+
+//import de.mpg.mpdl.www.datacollector.app.SectionList.DetailActivity;
 
 /**
  * Created by allen on 02/04/15.
@@ -42,17 +52,63 @@ public class ListSectionFragment extends Fragment {
      */
 
     public static final String ARG_SECTION_NUMBER = "section_number";
-
+    private ProgressDialog pDialog;
     public ArrayAdapter<String> mForecastAdapter;
+
+    private List<DataItem> dataList = new ArrayList<DataItem>();
+    public CustomListAdapter adapter;
+    ListView listView;
+    View rootView;
+
+    Callback<List<DataItem>> callback = new Callback<List<DataItem>>() {
+
+        @Override
+        public void success(List<DataItem> dataList, Response response) {
+            adapter =  new CustomListAdapter(getActivity(), dataList);
+            listView.setAdapter(adapter);
+            pDialog.hide();
+        }
+
+        @Override
+        public void failure(RetrofitError error) {
+        }
+    };
 
     public ListSectionFragment() {
     }
+
+
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Add this line in order for this fragment to handle menu events.
         setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        //updateWeather();
+        pDialog = new ProgressDialog(getActivity());
+        // Showing progress dialog before making http request
+        RetrofitClient.getItems(callback);
+        pDialog.setMessage("Loading...");
+        pDialog.show();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        hidePDialog();
+    }
+
+    private void hidePDialog() {
+        if (pDialog != null) {
+            pDialog.dismiss();
+            pDialog = null;
+        }
     }
 
     @Override
@@ -75,39 +131,38 @@ public class ListSectionFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Create some dummy data for the ListView.  Here's a sample weekly forecast
-//        String[] dummyData = {
-//                "data iterm 1",
-//                "data iterm 2",
-//                "data iterm 3",
-//                "data iterm 4",
-//                "data iterm 5",
-//        };
-//
+
 //        List<String> dataList = new ArrayList<String>(Arrays.asList(dummyData));
         // Now that we have some dummy forecast data, create an ArrayAdapter.
         // The ArrayAdapter will take data from a source (like our dummy forecast) and
         // use it to populate the ListView it's attached to.
-        mForecastAdapter = new ArrayAdapter<String>(
-                getActivity(), // The current context (this activity)
-                R.layout.list_item_forecast, // The name of the layout.
-                R.id.list_item_forecast_textview, // The ID of the textview to populate.
-                new ArrayList<String>());
 
-        View rootView = inflater.inflate(R.layout.fragment_section_list, container, false);
-        ListView listView = (ListView) rootView.findViewById(R.id.item_list);
-        listView.setAdapter(mForecastAdapter);
+//        mForecastAdapter = new ArrayAdapter<String>(
+//                getActivity(), // The current context (this activity)
+//                R.layout.list_item_forecast, // The name of the layout.
+//                R.id.list_item_forecast_textview, // The ID of the textview to populate.
+//                //R.id.thumbnail,
+//                new ArrayList());
+
+
+        adapter =  new CustomListAdapter(getActivity(), dataList);
+
+        rootView = inflater.inflate(R.layout.fragment_section_list, container, false);
+        listView = (ListView) rootView.findViewById(R.id.item_list);
+        //listView.setAdapter(adapter);
+
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                String forecast = mForecastAdapter.getItem(position);
+                DataItem dataItem = (DataItem) adapter.getItem(position);
                 //Context context = getActivity();
                 int duration = Toast.LENGTH_SHORT;
-                Toast toast = Toast.makeText(getActivity(), forecast, duration);
+                Toast toast = Toast.makeText(getActivity(), dataItem.getId(), duration);
                 toast.show();
 
                 Intent showDetailIntent = new Intent(getActivity(), DetailActivity.class);
-                showDetailIntent.putExtra(Intent.EXTRA_TEXT, forecast);
+                //showDetailIntent.putExtra(Intent.EXTRA_SUBJECT, dataItem);
                 //showDetailIntent.setData();
                 //startService(showDetailIntent);
                 startActivity(showDetailIntent);
@@ -129,11 +184,7 @@ public class ListSectionFragment extends Fragment {
     }
 
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        updateWeather();
-    }
+
 
 
     /*AsyncTask<String, Void, String[]>
@@ -142,13 +193,13 @@ public class ListSectionFragment extends Fragment {
       String[]: as the output result
       *
       */
-    public class FetchItemTask extends AsyncTask<String, Void, List<String>> {
+    public class FetchItemTask extends AsyncTask<String, Void, List<DataItem>> {
 
         private final String LOG_TAG = FetchItemTask.class.getSimpleName();
         private static final String REST_SERVER = "http://dev-faces.mpdl.mpg.de/imeji/rest/";
 
         @Override
-        protected List<String> doInBackground(String... params) {
+        protected List<DataItem> doInBackground(String... params) {
             // These two need to be declared outside the try/catch
             // so that they can be closed in the finally block.
             HttpURLConnection urlConnection = null;
@@ -173,19 +224,19 @@ public class ListSectionFragment extends Fragment {
                 Log.v(LOG_TAG, item.getFileUrl());
                 ids.add(item.getId());
             }
-            return ids;
+            return items;
         }
 
         @Override
-        protected void onPostExecute(List<String> result) {
+        protected void onPostExecute(List<DataItem> result) {
+            hidePDialog();
             if (result != null) {
-                mForecastAdapter.clear();
-                for(String dayForecastStr : result) {
-                    mForecastAdapter.add(dayForecastStr);
-                }
+                dataList = result;
+                adapter.notifyDataSetChanged();
                 // New data is back from the server.  Hooray!
             }
         }
+
 
 
     }

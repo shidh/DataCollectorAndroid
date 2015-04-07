@@ -30,8 +30,25 @@ public interface ImejiAPI {
     @GET("/items")
     List<DataItem> getItems();
 
+    @GET("/items")
+    void getItems(Callback<List<DataItem>> callback);
+
     //get one item by itemId
     //http://dev-faces.mpdl.mpg.de/imeji/rest/items/ju1rYDIm1EFE1f5
     @GET("/items/{itemId}")
     List<DataItem> getItemById(@Path("itemId") String itemId, Callback<Response> callback);
+
+
+    //get all users
+    @GET("/users")
+    void getUsers(Callback<List<User>> callback);
+
+    //get one User by userId
+    //http://dev-faces.mpdl.mpg.de/imeji/rest/users/ju1rYDIm1EFE1f5
+    @GET("/users/{userId}")
+    List<User> getUserById(@Path("userId") String userId, Callback<Response> callback);
+
+
+
+
 }
