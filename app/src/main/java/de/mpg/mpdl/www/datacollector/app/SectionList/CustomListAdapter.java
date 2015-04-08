@@ -23,7 +23,6 @@ public class CustomListAdapter extends BaseAdapter {
     private Activity activity;
     private LayoutInflater inflater;
     private List<DataItem> dataItems;
-    //ImageLoader imageLoader = AppController.getInstance().getImageLoader();
 
     public CustomListAdapter(Activity activity, List<DataItem> dataItems) {
         this.activity = activity;
@@ -54,10 +53,6 @@ public class CustomListAdapter extends BaseAdapter {
         if (convertView == null)
             convertView = inflater.inflate(R.layout.list_item_forecast, null);
 
-        //if (imageLoader == null)
-        //    imageLoader = AppController.getInstance().getImageLoader();
-        // NetworkImageView thumbNail = (NetworkImageView) convertView
-        //         .findViewById(R.id.thumbnail);
         ImageView imageView = (ImageView) convertView.findViewById(R.id.thumbnail);
         TextView title = (TextView) convertView.findViewById(R.id.list_item_forecast_textview);
         TextView artist = (TextView) convertView.findViewById(R.id.artist);
@@ -67,7 +62,6 @@ public class CustomListAdapter extends BaseAdapter {
         DataItem m = dataItems.get(position);
 
         // thumbnail image
-        //thumbNail.setImageUrl(m.getThumbnailUrl(), imageLoader);
         Picasso.with(activity)
                 .load(m.getThumbnailUrl())
                 .into(imageView);
@@ -80,7 +74,7 @@ public class CustomListAdapter extends BaseAdapter {
         artist.setText(m.getFilename());
 
         // date
-        date.setText(String.valueOf(m.getCreatedDate()));
+        date.setText(String.valueOf(m.getCreatedDate()).split("\\+")[0]);
 
         return convertView;
     }

@@ -54,14 +54,12 @@ public class ListSectionFragment extends Fragment {
     public static final String ARG_SECTION_NUMBER = "section_number";
     private ProgressDialog pDialog;
     public ArrayAdapter<String> mForecastAdapter;
-
     private List<DataItem> dataList = new ArrayList<DataItem>();
     public CustomListAdapter adapter;
     ListView listView;
     View rootView;
 
     Callback<List<DataItem>> callback = new Callback<List<DataItem>>() {
-
         @Override
         public void success(List<DataItem> dataList, Response response) {
             adapter =  new CustomListAdapter(getActivity(), dataList);
@@ -85,18 +83,32 @@ public class ListSectionFragment extends Fragment {
         super.onCreate(savedInstanceState);
         // Add this line in order for this fragment to handle menu events.
         setHasOptionsMenu(true);
-    }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        //updateWeather();
+        //updateDataItem();
         pDialog = new ProgressDialog(getActivity());
         // Showing progress dialog before making http request
         RetrofitClient.getItems(callback);
         pDialog.setMessage("Loading...");
         pDialog.show();
+
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+
+    }
+    @Override
+    public void onPause(){
+        super.onPause();
+    }
+
 
     @Override
     public void onDestroy() {
@@ -169,6 +181,7 @@ public class ListSectionFragment extends Fragment {
             }
         });
 
+        //listView.setOnScrollListener();
         return rootView;
     }
 

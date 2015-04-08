@@ -12,8 +12,13 @@
 
     <string name="action_map">Map Location</string>
     <string name="action_share">Share</string>
+    <string name="take_photo">Take a Photo</string>
     <string name="demo_external_activity">Photo Library</string>
     <string name="demo_collection">Collection</string>
     <string name="title_activity_detail">DetailActivity</string>
+
+
+
+    <string name="problem_create_file">There is one problem when creating photo.</string>
 
 </resources>

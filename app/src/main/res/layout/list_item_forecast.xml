@@ -30,7 +30,7 @@ android:padding="5dip" >
     android:layout_toRightOf="@+id/thumbnail"
     android:textColor="#040404"
     android:typeface="sans"
-    android:textSize="15dip"
+    android:textSize="10dip"
     android:textStyle="bold"/>
 
 <!-- creator name-->
@@ -54,7 +54,7 @@ android:padding="5dip" >
     android:layout_alignTop="@id/list_item_forecast_textview"
     android:gravity="right"
     android:text="5:45"
-    android:layout_marginRight="5dip"
+    android:layout_marginRight="15dip"
     android:textSize="10dip"
     android:textColor="#10bcc9"
     android:textStyle="bold"/>
