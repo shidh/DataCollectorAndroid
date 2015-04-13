@@ -1,9 +1,6 @@
 package de.mpg.mpdl.www.datacollector.app.Workflow;
 
-import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -14,9 +11,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.Toast;
 
-import org.apache.http.client.methods.HttpPost;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
@@ -24,7 +22,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import de.mpg.mpdl.www.datacollector.app.Model.DataItem;
 import de.mpg.mpdl.www.datacollector.app.R;
+import de.mpg.mpdl.www.datacollector.app.utils.DeviceStatus;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * Created by allen on 08/04/15.
@@ -34,50 +37,59 @@ import de.mpg.mpdl.www.datacollector.app.R;
  * A fragment that launches other parts of the demo application.
  */
 public class LaunchpadSectionFragment extends Fragment {
-    public int TAKE_PHOTO_CODE = 0;
-    public static int count=0;
 
-
+    // Attributes for starting the intent and used by onActivityResult
+    private static final int INTENT_ENABLE_GPS = 1000;
+    private static final int INTENT_ENABLE_NET = 1001;
+    private static final int INTENT_RECOVER_FROM_AUTH_ERROR = 1003;
+    private static final int INTENT_RECOVER_FROM_PLAY_SERVICES_ERROR = 1004;
     private static final int INTENT_TAKE_PHOTO = 1005;
-    // The photo file where the camera stores the taken photo temporarily to
-    // create an entry in "poiPhotos"
+
+    /*
+     * After the intent to take a picture finishes we need to wait for
+     * location information thereafter in order to save the data.
+     */
+
+    public Boolean takeAnotherPhoto;
     private String photoFilePath;
     private ImageView imageView;
+    private RatingBar ratingView;
+    DeviceStatus status;
+
+
+    Callback<DataItem> callback = new Callback<DataItem>() {
+        @Override
+        public void success(DataItem item, Response response) {
+            //adapter =  new CustomListAdapter(getActivity(), dataList);
+            //listView.setAdapter(adapter);
+            int duration = Toast.LENGTH_SHORT;
+            Toast toast = Toast.makeText(getActivity(), "Upload data Successfully", duration);
+            toast.show();
+        }
+
+        @Override
+        public void failure(RetrofitError error) {
+        }
+    };
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        status = new DeviceStatus(getActivity());
         View rootView = inflater.inflate(R.layout.fragment_section_launchpad, container, false);
-        final String dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-                + "/DataCollectorPicFolder/";
-        File newDir = new File(dir);
-        newDir.mkdirs();
+        imageView = (ImageView) rootView.findViewById(R.id.imageView);
+        ratingView = (RatingBar) rootView.findViewById(R.id.ratingBar);
 
+        ratingView.setIsIndicator(true);
         // Taking a Photo activity.
         rootView.findViewById(R.id.takePhoto)
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        // here,counter will be incremented each time,and the picture taken
-                        // by camera will be stored as 1.jpg, 2.jpg and likewise.
-//                        count++;
-//                        String file = dir + count +".jpg";
-//                        File newFile = new File(file);
-//                        try {
-//                            newFile.createNewFile();
-//                        } catch (IOException e) {}
-//
-//                        Uri outputFileUri = Uri.fromFile(newFile);
-
                         takePhoto();
-
-//                        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//                        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-//
-//                        startActivityForResult(cameraIntent, TAKE_PHOTO_CODE);
-                   }
+                    }
                 });
-
 
 
         // Demonstration of navigating to external activities.
@@ -102,15 +114,75 @@ public class LaunchpadSectionFragment extends Fragment {
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent intent = new Intent(getActivity(), CollectionActivity.class);
-                        startActivity(intent);
+                        //Intent intent = new Intent(getActivity(), CollectionActivity.class);
+                        //startActivity(intent);
+                        //RetrofitClient.uploadItem(callback, username, password, item);
                     }
                 });
+
+//        rootView.findViewById(R.id.section_number)
+//                .setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        Intent intent = new Intent(getActivity(), CollectionActivity.class);
+//                        startActivity(intent);
+//                    }
+//                });
 
         return rootView;
     }
 
 
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == INTENT_ENABLE_GPS) {
+            if (!status.isGPSEnabled()) {
+                Toast.makeText(getActivity(), R.string.problem_no_gps,
+                        Toast.LENGTH_SHORT).show();
+                getActivity().finish();
+            }
+        } else if (requestCode == INTENT_ENABLE_NET) {
+            if (!status.isNetworkEnabled()) {
+                Toast.makeText(getActivity(), R.string.problem_no_net,
+                        Toast.LENGTH_SHORT).show();
+            }
+        } else if ((requestCode == INTENT_RECOVER_FROM_AUTH_ERROR || requestCode == INTENT_RECOVER_FROM_PLAY_SERVICES_ERROR)
+                && resultCode == getActivity().RESULT_OK) {
+			/*
+			 * Receiving a result that follows a GoogleAuthException, try auth
+			 * again
+			 */
+            //getUsername();
+        } else if (requestCode == INTENT_TAKE_PHOTO) {
+            if (resultCode == getActivity().RESULT_OK) {
+                takeAnotherPhoto = true;
+
+                File imgFile = new File(photoFilePath);
+                if(imgFile.exists()){
+                    Picasso.with(getActivity())
+                            .load(imgFile)
+                            .resize(imageView.getWidth(), imageView.getHeight())
+                            .into(imageView);
+                    System.out.println(photoFilePath);
+
+                }
+
+                addImageToGallery(photoFilePath);
+            } else if (resultCode == getActivity().RESULT_CANCELED) {
+                // User cancelled the photo capture
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+
+    // set GPS settings
+//    public void onEventMainThread() {
+//        // User touched the dialog's positive button
+//        Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+//        startActivityForResult(intent, INTENT_ENABLE_GPS);
+//    }
 
     // Take a photo using an intent
     private void takePhoto() {
@@ -126,10 +198,10 @@ public class LaunchpadSectionFragment extends Fragment {
             // Continue only if the file was successfully created
             if (photoFilePath != null) {
 
+
                 // Set the image file name
                 takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT,
                         Uri.fromFile(new File(photoFilePath)));
-
                 startActivityForResult(takePhotoIntent, INTENT_TAKE_PHOTO);
             }
 
@@ -150,6 +222,7 @@ public class LaunchpadSectionFragment extends Fragment {
                     getString(R.string.app_name));
             photoFilePath = new File(storageDir.getPath(), photoFileName
                     + ".jpg").getPath();
+
             //Toast.makeText(getActivity(), photoFilePath, Toast.LENGTH_LONG).show();
             System.out.println(photoFilePath);
             // Create the storage directory if it does not exist
@@ -162,37 +235,14 @@ public class LaunchpadSectionFragment extends Fragment {
         }
     }
 
-    public static void addImageToGallery(final String filePath, final Context context) {
-        ContentValues values = new ContentValues();
-
-        values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis());
-        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
-        values.put(MediaStore.MediaColumns.DATA, filePath);
-
-        context.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+    private void addImageToGallery(String filePath) {
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        File f = new File(filePath);
+        Uri contentUri = Uri.fromFile(f);
+        mediaScanIntent.setData(contentUri);
+        getActivity().sendBroadcast(mediaScanIntent);
     }
 
-    private void saveImageToGallery(String title, String description){
-        imageView.setDrawingCacheEnabled(true);
-        Bitmap b = imageView.getDrawingCache();
-        MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), b, title, description);
-    }
-
-
-    private void authenticate(String user, String pass){
-        String encoding = encodeBae64(user+":"+pass);
-        HttpPost httppost = new HttpPost("http://host:post/test/login");
-        httppost.setHeader("Authorization", "Basic " + encoding);
-
-        System.out.println("executing request " + httppost.getRequestLine());
-        //HttpResponse response = httpclient.execute(httppost);
-        //HttpEntity entity = response.getEntity();
-
-
-
-        //Request request = new Request("GET", String url, List <Header> headers, TypedOutput body)
-
-    }
 
 
     public String encodeBae64(String src){

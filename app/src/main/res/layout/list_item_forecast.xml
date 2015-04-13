@@ -29,6 +29,7 @@ android:padding="5dip" >
     android:layout_alignTop="@+id/thumbnail"
     android:layout_toRightOf="@+id/thumbnail"
     android:textColor="#040404"
+    android:text="Title"
     android:typeface="sans"
     android:textSize="10dip"
     android:textStyle="bold"/>
@@ -41,6 +42,7 @@ android:padding="5dip" >
     android:layout_below="@id/list_item_forecast_textview"
     android:textColor="#343434"
     android:textSize="10dip"
+    android:text="Allen"
     android:layout_marginTop="1dip"
     android:layout_toRightOf="@+id/thumbnail"
  />
