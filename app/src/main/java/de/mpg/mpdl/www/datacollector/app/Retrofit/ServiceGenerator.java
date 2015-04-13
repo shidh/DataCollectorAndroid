@@ -22,7 +22,8 @@ public class ServiceGenerator {
         return createService(serviceClass, baseUrl, null, null);
     }
 
-
+    // Almost every webservice and API evaluates the Authorization header of the HTTP request.
+    // That's why we set the encoded credentials value to that header field.
     public static <S> S createService(Class<S> serviceClass, String baseUrl, String username, String password) {
         // set endpoint url and use OkHTTP as HTTP client
         RestAdapter.Builder builder = new RestAdapter.Builder()

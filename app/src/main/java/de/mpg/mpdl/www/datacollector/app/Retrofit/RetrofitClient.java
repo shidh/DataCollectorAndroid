@@ -18,9 +18,23 @@ public class RetrofitClient {
 
         ImejiAPI imejiAPI = ServiceGenerator.createService(ImejiAPI.class, REST_SERVER);
 
-
         // Fetch and print a list of the items to this library.
         imejiAPI.getItems(callback);
+    }
+
+    public static void login(String username, String password){
+        ImejiAPI imejiAPI = ServiceGenerator.
+                createService(ImejiAPI.class, REST_SERVER, username, password);
+        imejiAPI.basicLogin();
+    }
+
+    public static void uploadItem(Callback<DataItem> callback,
+                                  String username,
+                                  String password,
+                                  DataItem item) {
+        ImejiAPI imejiAPI = ServiceGenerator.
+                createService(ImejiAPI.class, REST_SERVER, username, password);
+        imejiAPI.postItem(item, callback);
     }
 
 

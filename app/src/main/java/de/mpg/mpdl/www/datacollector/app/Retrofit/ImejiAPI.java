@@ -6,7 +6,9 @@ import de.mpg.mpdl.www.datacollector.app.Model.DataItem;
 import de.mpg.mpdl.www.datacollector.app.Model.User;
 import retrofit.Callback;
 import retrofit.client.Response;
+import retrofit.http.Body;
 import retrofit.http.GET;
+import retrofit.http.POST;
 import retrofit.http.Path;
 
 /**
@@ -25,6 +27,11 @@ public interface ImejiAPI {
     //@GET("/users/{user}")
     //public Response fetchUsers(@Path("user") String user);
 
+    public static final String BASE_URL = "https://api.yourdomain.com";
+
+    @POST("/login")
+    User basicLogin();
+
     //get all items
     //http://dev-faces.mpdl.mpg.de/imeji/rest/items
     @GET("/items")
@@ -34,10 +41,11 @@ public interface ImejiAPI {
     void getItems(Callback<List<DataItem>> callback);
 
     //get one item by itemId
-    //http://dev-faces.mpdl.mpg.de/imeji/rest/items/ju1rYDIm1EFE1f5
     @GET("/items/{itemId}")
     List<DataItem> getItemById(@Path("itemId") String itemId, Callback<Response> callback);
 
+    @POST("/items")
+    void postItem(@Body DataItem item, Callback<DataItem> callback);
 
     //get all users
     @GET("/users")
@@ -47,6 +55,7 @@ public interface ImejiAPI {
     //http://dev-faces.mpdl.mpg.de/imeji/rest/users/ju1rYDIm1EFE1f5
     @GET("/users/{userId}")
     List<User> getUserById(@Path("userId") String userId, Callback<Response> callback);
+
 
 
 
