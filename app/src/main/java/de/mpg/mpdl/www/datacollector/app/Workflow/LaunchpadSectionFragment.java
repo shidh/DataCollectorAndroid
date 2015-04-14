@@ -1,6 +1,9 @@
 package de.mpg.mpdl.www.datacollector.app.Workflow;
 
+import android.content.Context;
 import android.content.Intent;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -25,6 +28,7 @@ import java.util.Locale;
 import de.mpg.mpdl.www.datacollector.app.Model.DataItem;
 import de.mpg.mpdl.www.datacollector.app.R;
 import de.mpg.mpdl.www.datacollector.app.utils.DeviceStatus;
+import de.mpg.mpdl.www.datacollector.app.utils.MyLocationListener;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -128,6 +132,11 @@ public class LaunchpadSectionFragment extends Fragment {
 //                        startActivity(intent);
 //                    }
 //                });
+
+        LocationManager lm = (LocationManager) getActivity().
+                              getSystemService(Context.LOCATION_SERVICE);
+        LocationListener ll = new MyLocationListener();
+        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, ll);
 
         return rootView;
     }

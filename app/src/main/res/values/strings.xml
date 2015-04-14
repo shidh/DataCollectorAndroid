@@ -19,6 +19,11 @@
     <string name="title_activity_detail">DetailActivity</string>
 
 
+    <string name="lbl_you_are_at">YOU ARE AT</string>
+    <string name="btn_get_location">GET MY LOCATION</string>
+    <string name="btn_start_location_updates">START LOCATION UPDATES</string>
+    <string name="btn_stop_location_updates">STOP LOCATION UPDATES</string>
+
     <string name="problem_no_account">You need to pick an account.</string>
     <string name="problem_no_gps">No GPS available.</string>
     <string name="problem_no_net">No network connection available.</string>
