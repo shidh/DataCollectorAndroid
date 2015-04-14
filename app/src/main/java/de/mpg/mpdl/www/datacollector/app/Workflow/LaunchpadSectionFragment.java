@@ -10,11 +10,13 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RatingBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
@@ -48,6 +50,7 @@ public class LaunchpadSectionFragment extends Fragment {
     private static final int INTENT_RECOVER_FROM_AUTH_ERROR = 1003;
     private static final int INTENT_RECOVER_FROM_PLAY_SERVICES_ERROR = 1004;
     private static final int INTENT_TAKE_PHOTO = 1005;
+    private final String LOG_TAG = LaunchpadSectionFragment.class.getSimpleName();
 
     /*
      * After the intent to take a picture finishes we need to wait for
@@ -59,6 +62,9 @@ public class LaunchpadSectionFragment extends Fragment {
     private ImageView imageView;
     private RatingBar ratingView;
     DeviceStatus status;
+
+    private TextView lblLocation;
+    private ImageView btnStartLocationUpdates;
 
 
     Callback<DataItem> callback = new Callback<DataItem>() {
@@ -76,6 +82,13 @@ public class LaunchpadSectionFragment extends Fragment {
         }
     };
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.d(LOG_TAG, "onCreate");
+    }
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -84,6 +97,9 @@ public class LaunchpadSectionFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_section_launchpad, container, false);
         imageView = (ImageView) rootView.findViewById(R.id.imageView);
         ratingView = (RatingBar) rootView.findViewById(R.id.ratingBar);
+
+        lblLocation = (TextView) rootView.findViewById(R.id.accuracy);
+        btnStartLocationUpdates = (ImageView) rootView.findViewById(R.id.btnLocationUpdates);
 
         ratingView.setIsIndicator(true);
         // Taking a Photo activity.
@@ -140,6 +156,29 @@ public class LaunchpadSectionFragment extends Fragment {
 
         return rootView;
     }
+
+
+//    @Override
+//    public void onStart() {
+//        super.onStart();
+//    }
+//
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//    }
+//
+//    @Override
+//    public void onPause() {
+//        super.onPause();
+//    }
+//
+//    @Override
+//    public void onStop() {
+//        super.onStop();
+//
+//    }
+
 
 
 

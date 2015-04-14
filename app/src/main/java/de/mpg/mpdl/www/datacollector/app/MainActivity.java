@@ -4,6 +4,7 @@ import android.app.ActionBar;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -19,8 +20,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 
 import java.util.Locale;
 
@@ -33,7 +42,17 @@ import de.mpg.mpdl.www.datacollector.app.Workflow.LaunchpadSectionFragment;
 
 
 //public class MainActivity extends ActionBarActivity implements ActionBar.TabListener {
-public class MainActivity extends FragmentActivity implements ActionBar.TabListener {
+public class MainActivity extends FragmentActivity implements
+        ActionBar.TabListener,
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener,
+        LocationListener {
+
+    /**
+     * The {@link ViewPager} that will host the section contents.
+     */
+    ViewPager mViewPager;
+
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -44,12 +63,26 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     SectionsPagerAdapter mSectionsPagerAdapter;
-    private final String LOG_TAG = MainActivity.class.getSimpleName();
 
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
-    ViewPager mViewPager;
+    private final String LOG_TAG = MainActivity.class.getSimpleName();
+    private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 1000;
+
+    // Google client to interact with Google API
+    private GoogleApiClient mGoogleApiClient;
+    private Location mLastLocation;
+    private LocationRequest mLocationRequest;
+
+    // boolean flag to toggle periodic location updates
+    private boolean mRequestingLocationUpdates = false;
+
+
+    // Location updates intervals in sec
+    private static int UPDATE_INTERVAL = 10000; // 10 sec
+    private static int FATEST_INTERVAL = 1000; // 1 sec
+    private static int DISPLACEMENT = 2; // 10 meters
+
+    private TextView lblLocation;
+    private ImageView btnStartLocationUpdates;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +128,92 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                             .setText(mSectionsPagerAdapter.getPageTitle(i))
                             .setTabListener(this));
         }
+
+
+
+
+
+        // For Location
+        // First we need to check availability of play services
+        if (checkPlayServices()) {
+
+            // Building the GoogleApi client
+            buildGoogleApiClient();
+            createLocationRequest();
+        }
+
+        // Show location button click listener
+//        btnShowLocation.setOnClickListener(new View.OnClickListener() {
+//
+//            @Override
+//            public void onClick(View v) {
+//                displayLocation();
+//            }
+//        });
+
+        // Toggling the periodic location updates
+//        btnStartLocationUpdates.setOnClickListener(new View.OnClickListener() {
+//
+//            @Override
+//            public void onClick(View v) {
+//                togglePeriodicLocationUpdates();
+//            }
+//        });
+//
+
+
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient.connect();
+        }
+        Log.e(LOG_TAG, "start onStart~~~");
+    }
+
+    // recover the last status
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.e(LOG_TAG, "start onRestart~~~");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        checkPlayServices();
+
+        // Resuming the periodic location updates
+        if (mGoogleApiClient.isConnected() && mRequestingLocationUpdates) {
+            startLocationUpdates();
+        }
+        Log.e(LOG_TAG, "start onResume~~~");
+    }
+
+    // save the current status
+    @Override
+    protected void onPause() {
+        super.onPause();
+        stopLocationUpdates();
+        Log.e(LOG_TAG, "start onPause~~~");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
+        }
+        Log.e(LOG_TAG, "start onStop~~~");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.e(LOG_TAG, "start onDestroy~~~");
     }
 
 
@@ -169,6 +288,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
             Log.d(LOG_TAG, "Couldn't call " + location + ", no receiving apps installed!");
         }
     }
+
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -286,6 +406,188 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
             return rootView;
         }
+    }
+
+
+
+
+
+
+     /*
+     * Google api callback methods which needs for  GoogleApiClient
+     *
+     * Called by Location Services when the request to connect the client
+     * finishes successfully. At this point, you can request the current
+     * location or start periodic updates
+     */
+    @Override
+    public void onConnectionFailed(ConnectionResult result) {
+        Log.i(LOG_TAG, "Connection failed: ConnectionResult.getErrorCode() = "
+                + result.getErrorCode());
+    }
+
+    @Override
+    public void onConnected(Bundle arg0) {
+        // Once connected with google api, get the location
+
+        displayLocation();
+        //togglePeriodicLocationUpdates();
+
+        if (mRequestingLocationUpdates) {
+            startLocationUpdates();
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int arg0) {
+        mGoogleApiClient.connect();
+    }
+
+
+
+    // the method which needs to be implemented for LocationListener
+    @Override
+    public void onLocationChanged(Location location) {
+        // Assign the new location
+        mLastLocation = location;
+
+        Toast.makeText(getApplicationContext(), "Location changed!",
+                Toast.LENGTH_SHORT).show();
+
+        // Displaying the new location on UI
+        displayLocation();
+
+    }
+
+
+
+
+
+    /**
+     * Method to display the location on UI
+     * */
+    private void displayLocation() {
+
+        LaunchpadSectionFragment workflow = (LaunchpadSectionFragment)getSupportFragmentManager().
+                findFragmentById(R.id.launchpad);
+        //lblLocation = (TextView) workflow.getView().findViewById(R.id.accuracy);
+        //btnStartLocationUpdates = (ImageView) workflow.getView().findViewById(R.id.btnShowLocation);
+
+        mLastLocation = LocationServices.FusedLocationApi
+                .getLastLocation(mGoogleApiClient);
+
+        if (mLastLocation != null) {
+            double latitude = mLastLocation.getLatitude();
+            double longitude = mLastLocation.getLongitude();
+            double accuracy = mLastLocation.getAccuracy();
+            Log.v(LOG_TAG, "gps accuracy: "+ accuracy);
+            Log.v(LOG_TAG, "gps: "+latitude+" "+longitude+": "+ accuracy);
+            //lblLocation.setText(latitude + ": " + longitude +", " + accuracy);
+
+        } else {
+
+            //lblLocation.setText("(Couldn't get the location. " +
+            //        "Make sure location is enabled on the device)");
+        }
+    }
+
+
+    /**
+     * Method to toggle periodic location updates
+     * */
+    private void togglePeriodicLocationUpdates() {
+        if (!mRequestingLocationUpdates) {
+            // Changing the button text
+            //btnStartLocationUpdates
+            //        .setText(getString(R.string.btn_stop_location_updates));
+
+            mRequestingLocationUpdates = true;
+
+            // Starting the location updates
+            startLocationUpdates();
+
+            Log.d(LOG_TAG, "Periodic location updates started!");
+
+        } else {
+            // Changing the button text
+            //btnStartLocationUpdates
+            //        .setText(getString(R.string.btn_start_location_updates));
+
+            mRequestingLocationUpdates = false;
+
+            // Stopping the location updates
+            stopLocationUpdates();
+
+            Log.d(LOG_TAG, "Periodic location updates stopped!");
+        }
+    }
+
+
+
+
+    /**
+     * Creating google api client object
+     * */
+    protected synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API).build();
+    }
+
+    /**
+     * Method to verify google play services on the device
+     * */
+    private boolean checkPlayServices() {
+        int resultCode = GooglePlayServicesUtil
+                .isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+                GooglePlayServicesUtil.getErrorDialog(resultCode, this,
+                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
+            } else {
+                Toast.makeText(getApplicationContext(),
+                        "This device is not supported.", Toast.LENGTH_LONG)
+                        .show();
+                finish();
+            }
+            return false;
+        }
+        return true;
+    }
+
+
+
+
+
+    /**
+     * Creating location request object
+     * */
+    protected void createLocationRequest() {
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(UPDATE_INTERVAL);
+        mLocationRequest.setFastestInterval(FATEST_INTERVAL);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setSmallestDisplacement(DISPLACEMENT); // 2 meters
+    }
+
+    /**
+     * Starting the location updates periodically by sending a request to Location
+     * Services
+     * */
+    protected void startLocationUpdates() {
+
+        LocationServices.FusedLocationApi.requestLocationUpdates(
+                mGoogleApiClient, mLocationRequest, this);
+
+    }
+
+    /**
+     * Stopping location updates
+     */
+    protected void stopLocationUpdates() {
+        LocationServices.FusedLocationApi.removeLocationUpdates(
+                mGoogleApiClient, this);
     }
 
 

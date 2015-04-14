@@ -39,6 +39,7 @@ import retrofit.RetrofitError;
 import retrofit.client.OkClient;
 import retrofit.client.Response;
 
+
 //import de.mpg.mpdl.www.datacollector.app.SectionList.DetailActivity;
 
 //import de.mpg.mpdl.www.datacollector.app.SectionList.DetailActivity;
