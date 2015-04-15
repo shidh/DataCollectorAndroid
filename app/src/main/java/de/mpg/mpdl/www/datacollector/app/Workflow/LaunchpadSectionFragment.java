@@ -1,9 +1,7 @@
 package de.mpg.mpdl.www.datacollector.app.Workflow;
 
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -30,7 +28,6 @@ import java.util.Locale;
 import de.mpg.mpdl.www.datacollector.app.Model.DataItem;
 import de.mpg.mpdl.www.datacollector.app.R;
 import de.mpg.mpdl.www.datacollector.app.utils.DeviceStatus;
-import de.mpg.mpdl.www.datacollector.app.utils.MyLocationListener;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -51,6 +48,7 @@ public class LaunchpadSectionFragment extends Fragment {
     private static final int INTENT_RECOVER_FROM_PLAY_SERVICES_ERROR = 1004;
     private static final int INTENT_TAKE_PHOTO = 1005;
     private final String LOG_TAG = LaunchpadSectionFragment.class.getSimpleName();
+    public static final String ARG_SECTION_NUMBER = "section_number";
 
     /*
      * After the intent to take a picture finishes we need to wait for
@@ -63,9 +61,18 @@ public class LaunchpadSectionFragment extends Fragment {
     private RatingBar ratingView;
     DeviceStatus status;
 
+
     private TextView lblLocation;
     private ImageView btnStartLocationUpdates;
 
+    OnLocationUpdatedListener mCallback;
+
+    // The container Activity must implement this interface so the frag can deliver messages
+    public interface OnLocationUpdatedListener {
+        /** Called by HeadlinesFragment when a list item is selected */
+        public void onLocationViewClicked(TextView lblLocation, RatingBar ratingView,
+                                          ImageView btnStartLocationUpdates);
+    }
 
     Callback<DataItem> callback = new Callback<DataItem>() {
         @Override
@@ -82,7 +89,38 @@ public class LaunchpadSectionFragment extends Fragment {
         }
     };
 
+
+    public void setTextViewText(String value){
+        lblLocation = (TextView) getActivity().findViewById(R.id.accuracy);
+        lblLocation.setText(value);
+        Log.v(LOG_TAG,"the view is updated");
+    }
+
+
+    public TextView getLblLocation() {
+        return lblLocation;
+    }
+
+    public ImageView getBtnStartLocationUpdates() {
+        return btnStartLocationUpdates;
+    }
+
+
     @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        Log.d(LOG_TAG, "onAttach");
+
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception.
+        try {
+            mCallback = (OnLocationUpdatedListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnLocationUpdatedListener");
+        }
+    }
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(LOG_TAG, "onCreate");
@@ -149,14 +187,23 @@ public class LaunchpadSectionFragment extends Fragment {
 //                    }
 //                });
 
-        LocationManager lm = (LocationManager) getActivity().
-                              getSystemService(Context.LOCATION_SERVICE);
-        LocationListener ll = new MyLocationListener();
-        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, ll);
+
+        rootView.findViewById(R.id.btnLocationUpdates)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mCallback.onLocationViewClicked(lblLocation, ratingView, btnStartLocationUpdates);
+                    }
+                });
 
         return rootView;
     }
 
+      @Override
+      public void onActivityCreated(Bundle savedInstanceState) {
+          super.onActivityCreated(savedInstanceState);
+          Log.d(LOG_TAG, "onActivityCreated");
+      }
 
 //    @Override
 //    public void onStart() {
@@ -178,7 +225,6 @@ public class LaunchpadSectionFragment extends Fragment {
 //        super.onStop();
 //
 //    }
-
 
 
 

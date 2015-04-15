@@ -3,4 +3,6 @@
     <color name="view_bg">#b20e0f</color>
     <color name="white">#ffffff</color>
     <color name="btn_bg">#3e4a56</color>
+    <color name="green">#ff12ff15</color>
+
 </resources>

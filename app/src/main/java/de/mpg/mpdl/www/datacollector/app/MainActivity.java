@@ -4,6 +4,7 @@ import android.app.ActionBar;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,7 +13,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,9 +32,10 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
+import java.math.BigDecimal;
 import java.util.Locale;
 
-import de.mpg.mpdl.www.datacollector.app.AsyncTask.ListSectionFragment;
+import de.mpg.mpdl.www.datacollector.app.SectionList.ListSectionFragment;
 import de.mpg.mpdl.www.datacollector.app.Workflow.LaunchpadSectionFragment;
 
 //import android.support.v4.app.FragmentTransaction;
@@ -46,7 +48,8 @@ public class MainActivity extends FragmentActivity implements
         ActionBar.TabListener,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        LocationListener {
+        LocationListener,
+        LaunchpadSectionFragment.OnLocationUpdatedListener{
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -78,8 +81,8 @@ public class MainActivity extends FragmentActivity implements
 
     // Location updates intervals in sec
     private static int UPDATE_INTERVAL = 10000; // 10 sec
-    private static int FATEST_INTERVAL = 1000; // 1 sec
-    private static int DISPLACEMENT = 2; // 10 meters
+    private static int FATEST_INTERVAL = 5000; // 5 sec
+    private static int DISPLACEMENT = 2; // 2 meters
 
     private TextView lblLocation;
     private ImageView btnStartLocationUpdates;
@@ -294,7 +297,7 @@ public class MainActivity extends FragmentActivity implements
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
      */
-    public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
+    public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -303,19 +306,23 @@ public class MainActivity extends FragmentActivity implements
         @Override
         public Fragment getItem(int position) {
 
-            Fragment fragment = new ListSectionFragment();
+            Fragment fragment;
             Bundle args = new Bundle();
             switch (position) {
                 case 0:
-                    args.putInt(ListSectionFragment.ARG_SECTION_NUMBER, position + 1);
-                    //args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+                    // The first section of the app is the most interesting -- it offers
+                    // a launchpad into the other demonstrations in this example application.
+                    fragment =  new LaunchpadSectionFragment();
+                    args.putInt(LaunchpadSectionFragment.ARG_SECTION_NUMBER, position + 1);
                     fragment.setArguments(args);
                     return fragment;
 
                 case 1:
-                    // The first section of the app is the most interesting -- it offers
-                    // a launchpad into the other demonstrations in this example application.
-                    return new LaunchpadSectionFragment();
+                    fragment =  new ListSectionFragment();
+                    args.putInt(ListSectionFragment.ARG_SECTION_NUMBER, position + 1);
+                    //args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+                    fragment.setArguments(args);
+                    return fragment;
 
                 case 2:
                     // The other sections of the app are dummy placeholders.
@@ -327,7 +334,7 @@ public class MainActivity extends FragmentActivity implements
                 default:
                     // getItem is called to instantiate the fragment for the given page.
                     // Return a PlaceholderFragment (defined as a static inner class below).
-                    return PlaceholderFragment.newInstance(position + 1);
+                    return new PlaceholderFragment();
              }
         }
 
@@ -430,7 +437,7 @@ public class MainActivity extends FragmentActivity implements
     public void onConnected(Bundle arg0) {
         // Once connected with google api, get the location
 
-        displayLocation();
+        //displayLocation();
         //togglePeriodicLocationUpdates();
 
         if (mRequestingLocationUpdates) {
@@ -455,47 +462,70 @@ public class MainActivity extends FragmentActivity implements
                 Toast.LENGTH_SHORT).show();
 
         // Displaying the new location on UI
-        displayLocation();
+        //displayLocation();
 
     }
 
-
-
+    //the method for LaunchpadSectionFragment.OnLocationUpdatedListener
+    @Override
+    public void onLocationViewClicked(TextView lblLocation, RatingBar ratingView,
+                                      ImageView btnStartLocationUpdates) {
+        togglePeriodicLocationUpdates(lblLocation, ratingView, btnStartLocationUpdates );
+        displayLocation(lblLocation, ratingView);
+    }
 
 
     /**
      * Method to display the location on UI
      * */
-    private void displayLocation() {
-
-        LaunchpadSectionFragment workflow = (LaunchpadSectionFragment)getSupportFragmentManager().
-                findFragmentById(R.id.launchpad);
-        //lblLocation = (TextView) workflow.getView().findViewById(R.id.accuracy);
-        //btnStartLocationUpdates = (ImageView) workflow.getView().findViewById(R.id.btnShowLocation);
-
+    private void displayLocation(TextView lblLocation, RatingBar ratingView) {
         mLastLocation = LocationServices.FusedLocationApi
                 .getLastLocation(mGoogleApiClient);
 
+        double accuracy = 0.0;
+        double longitude = 0.0;
+        double latitude = 0.0;
         if (mLastLocation != null) {
-            double latitude = mLastLocation.getLatitude();
-            double longitude = mLastLocation.getLongitude();
-            double accuracy = mLastLocation.getAccuracy();
+            latitude = mLastLocation.getLatitude();
+            longitude = mLastLocation.getLongitude();
+            accuracy = mLastLocation.getAccuracy();
             Log.v(LOG_TAG, "gps accuracy: "+ accuracy);
             Log.v(LOG_TAG, "gps: "+latitude+" "+longitude+": "+ accuracy);
             //lblLocation.setText(latitude + ": " + longitude +", " + accuracy);
 
+
+            //LaunchpadSectionFragment workflow = (LaunchpadSectionFragment)
+            //        getSupportFragmentManager().findFragmentById(R.id.launchpad);
+
+            // If workflow frag is available, we're in two-pane layout...
+            Log.v(LOG_TAG,"the view is updated0");
+            if (lblLocation != null) {
+                // Call a method in the LaunchpadSectionFragment to update its content
+                accuracy = new BigDecimal(accuracy ).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+                latitude = new BigDecimal(latitude ).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+                longitude = new BigDecimal(longitude ).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+                lblLocation.setText("Ac "+accuracy + "\n"
+                                    +"La "+latitude +"\n"
+                                    +"Lo "+longitude);
+
+            } else{
+                Log.v(LOG_TAG,"TextView lblLocation is null");
+
+            }
         } else {
 
-            //lblLocation.setText("(Couldn't get the location. " +
-            //        "Make sure location is enabled on the device)");
+                lblLocation.setText("(Couldn't get the location. " +
+                   "Make sure location is enabled on the device)");
         }
+
     }
 
 
     /**
      * Method to toggle periodic location updates
      * */
-    private void togglePeriodicLocationUpdates() {
+    private void togglePeriodicLocationUpdates(TextView lblLocation, RatingBar ratingView,
+                                               ImageView btnStartLocationUpdates) {
         if (!mRequestingLocationUpdates) {
             // Changing the button text
             //btnStartLocationUpdates
@@ -505,7 +535,7 @@ public class MainActivity extends FragmentActivity implements
 
             // Starting the location updates
             startLocationUpdates();
-
+            btnStartLocationUpdates.setBackgroundColor(Color.GREEN);
             Log.d(LOG_TAG, "Periodic location updates started!");
 
         } else {
@@ -517,6 +547,7 @@ public class MainActivity extends FragmentActivity implements
 
             // Stopping the location updates
             stopLocationUpdates();
+            btnStartLocationUpdates.setBackgroundColor(Color.BLACK);
 
             Log.d(LOG_TAG, "Periodic location updates stopped!");
         }

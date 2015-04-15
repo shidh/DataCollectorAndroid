@@ -19,6 +19,7 @@
     <string name="title_activity_detail">DetailActivity</string>
 
 
+    <string name="accuracy">Ac 0\nLa 0\nLo 0</string>
     <string name="lbl_you_are_at">YOU ARE AT</string>
     <string name="btn_get_location">GET MY LOCATION</string>
     <string name="btn_start_location_updates">START LOCATION UPDATES</string>

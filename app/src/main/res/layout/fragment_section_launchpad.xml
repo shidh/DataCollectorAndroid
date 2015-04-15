@@ -33,6 +33,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/white"
+        android:text="@string/accuracy"
+        android:maxLines="3"
+        android:singleLine="false"
         android:layout_alignParentRight="true"
         />
 
@@ -48,7 +51,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_toRightOf="@+id/takePhoto"
         android:layout_centerHorizontal="true"
         android:text="@string/demo_external_activity"
         android:layout_gravity="center_horizontal|bottom" />

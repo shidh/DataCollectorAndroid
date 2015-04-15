@@ -1,4 +1,4 @@
-package de.mpg.mpdl.www.datacollector.app.AsyncTask;
+package de.mpg.mpdl.www.datacollector.app.SectionList;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -31,8 +31,6 @@ import de.mpg.mpdl.www.datacollector.app.Model.DataItem;
 import de.mpg.mpdl.www.datacollector.app.R;
 import de.mpg.mpdl.www.datacollector.app.Retrofit.ImejiAPI;
 import de.mpg.mpdl.www.datacollector.app.Retrofit.RetrofitClient;
-import de.mpg.mpdl.www.datacollector.app.SectionList.CustomListAdapter;
-import de.mpg.mpdl.www.datacollector.app.SectionList.DetailActivity;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
@@ -84,14 +82,7 @@ public class ListSectionFragment extends Fragment {
         super.onCreate(savedInstanceState);
         // Add this line in order for this fragment to handle menu events.
         setHasOptionsMenu(true);
-
-        //updateDataItem();
-        pDialog = new ProgressDialog(getActivity());
-        // Showing progress dialog before making http request
-        RetrofitClient.getItems(callback);
-        pDialog.setMessage("Loading...");
-        pDialog.show();
-
+        updateDataItem();
     }
 
     @Override
@@ -136,7 +127,8 @@ public class ListSectionFragment extends Fragment {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_refresh) {
-            updateWeather();
+            //updateWeather();
+            updateDataItem();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -195,6 +187,14 @@ public class ListSectionFragment extends Fragment {
 
         FetchItemTask fetchTask = new FetchItemTask();
         fetchTask.execute(locationFromSetting);
+    }
+
+    private void updateDataItem(){
+        pDialog = new ProgressDialog(getActivity());
+        // Showing progress dialog before making http request
+        RetrofitClient.getItems(callback);
+        pDialog.setMessage("Loading...");
+        pDialog.show();
     }
 
 
