@@ -15,7 +15,7 @@
     <ImageView
         android:id="@+id/btnLocationUpdates"
         android:layout_width="60dp"
-        android:layout_height="40dp"
+        android:layout_height="45dp"
         android:layout_alignParentLeft="true"
         android:text="@string/btn_get_location"
         android:src="@drawable/marker" />
@@ -70,7 +70,7 @@
         android:layout_alignParentLeft="true"
         android:layout_above="@+id/takePhoto"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_gravity="center" >
         <ImageView
             android:layout_width="match_parent"

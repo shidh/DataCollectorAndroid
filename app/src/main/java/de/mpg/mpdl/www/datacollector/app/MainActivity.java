@@ -80,13 +80,14 @@ public class MainActivity extends FragmentActivity implements
 
 
     // Location updates intervals in sec
-    private static int UPDATE_INTERVAL = 10000; // Update location every 10 sec
-    private static int FATEST_INTERVAL = 5000; // 5 sec
+    private static int UPDATE_INTERVAL = 5000; // Update location every 5 sec
+    private static int FATEST_INTERVAL = 2000; // 2 sec
     private static int DISPLACEMENT = 0; // 2 meters
 
     private TextView lblLocation;
     private RatingBar ratingView;
     private ImageView btnStartLocationUpdates;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -322,15 +323,13 @@ public class MainActivity extends FragmentActivity implements
                 case 1:
                     fragment =  new ListSectionFragment();
                     args.putInt(ListSectionFragment.ARG_SECTION_NUMBER, position + 1);
-                    //args.putInt(ARG_SECTION_NUMBER, sectionNumber);
                     fragment.setArguments(args);
                     return fragment;
 
                 case 2:
                     // The other sections of the app are dummy placeholders.
-                    fragment = new DummySectionFragment();
-                    args = new Bundle();
-                    args.putInt(DummySectionFragment.ARG_SECTION_NUMBER, position + 1);
+                    fragment = new CollectionFragment();
+                    args.putInt(CollectionFragment.ARG_SECTION_NUMBER, position + 1);
                     fragment.setArguments(args);
                     return fragment;
                 default:
@@ -362,27 +361,6 @@ public class MainActivity extends FragmentActivity implements
         }
     }
 
-
-
-    /**
-     * A dummy fragment representing a section of the app, but that simply displays dummy text.
-     */
-    public static class DummySectionFragment extends Fragment {
-
-        public static final String ARG_SECTION_NUMBER = "section_number";
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_section_dummy, container, false);
-            Bundle args = getArguments();
-            System.out.println("text View ID: "+android.R.id.text1);
-            ((TextView) rootView.findViewById(android.R.id.text1)).setText(
-                    getString(R.string.dummy_section_text, args.getInt(ARG_SECTION_NUMBER)));
-
-            return rootView;
-        }
-    }
 
     /**
      * A placeholder fragment containing a simple view.
@@ -489,11 +467,13 @@ public class MainActivity extends FragmentActivity implements
             Log.v(LOG_TAG, "gps: "+latitude+" "+longitude+": "+ accuracy);
 
             //workflow = (LaunchpadSectionFragment) mSectionsPagerAdapter.getItem(0);
-            workflow = (LaunchpadSectionFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:"
+            Fragment frag = getSupportFragmentManager().findFragmentByTag("android:switcher:"
                     + R.id.pager + ":" + mViewPager.getCurrentItem());
+
             // based on the current position, cast the page to the correct fragment
-            if (mViewPager.getCurrentItem() == 0 && workflow != null) {
-                lblLocation = workflow.getLblLocation();
+            if (mViewPager.getCurrentItem() == 0 && frag != null) {
+                workflow = (LaunchpadSectionFragment) frag;
+                        lblLocation = workflow.getLblLocation();
 
                 // Call a method in the LaunchpadSectionFragment to update its content
                 double accuracyImprecise = new BigDecimal(accuracy ).
@@ -520,6 +500,7 @@ public class MainActivity extends FragmentActivity implements
                 } else{
                     ratingView.setRating((float) 1);
                 }
+                Log.v(LOG_TAG,"Location view is updated");
             } else{
                 Log.v(LOG_TAG,"workflow LaunchpadSectionFragment is null");
             }

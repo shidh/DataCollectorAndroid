@@ -144,7 +144,7 @@ public class ListSectionFragment extends Fragment {
 
 //        mForecastAdapter = new ArrayAdapter<String>(
 //                getActivity(), // The current context (this activity)
-//                R.layout.list_item_forecast, // The name of the layout.
+//                R.layout.list_item_cell, // The name of the layout.
 //                R.id.list_item_forecast_textview, // The ID of the textview to populate.
 //                //R.id.thumbnail,
 //                new ArrayList());

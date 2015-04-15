@@ -94,7 +94,7 @@ public class FetchDataItem  extends Fragment {
         // use it to populate the ListView it's attached to.
         mForecastAdapter = new ArrayAdapter<String>(
                 getActivity(), // The current context (this activity)
-                R.layout.list_item_forecast, // The name of the layout.
+                R.layout.list_item_cell, // The name of the layout.
                 R.id.list_item_forecast_textview, // The ID of the textview to populate.
                 new ArrayList<String>());
 
