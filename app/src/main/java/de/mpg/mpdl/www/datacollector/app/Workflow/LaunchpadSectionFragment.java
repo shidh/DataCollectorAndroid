@@ -57,11 +57,10 @@ public class LaunchpadSectionFragment extends Fragment {
 
     public Boolean takeAnotherPhoto;
     private String photoFilePath;
+    DeviceStatus status;
+    View rootView;
     private ImageView imageView;
     private RatingBar ratingView;
-    DeviceStatus status;
-
-
     private TextView lblLocation;
     private ImageView btnStartLocationUpdates;
 
@@ -70,8 +69,7 @@ public class LaunchpadSectionFragment extends Fragment {
     // The container Activity must implement this interface so the frag can deliver messages
     public interface OnLocationUpdatedListener {
         /** Called by HeadlinesFragment when a list item is selected */
-        public void onLocationViewClicked(TextView lblLocation, RatingBar ratingView,
-                                          ImageView btnStartLocationUpdates);
+        public void onLocationViewClicked(ImageView btnStartLocationUpdates);
     }
 
     Callback<DataItem> callback = new Callback<DataItem>() {
@@ -90,10 +88,23 @@ public class LaunchpadSectionFragment extends Fragment {
     };
 
 
+    public RatingBar getRatingView() {
+        return ratingView;
+    }
+
+    public void setRatingView(RatingBar ratingView) {
+        this.ratingView = ratingView;
+    }
+
     public void setTextViewText(String value){
-        lblLocation = (TextView) getActivity().findViewById(R.id.accuracy);
-        lblLocation.setText(value);
-        Log.v(LOG_TAG,"the view is updated");
+        //lblLocation = (TextView) getActivity().findViewById(R.id.accuracy);
+        if(lblLocation != null){
+            lblLocation.setText(value);
+            Log.v(LOG_TAG,"the view is updated");
+
+        }else {
+            Log.v(LOG_TAG,"the view is null");
+        }
     }
 
 
@@ -131,8 +142,10 @@ public class LaunchpadSectionFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d(LOG_TAG, "onCreateView");
+
         status = new DeviceStatus(getActivity());
-        View rootView = inflater.inflate(R.layout.fragment_section_launchpad, container, false);
+        rootView = inflater.inflate(R.layout.fragment_section_launchpad, container, false);
         imageView = (ImageView) rootView.findViewById(R.id.imageView);
         ratingView = (RatingBar) rootView.findViewById(R.id.ratingBar);
 
@@ -192,7 +205,7 @@ public class LaunchpadSectionFragment extends Fragment {
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        mCallback.onLocationViewClicked(lblLocation, ratingView, btnStartLocationUpdates);
+                        mCallback.onLocationViewClicked(btnStartLocationUpdates);
                     }
                 });
 

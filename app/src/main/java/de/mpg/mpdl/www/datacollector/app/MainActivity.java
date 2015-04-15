@@ -66,7 +66,7 @@ public class MainActivity extends FragmentActivity implements
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     SectionsPagerAdapter mSectionsPagerAdapter;
-
+    LaunchpadSectionFragment workflow;
     private final String LOG_TAG = MainActivity.class.getSimpleName();
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 1000;
 
@@ -80,11 +80,12 @@ public class MainActivity extends FragmentActivity implements
 
 
     // Location updates intervals in sec
-    private static int UPDATE_INTERVAL = 10000; // 10 sec
+    private static int UPDATE_INTERVAL = 10000; // Update location every 10 sec
     private static int FATEST_INTERVAL = 5000; // 5 sec
-    private static int DISPLACEMENT = 2; // 2 meters
+    private static int DISPLACEMENT = 0; // 2 meters
 
     private TextView lblLocation;
+    private RatingBar ratingView;
     private ImageView btnStartLocationUpdates;
 
     @Override
@@ -172,6 +173,7 @@ public class MainActivity extends FragmentActivity implements
     protected void onStart() {
         super.onStart();
         if (mGoogleApiClient != null) {
+
             mGoogleApiClient.connect();
         }
         Log.e(LOG_TAG, "start onStart~~~");
@@ -437,7 +439,8 @@ public class MainActivity extends FragmentActivity implements
     public void onConnected(Bundle arg0) {
         // Once connected with google api, get the location
 
-        //displayLocation();
+        mLastLocation = LocationServices.FusedLocationApi
+                .getLastLocation(mGoogleApiClient);
         //togglePeriodicLocationUpdates();
 
         if (mRequestingLocationUpdates) {
@@ -457,31 +460,24 @@ public class MainActivity extends FragmentActivity implements
     public void onLocationChanged(Location location) {
         // Assign the new location
         mLastLocation = location;
-
-        Toast.makeText(getApplicationContext(), "Location changed!",
-                Toast.LENGTH_SHORT).show();
+        showToast("Location data updated!");
 
         // Displaying the new location on UI
-        //displayLocation();
+        displayLocation();
 
     }
 
     //the method for LaunchpadSectionFragment.OnLocationUpdatedListener
     @Override
-    public void onLocationViewClicked(TextView lblLocation, RatingBar ratingView,
-                                      ImageView btnStartLocationUpdates) {
-        togglePeriodicLocationUpdates(lblLocation, ratingView, btnStartLocationUpdates );
-        displayLocation(lblLocation, ratingView);
+    public void onLocationViewClicked(ImageView btnStartLocationUpdates) {
+        togglePeriodicLocationUpdates(btnStartLocationUpdates );
     }
 
 
     /**
      * Method to display the location on UI
      * */
-    private void displayLocation(TextView lblLocation, RatingBar ratingView) {
-        mLastLocation = LocationServices.FusedLocationApi
-                .getLastLocation(mGoogleApiClient);
-
+    private void displayLocation() {
         double accuracy = 0.0;
         double longitude = 0.0;
         double latitude = 0.0;
@@ -491,41 +487,54 @@ public class MainActivity extends FragmentActivity implements
             accuracy = mLastLocation.getAccuracy();
             Log.v(LOG_TAG, "gps accuracy: "+ accuracy);
             Log.v(LOG_TAG, "gps: "+latitude+" "+longitude+": "+ accuracy);
-            //lblLocation.setText(latitude + ": " + longitude +", " + accuracy);
 
+            //workflow = (LaunchpadSectionFragment) mSectionsPagerAdapter.getItem(0);
+            workflow = (LaunchpadSectionFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:"
+                    + R.id.pager + ":" + mViewPager.getCurrentItem());
+            // based on the current position, cast the page to the correct fragment
+            if (mViewPager.getCurrentItem() == 0 && workflow != null) {
+                lblLocation = workflow.getLblLocation();
 
-            //LaunchpadSectionFragment workflow = (LaunchpadSectionFragment)
-            //        getSupportFragmentManager().findFragmentById(R.id.launchpad);
-
-            // If workflow frag is available, we're in two-pane layout...
-            Log.v(LOG_TAG,"the view is updated0");
-            if (lblLocation != null) {
                 // Call a method in the LaunchpadSectionFragment to update its content
-                accuracy = new BigDecimal(accuracy ).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-                latitude = new BigDecimal(latitude ).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-                longitude = new BigDecimal(longitude ).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-                lblLocation.setText("Ac "+accuracy + "\n"
-                                    +"La "+latitude +"\n"
-                                    +"Lo "+longitude);
+                double accuracyImprecise = new BigDecimal(accuracy ).
+                        setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+                double latitudeImprecise = new BigDecimal(latitude ).
+                        setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+                double longitudeImprecise = new BigDecimal(longitude ).
+                        setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+                lblLocation.setText("Ac "+accuracyImprecise + "\n"
+                        +"La "+latitudeImprecise +"\n"
+                        +"Lo "+longitudeImprecise);
 
+                //Log.v(LOG_TAG, String.valueOf(ratingView.getNumStars()));
+                //Log.v(LOG_TAG, String.valueOf(ratingView.getRating()));
+                ratingView = workflow.getRatingView();
+                if(accuracy<11 && accuracy>0){
+                    ratingView.setRating((float) 5);
+                } else if(accuracy>=11&&accuracy<15){
+                    ratingView.setRating((float) 4.5);
+                } else if(accuracy>=15&&accuracy<30){
+                    ratingView.setRating((float) 4);
+                } else if(accuracy>=13&&accuracy<50){
+                    ratingView.setRating((float) 3);
+                } else{
+                    ratingView.setRating((float) 1);
+                }
             } else{
-                Log.v(LOG_TAG,"TextView lblLocation is null");
-
+                Log.v(LOG_TAG,"workflow LaunchpadSectionFragment is null");
             }
         } else {
-
-                lblLocation.setText("(Couldn't get the location. " +
-                   "Make sure location is enabled on the device)");
+           workflow.setTextViewText("Couldn't get the location. " +
+                                    "Make sure GPS is enabled");
+           showToast("Couldn't get the location, make sure GPS is enabled");
         }
-
     }
 
 
     /**
      * Method to toggle periodic location updates
      * */
-    private void togglePeriodicLocationUpdates(TextView lblLocation, RatingBar ratingView,
-                                               ImageView btnStartLocationUpdates) {
+    private void togglePeriodicLocationUpdates(ImageView btnStartLocationUpdates) {
         if (!mRequestingLocationUpdates) {
             // Changing the button text
             //btnStartLocationUpdates
@@ -619,6 +628,13 @@ public class MainActivity extends FragmentActivity implements
     protected void stopLocationUpdates() {
         LocationServices.FusedLocationApi.removeLocationUpdates(
                 mGoogleApiClient, this);
+    }
+
+    /**
+     * Shows a toast message.
+     */
+    public void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
 
