@@ -27,10 +27,12 @@ import java.util.Locale;
 
 import de.mpg.mpdl.www.datacollector.app.Model.DataItem;
 import de.mpg.mpdl.www.datacollector.app.R;
+import de.mpg.mpdl.www.datacollector.app.Retrofit.RetrofitClient;
 import de.mpg.mpdl.www.datacollector.app.utils.DeviceStatus;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import retrofit.mime.TypedFile;
 
 /**
  * Created by allen on 08/04/15.
@@ -50,6 +52,12 @@ public class LaunchpadSectionFragment extends Fragment {
     private final String LOG_TAG = LaunchpadSectionFragment.class.getSimpleName();
     public static final String ARG_SECTION_NUMBER = "section_number";
 
+    private String username = "shi@mpdl.mpg.de";
+    private String password = "allen";
+
+    TypedFile typedFile;
+    String json;
+    DataItem item;
     /*
      * After the intent to take a picture finishes we need to wait for
      * location information thereafter in order to save the data.
@@ -72,9 +80,9 @@ public class LaunchpadSectionFragment extends Fragment {
         public void onLocationViewClicked(ImageView btnStartLocationUpdates);
     }
 
-    Callback<DataItem> callback = new Callback<DataItem>() {
+    Callback<String> callback = new Callback<String>() {
         @Override
-        public void success(DataItem item, Response response) {
+        public void success(String item, Response response) {
             //adapter =  new CustomListAdapter(getActivity(), dataList);
             //listView.setAdapter(adapter);
             int duration = Toast.LENGTH_SHORT;
@@ -94,17 +102,6 @@ public class LaunchpadSectionFragment extends Fragment {
 
     public void setRatingView(RatingBar ratingView) {
         this.ratingView = ratingView;
-    }
-
-    public void setTextViewText(String value){
-        //lblLocation = (TextView) getActivity().findViewById(R.id.accuracy);
-        if(lblLocation != null){
-            lblLocation.setText(value);
-            Log.v(LOG_TAG,"the view is updated");
-
-        }else {
-            Log.v(LOG_TAG,"the view is null");
-        }
     }
 
 
@@ -181,13 +178,13 @@ public class LaunchpadSectionFragment extends Fragment {
                 });
 
         // Demonstration of a collection-browsing activity.
-        rootView.findViewById(R.id.section_number)
+        rootView.findViewById(R.id.send)
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         //Intent intent = new Intent(getActivity(), CollectionActivity.class);
                         //startActivity(intent);
-                        //RetrofitClient.uploadItem(callback, username, password, item);
+                        upload();
                     }
                 });
 
@@ -218,26 +215,26 @@ public class LaunchpadSectionFragment extends Fragment {
           Log.d(LOG_TAG, "onActivityCreated");
       }
 
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//    }
-//
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//    }
-//
-//    @Override
-//    public void onPause() {
-//        super.onPause();
-//    }
-//
-//    @Override
-//    public void onStop() {
-//        super.onStop();
-//
-//    }
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+    }
 
 
 
@@ -304,8 +301,6 @@ public class LaunchpadSectionFragment extends Fragment {
             createPhotoFile();
             // Continue only if the file was successfully created
             if (photoFilePath != null) {
-
-
                 // Set the image file name
                 takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT,
                         Uri.fromFile(new File(photoFilePath)));
@@ -350,6 +345,12 @@ public class LaunchpadSectionFragment extends Fragment {
         getActivity().sendBroadcast(mediaScanIntent);
     }
 
+    private void upload(){
+        typedFile = new TypedFile("multipart/form-data", new File(photoFilePath));
+        json = "{ \"collectionId\" : \"gapMbfdN2i6hAtMf\"}";
+
+        RetrofitClient.uploadItem(typedFile, json, callback, username, password);
+    }
 
 
     public String encodeBae64(String src){

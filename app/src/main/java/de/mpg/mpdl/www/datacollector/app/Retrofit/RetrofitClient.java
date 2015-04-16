@@ -4,6 +4,7 @@ import java.util.List;
 
 import de.mpg.mpdl.www.datacollector.app.Model.DataItem;
 import retrofit.Callback;
+import retrofit.mime.TypedFile;
 
 /**
  * Created by allen on 07/04/15.
@@ -28,15 +29,23 @@ public class RetrofitClient {
         imejiAPI.basicLogin();
     }
 
-    public static void uploadItem(Callback<DataItem> callback,
+//    public static void uploadItem(Callback<DataItem> callback,
+//                                  String username,
+//                                  String password,
+//                                  DataItem item) {
+//        ImejiAPI imejiAPI = ServiceGenerator.
+//                createService(ImejiAPI.class, REST_SERVER, username, password);
+//        imejiAPI.postItem(item, callback);
+//    }
+    public static void uploadItem(TypedFile typedFile,
+                                  String json,
+                                  Callback<String> callback,
                                   String username,
-                                  String password,
-                                  DataItem item) {
+                                  String password) {
         ImejiAPI imejiAPI = ServiceGenerator.
-                createService(ImejiAPI.class, REST_SERVER, username, password);
-        imejiAPI.postItem(item, callback);
-    }
-
+            createService(ImejiAPI.class, REST_SERVER, username, password);
+        imejiAPI.postItem(typedFile,json, callback);
+}
 
 
 

@@ -22,8 +22,7 @@ public class DataItem {
 
     }
 
-    public DataItem(String id, String filename, String createdDate, String fileUrl, String webResolutionUrlUrl, String thumbnailUrl, User createdBy, ArrayList<MetaData> metadata, String collectionId) {
-        this.id = id;
+    public DataItem(String filename, String createdDate, String fileUrl, String webResolutionUrlUrl, String thumbnailUrl, User createdBy, ArrayList<MetaData> metadata, String collectionId) {
         this.filename = filename;
         this.createdDate = createdDate;
         this.fileUrl = fileUrl;

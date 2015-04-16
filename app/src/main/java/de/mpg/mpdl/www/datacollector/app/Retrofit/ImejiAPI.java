@@ -6,10 +6,12 @@ import de.mpg.mpdl.www.datacollector.app.Model.DataItem;
 import de.mpg.mpdl.www.datacollector.app.Model.User;
 import retrofit.Callback;
 import retrofit.client.Response;
-import retrofit.http.Body;
 import retrofit.http.GET;
+import retrofit.http.Multipart;
 import retrofit.http.POST;
+import retrofit.http.Part;
 import retrofit.http.Path;
+import retrofit.mime.TypedFile;
 
 /**
  * Created by allen on 01/04/15.
@@ -44,8 +46,14 @@ public interface ImejiAPI {
     @GET("/items/{itemId}")
     List<DataItem> getItemById(@Path("itemId") String itemId, Callback<Response> callback);
 
+    //@POST("/items")
+    //void postItem(@Body DataItem item, Callback<DataItem> callback);
+
+    @Multipart
     @POST("/items")
-    void postItem(@Body DataItem item, Callback<DataItem> callback);
+    void postItem(@Part("file") TypedFile file,
+                  @Part("json") String json,
+                  Callback<String> cb);
 
     //get all users
     @GET("/users")

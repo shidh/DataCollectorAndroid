@@ -4,7 +4,6 @@ import android.app.ActionBar;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -31,6 +30,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.squareup.picasso.Picasso;
 
 import java.math.BigDecimal;
 import java.util.Locale;
@@ -80,8 +80,8 @@ public class MainActivity extends FragmentActivity implements
 
 
     // Location updates intervals in sec
-    private static int UPDATE_INTERVAL = 5000; // Update location every 5 sec
-    private static int FATEST_INTERVAL = 2000; // 2 sec
+    private static int UPDATE_INTERVAL = 2000; // Update location every 5 sec
+    private static int FATEST_INTERVAL = 1000; // 2 sec
     private static int DISPLACEMENT = 0; // 2 meters
 
     private TextView lblLocation;
@@ -505,8 +505,6 @@ public class MainActivity extends FragmentActivity implements
                 Log.v(LOG_TAG,"workflow LaunchpadSectionFragment is null");
             }
         } else {
-           workflow.setTextViewText("Couldn't get the location. " +
-                                    "Make sure GPS is enabled");
            showToast("Couldn't get the location, make sure GPS is enabled");
         }
     }
@@ -525,7 +523,9 @@ public class MainActivity extends FragmentActivity implements
 
             // Starting the location updates
             startLocationUpdates();
-            btnStartLocationUpdates.setBackgroundColor(Color.GREEN);
+            Picasso.with(this)
+                    .load(R.drawable.marker_green)
+                    .into(btnStartLocationUpdates);
             Log.d(LOG_TAG, "Periodic location updates started!");
 
         } else {
@@ -537,8 +537,10 @@ public class MainActivity extends FragmentActivity implements
 
             // Stopping the location updates
             stopLocationUpdates();
-            btnStartLocationUpdates.setBackgroundColor(Color.BLACK);
-
+            //btnStartLocationUpdates.setBackgroundColor(Color.BLACK);
+            Picasso.with(this)
+                    .load(R.drawable.marker)
+                    .into(btnStartLocationUpdates);
             Log.d(LOG_TAG, "Periodic location updates stopped!");
         }
     }
