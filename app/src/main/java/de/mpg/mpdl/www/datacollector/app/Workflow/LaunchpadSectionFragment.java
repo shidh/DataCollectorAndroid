@@ -80,18 +80,23 @@ public class LaunchpadSectionFragment extends Fragment {
         public void onLocationViewClicked(ImageView btnStartLocationUpdates);
     }
 
-    Callback<String> callback = new Callback<String>() {
+    Callback<DataItem> callback = new Callback<DataItem>() {
         @Override
-        public void success(String item, Response response) {
+        public void success(DataItem dataItem, Response response) {
             //adapter =  new CustomListAdapter(getActivity(), dataList);
             //listView.setAdapter(adapter);
             int duration = Toast.LENGTH_SHORT;
-            Toast toast = Toast.makeText(getActivity(), "Upload data Successfully", duration);
-            toast.show();
+            showToast( "Upload data Successfully");
+            Log.v(LOG_TAG, dataItem.getCollectionId());
+            Log.v(LOG_TAG, String.valueOf(dataItem.getMetadata()));
+
         }
 
         @Override
         public void failure(RetrofitError error) {
+            showToast( "Upload data Failed");
+            Log.v(LOG_TAG, error.toString());
+
         }
     };
 
@@ -347,7 +352,7 @@ public class LaunchpadSectionFragment extends Fragment {
 
     private void upload(){
         typedFile = new TypedFile("multipart/form-data", new File(photoFilePath));
-        json = "{ \"collectionId\" : \"gapMbfdN2i6hAtMf\"}";
+        json = "{ \"collectionId\" : \"Qwms6Gs040FBS264\"}";
 
         RetrofitClient.uploadItem(typedFile, json, callback, username, password);
     }
@@ -363,5 +368,12 @@ public class LaunchpadSectionFragment extends Fragment {
         }
         String base64 = Base64.encodeToString(data, Base64.DEFAULT);
         return base64;
+    }
+
+    /**
+     * Shows a toast message.
+     */
+    public void showToast(String message) {
+        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 }

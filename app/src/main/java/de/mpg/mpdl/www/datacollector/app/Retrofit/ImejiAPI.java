@@ -53,7 +53,7 @@ public interface ImejiAPI {
     @POST("/items")
     void postItem(@Part("file") TypedFile file,
                   @Part("json") String json,
-                  Callback<String> cb);
+                  Callback<DataItem> callback);
 
     //get all users
     @GET("/users")

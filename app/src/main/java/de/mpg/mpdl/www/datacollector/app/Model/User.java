@@ -7,6 +7,17 @@ import java.util.ArrayList;
  * Created by allen on 01/04/15.
  */
 public class User {
+    private String desc;
+    private String  email;
+    private String  familyName;
+    private String givenName;
+    private String fullname;
+    private Blob image;
+    private String password;
+    private String userId;
+    private ImejiCollection collections;
+    private ArrayList<DataItem> items;
+
     public String getDesc() {
         return desc;
     }
@@ -79,13 +90,14 @@ public class User {
         this.items = items;
     }
 
-    private String desc;
-    private String  email;
-    private String  familyName;
-    private String givenName;
-    private Blob image;
-    private String password;
-    private String userId;
-    private ImejiCollection collections;
-    private ArrayList<DataItem> items;
+
+    public String getFullname() {
+        return fullname;
+    }
+
+    public void setFullname(String fullname) {
+        this.fullname = fullname;
+    }
+
+
 }

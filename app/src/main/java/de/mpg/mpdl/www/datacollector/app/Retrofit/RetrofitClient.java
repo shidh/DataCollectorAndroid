@@ -39,12 +39,12 @@ public class RetrofitClient {
 //    }
     public static void uploadItem(TypedFile typedFile,
                                   String json,
-                                  Callback<String> callback,
+                                  Callback<DataItem> callback,
                                   String username,
                                   String password) {
         ImejiAPI imejiAPI = ServiceGenerator.
             createService(ImejiAPI.class, REST_SERVER, username, password);
-        imejiAPI.postItem(typedFile,json, callback);
+        imejiAPI.postItem(typedFile, json, callback);
 }
 
 

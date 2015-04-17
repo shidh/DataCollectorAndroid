@@ -18,11 +18,14 @@ public class DataItem {
     private ArrayList<MetaData> metadata;
     private String collectionId;
 
+
     public DataItem(){
 
     }
 
-    public DataItem(String filename, String createdDate, String fileUrl, String webResolutionUrlUrl, String thumbnailUrl, User createdBy, ArrayList<MetaData> metadata, String collectionId) {
+    public DataItem(String filename, String createdDate, String fileUrl, String webResolutionUrlUrl,
+                    String thumbnailUrl, User createdBy, ArrayList<MetaData> metadata,
+                    String collectionId) {
         this.filename = filename;
         this.createdDate = createdDate;
         this.fileUrl = fileUrl;

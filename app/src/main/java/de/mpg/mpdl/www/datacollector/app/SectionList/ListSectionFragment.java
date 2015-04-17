@@ -57,17 +57,32 @@ public class ListSectionFragment extends Fragment {
     public CustomListAdapter adapter;
     ListView listView;
     View rootView;
+    private final String LOG_TAG = ListSectionFragment.class.getSimpleName();
+
 
     Callback<List<DataItem>> callback = new Callback<List<DataItem>>() {
         @Override
         public void success(List<DataItem> dataList, Response response) {
             adapter =  new CustomListAdapter(getActivity(), dataList);
+
+            // here get the string of Metadata Json
+            Log.v(LOG_TAG, String.valueOf(dataList.get(4).getMetadata()));
+            Log.v(LOG_TAG, String.valueOf(dataList.get(4).getFilename()));
+
             listView.setAdapter(adapter);
             pDialog.hide();
+            Log.v(LOG_TAG, "get list OK");
+
+            showToast("get list OK");
+
         }
 
         @Override
         public void failure(RetrofitError error) {
+            Log.v(LOG_TAG, "get list failed");
+            Log.v(LOG_TAG, error.toString());
+
+            showToast("get list failed");
         }
     };
 
@@ -253,5 +268,9 @@ public class ListSectionFragment extends Fragment {
 
 
 
+
+    }
+    public void showToast(String message) {
+        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 }

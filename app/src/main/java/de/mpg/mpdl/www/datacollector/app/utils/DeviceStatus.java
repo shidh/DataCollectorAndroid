@@ -44,4 +44,6 @@ public class DeviceStatus {
         LocationManager locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
         return locationManager.isProviderEnabled(LocationManager.PASSIVE_PROVIDER);
     }
+
+
 }
