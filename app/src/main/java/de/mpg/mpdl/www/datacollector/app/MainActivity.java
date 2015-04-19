@@ -92,6 +92,9 @@ public class MainActivity extends FragmentActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //ActiveAndroid.initialize(this);
+
         setContentView(R.layout.activity_main);
 
         // Set up the action bar.

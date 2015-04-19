@@ -67,7 +67,7 @@ public class CustomListAdapter extends BaseAdapter {
                 .into(imageView);
 
         // title
-        title.setText(m.getId());
+        title.setText(m.getCollectionId());
 
         // user
         //artist.setText(m.getCreatedBy().getFamilyName());

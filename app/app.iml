@@ -105,6 +105,7 @@
     <orderEntry type="library" exported="" name="support-v4-22.0.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-maps-7.0.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-fitness-7.0.0" level="project" />
+    <orderEntry type="library" exported="" name="activeandroid-3.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-identity-7.0.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-ads-7.0.0" level="project" />
     <orderEntry type="library" exported="" name="retrofit-1.9.0" level="project" />

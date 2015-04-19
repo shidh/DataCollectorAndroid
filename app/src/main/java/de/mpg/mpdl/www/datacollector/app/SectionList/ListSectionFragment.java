@@ -19,15 +19,24 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.squareup.okhttp.OkHttpClient;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
+import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import de.mpg.mpdl.www.datacollector.app.Model.DataItem;
+import de.mpg.mpdl.www.datacollector.app.Model.GenericValue;
+import de.mpg.mpdl.www.datacollector.app.Model.GeoLocation;
 import de.mpg.mpdl.www.datacollector.app.R;
 import de.mpg.mpdl.www.datacollector.app.Retrofit.ImejiAPI;
 import de.mpg.mpdl.www.datacollector.app.Retrofit.RetrofitClient;
@@ -66,7 +75,62 @@ public class ListSectionFragment extends Fragment {
             adapter =  new CustomListAdapter(getActivity(), dataList);
 
             // here get the string of Metadata Json
-            Log.v(LOG_TAG, String.valueOf(dataList.get(4).getMetadata()));
+            Gson gson = new Gson();
+            String json = gson.toJson(dataList.get(4).getMetadata());
+            Log.v(LOG_TAG, json);
+            try {
+                //Json String to Object
+                //JSONObject object = (JSONObject) new JSONTokener(json).nextValue();
+
+                JSONArray jsonArray = new JSONArray(json);
+
+                //String query = object.getString("query");
+                //JSONArray locations = object.getJSONArray("locations");
+                JSONObject meta = jsonArray.getJSONObject(0);
+                String type = meta.getString("typeUri").split("#")[1];
+                String label = meta.getString("labels").split("\"")[3];
+
+                Log.v(LOG_TAG, label +" "+ type);
+
+                //GenericValue<Object> value = new GenericValue<Object>();
+                //gson.toJson(value); // May not serialize foo.value correctly
+                //gson.fromJson(json, value.getClass()); // Fails to deserialize foo.value as Bar
+
+                if(type == "geolocation") {
+                    GeoLocation value = (GeoLocation) meta.get("value");
+                    Log.v(LOG_TAG, value.toString());
+
+                    //solution
+                    Type fooType = new TypeToken<GenericValue<GeoLocation>>() {
+                    }.getType();
+                    gson.toJson(value, fooType);
+                    //gson.fromJson(json, fooType);
+                }else if(type == "number") {
+                    Double value = (Double) meta.get("value");
+                    Log.v(LOG_TAG, value.toString());
+                    //solution
+                    Type fooType = new TypeToken<GenericValue<Double>>() {
+                    }.getType();
+                    gson.toJson(value, fooType);
+                    //gson.fromJson(json, fooType);
+                }else{
+                    JSONObject value = (JSONObject) meta.get("value");
+                    Log.v(LOG_TAG, value.getString("text"));
+
+//                    Type fooType = new TypeToken<GenericValue<String>>() {
+//                    }.getType();
+//                    gson.toJson(value, fooType);
+                    //gson.toJson(value);
+
+                    //Log.v(LOG_TAG, gson.toJson(value, fooType));
+                    //gson.fromJson(json, fooType);
+                }
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
             Log.v(LOG_TAG, String.valueOf(dataList.get(4).getFilename()));
 
             listView.setAdapter(adapter);
@@ -178,7 +242,7 @@ public class ListSectionFragment extends Fragment {
                 DataItem dataItem = (DataItem) adapter.getItem(position);
                 //Context context = getActivity();
                 int duration = Toast.LENGTH_SHORT;
-                Toast toast = Toast.makeText(getActivity(), dataItem.getId(), duration);
+                Toast toast = Toast.makeText(getActivity(), dataItem.getCollectionId(), duration);
                 toast.show();
 
                 Intent showDetailIntent = new Intent(getActivity(), DetailActivity.class);
@@ -251,7 +315,7 @@ public class ListSectionFragment extends Fragment {
             for(DataItem item:items){
                 Log.v(LOG_TAG, item.getFilename());
                 Log.v(LOG_TAG, item.getFileUrl());
-                ids.add(item.getId());
+                ids.add(item.getCollectionId());
             }
             return items;
         }

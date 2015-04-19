@@ -2,11 +2,14 @@ package de.mpg.mpdl.www.datacollector.app.Retrofit;
 
 import android.util.Base64;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.squareup.okhttp.OkHttpClient;
 
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.client.OkClient;
+import retrofit.converter.GsonConverter;
 
 /**
  * Created by allen on 09/04/15.
@@ -25,10 +28,18 @@ public class ServiceGenerator {
     // Almost every webservice and API evaluates the Authorization header of the HTTP request.
     // That's why we set the encoded credentials value to that header field.
     public static <S> S createService(Class<S> serviceClass, String baseUrl, String username, String password) {
+        Gson gson = new GsonBuilder()
+                .serializeNulls()
+                .excludeFieldsWithoutExposeAnnotation()
+                .create();
+
         // set endpoint url and use OkHTTP as HTTP client
         RestAdapter.Builder builder = new RestAdapter.Builder()
                 .setEndpoint(baseUrl)
+                .setConverter(new GsonConverter(gson))
                 .setClient(new OkClient(new OkHttpClient()));
+
+
 
         // execute only when user provide the username and password
         if (username != null && password != null) {

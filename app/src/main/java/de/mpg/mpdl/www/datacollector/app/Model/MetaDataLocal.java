@@ -1,22 +1,42 @@
 package de.mpg.mpdl.www.datacollector.app.Model;
 
 
-import java.util.ArrayList;
+import com.activeandroid.Model;
+import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Table;
 
 /**
  * Created by allen on 01/04/15.
  */
-public class MetaDataLocal {
-    private String metadataId;
+@Table(name = "MetaData")
+
+public class MetaDataLocal extends Model{
+
+    @Column(name = "title")
     private String title;
+
+    @Column(name = "address")
     private String address;
+
+    @Column(name = "latitude")
     private double latitude;
+
+    @Column(name = "longitude")
     private double longitude;
+
+    @Column(name = "accuracy")
     private double accuracy;
 
+    @Column(name = "deviceID")
     private String deviceID;
-    private ArrayList<String> tags;
+
+    @Column(name = "tag")
+    private String tag;
+
+    @Column(name = "creator")
     private String creator;
+
+    @Column(name = "whichItem")
     private DataItem whichItem;
 
 

@@ -1,17 +1,32 @@
 package de.mpg.mpdl.www.datacollector.app.Model;
 
-import java.util.ArrayList;
+import com.activeandroid.Model;
+import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Table;
+
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by allen on 01/04/15.
  */
-public class POI {
+
+@Table(name = "POI")
+public class POI extends Model{
+
+    @Column(name = "date")
     private Date date;
-    private String poiId;
+
+    @Column(name = "title")
     private String title;
+
+    @Column(name = "createdBy")
     private User createdBy;
-    private ArrayList<DataItem>items;
+
+    public List<DataItem> items() {
+        return getMany(DataItem.class, "DataItem");
+    }
+    //private ArrayList<DataItem>items;
 
 
     public Date getDate() {
@@ -22,13 +37,6 @@ public class POI {
         this.date = date;
     }
 
-    public String getPoiId() {
-        return poiId;
-    }
-
-    public void setPoiId(String poiId) {
-        this.poiId = poiId;
-    }
 
     public String getTitle() {
         return title;
@@ -46,12 +54,12 @@ public class POI {
         this.createdBy = createdBy;
     }
 
-    public ArrayList<DataItem> getItems() {
-        return items;
-    }
-
-    public void setItems(ArrayList<DataItem> items) {
-        this.items = items;
-    }
+//    public ArrayList<DataItem> getItems() {
+//        return items;
+//    }
+//
+//    public void setItems(ArrayList<DataItem> items) {
+//        this.items = items;
+//    }
 
 }
