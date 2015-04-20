@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import de.mpg.mpdl.www.datacollector.app.Model.DataItem;
+import de.mpg.mpdl.www.datacollector.app.Model.MetaDataLocal;
 import de.mpg.mpdl.www.datacollector.app.R;
 import de.mpg.mpdl.www.datacollector.app.Retrofit.RetrofitClient;
 import de.mpg.mpdl.www.datacollector.app.utils.DeviceStatus;
@@ -354,9 +355,25 @@ public class LaunchpadSectionFragment extends Fragment {
         typedFile = new TypedFile("multipart/form-data", new File(photoFilePath));
         json = "{ \"collectionId\" : \"Qwms6Gs040FBS264\"}";
 
+        DataItem item = new DataItem();
         RetrofitClient.uploadItem(typedFile, json, callback, username, password);
     }
 
+
+    private MetaDataLocal collectMetaData(){
+        MetaDataLocal meta = new MetaDataLocal();
+        typedFile = new TypedFile("multipart/form-data", new File(photoFilePath));
+        json = "{ \"collectionId\" : \"Qwms6Gs040FBS264\"}";
+
+//        meta.setLatitude();
+//        meta.setLongitude ();
+//        meta.setAccuracy();
+//
+//        meta.setTags();
+//        meta.setTitle("");
+//        meta.setAddress("");
+        return meta;
+    }
 
     public String encodeBae64(String src){
         // Sending side

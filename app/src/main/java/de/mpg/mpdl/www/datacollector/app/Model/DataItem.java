@@ -3,15 +3,8 @@ package de.mpg.mpdl.www.datacollector.app.Model;
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
-import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
-import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 /**
@@ -60,6 +53,10 @@ public class DataItem extends Model {
 
     @Column(name = "poi")
     private POI poi;
+
+    public DataItem(){
+        super();
+    }
 
     public DataItem(String filename, String createdDate, String fileUrl, String webResolutionUrlUrl,
                     String thumbnailUrl, User createdBy, ArrayList<MetaData> metadata,
@@ -144,58 +141,5 @@ public class DataItem extends Model {
 
     public void setMetaDataLocal(MetaDataLocal metaDataLocal) {
         this.metaDataLocal = metaDataLocal;
-    }
-
-
-    private void convertMetaData(){
-        // here get the string of Metadata Json
-        Gson gson = new Gson();
-        String json = gson.toJson(this.getMetadata());
-        try {
-            //Json String to Object
-            //JSONObject object = (JSONObject) new JSONTokener(json).nextValue();
-
-            JSONArray jsonArray = new JSONArray(json);
-
-            //String query = object.getString("query");
-            //JSONArray locations = object.getJSONArray("locations");
-            JSONObject meta = jsonArray.getJSONObject(0);
-            //for(){}
-            String type = meta.getString("typeUri").split("#")[1];
-            String label = meta.getString("labels").split("\"")[3];
-            String statementUri = meta.getString("statementUri");
-
-            if(type == "geolocation") {
-                GeoLocation value = (GeoLocation) meta.get("value");
-                //Log.v(LOG_TAG, value.toString());
-
-                //solution
-                Type fooType = new TypeToken<GenericValue<GeoLocation>>() {
-                }.getType();
-                gson.toJson(value, fooType);
-                //gson.fromJson(json, fooType);
-            }else if(type == "number") {
-                Double value = (Double) meta.get("value");
-                //solution
-                Type fooType = new TypeToken<GenericValue<Double>>() {
-                }.getType();
-                gson.toJson(value, fooType);
-                //gson.fromJson(json, fooType);
-            }else{
-                JSONObject value = (JSONObject) meta.get("value");
-
-//                    Type fooType = new TypeToken<GenericValue<String>>() {
-//                    }.getType();
-//                    gson.toJson(value, fooType);
-                //gson.toJson(value);
-
-                //Log.v(LOG_TAG, gson.toJson(value, fooType));
-                //gson.fromJson(json, fooType);
-            }
-
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
     }
 }
