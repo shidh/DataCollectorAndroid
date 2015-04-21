@@ -19,6 +19,7 @@ import de.mpg.mpdl.www.datacollector.app.R;
 import de.mpg.mpdl.www.datacollector.app.SettingsActivity;
 
 
+//using import android.app.Fragment;
 public class DetailActivity extends Activity {
 
     @Override

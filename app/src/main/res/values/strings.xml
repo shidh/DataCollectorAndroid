@@ -4,7 +4,7 @@
 
     <string name="title_section1">Workflow</string>
     <string name="title_section2">DataItem</string>
-    <string name="title_section3">Collection</string>
+    <string name="title_section3">POI</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="dummy_section_text">Section %1d is a dummy section.</string>
@@ -15,7 +15,7 @@
     <string name="take_photo">Take a Photo</string>
     <string name="demo_external_activity">Library</string>
     <string name="demo_collection">Collection</string>
-    <string name="send_data">Send</string>
+    <string name="send_data">Save</string>
     <string name="title_activity_detail">DetailActivity</string>
 
 

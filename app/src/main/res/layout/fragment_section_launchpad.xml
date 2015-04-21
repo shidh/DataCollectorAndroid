@@ -4,8 +4,9 @@
     android:layout_height="match_parent"
     android:id="@+id/launchpad"
     tools:context=".MainActivity$LaunchpadSectionFragment"
-    android:background="#f8000000">
+    android:background="@color/lightbg">
     <!--<Button android:id="@+id/section_number"
+        android:background="#f8000000"
         android:layout_width="139dp"
         android:layout_height="wrap_content"
         android:text="@string/demo_collection"
@@ -25,14 +26,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:background="#f8000000"
         android:layout_centerHorizontal="true"/>
 
     <TextView
         android:id="@+id/accuracy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:text="@string/accuracy"
         android:maxLines="3"
         android:singleLine="false"
@@ -55,7 +55,7 @@
         android:text="@string/demo_external_activity"
         android:layout_gravity="center_horizontal|bottom" />
 
-    <Button android:id="@+id/send"
+    <Button android:id="@+id/save"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
@@ -63,21 +63,30 @@
         android:text="@string/send_data"
         android:layout_gravity="right|bottom" />
 
-    <HorizontalScrollView
-        android:id="@+id/horizontalScrollView"
-        android:background="#f8000000"
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:background="#8cf7f3ff"
         android:layout_below="@id/ratingBar"
         android:layout_alignParentLeft="true"
         android:layout_above="@+id/takePhoto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center" >
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/imageView"
-            android:layout_gravity="center" />
-    </HorizontalScrollView>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <MultiAutoCompleteTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/imageView"
+                android:layout_gravity="center" />
+            </LinearLayout>
+    </ScrollView>
+
 
 
 </RelativeLayout>

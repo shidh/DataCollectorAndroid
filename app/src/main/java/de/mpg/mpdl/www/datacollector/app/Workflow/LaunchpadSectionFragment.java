@@ -79,6 +79,8 @@ public class LaunchpadSectionFragment extends Fragment {
     public interface OnLocationUpdatedListener {
         /** Called by HeadlinesFragment when a list item is selected */
         public void onLocationViewClicked(ImageView btnStartLocationUpdates);
+
+        public void replaceFragment(MetadataFragment fragment);
     }
 
     Callback<DataItem> callback = new Callback<DataItem>() {
@@ -151,11 +153,13 @@ public class LaunchpadSectionFragment extends Fragment {
         rootView = inflater.inflate(R.layout.fragment_section_launchpad, container, false);
         imageView = (ImageView) rootView.findViewById(R.id.imageView);
         ratingView = (RatingBar) rootView.findViewById(R.id.ratingBar);
+        ratingView.setIsIndicator(true);
 
         lblLocation = (TextView) rootView.findViewById(R.id.accuracy);
         btnStartLocationUpdates = (ImageView) rootView.findViewById(R.id.btnLocationUpdates);
 
-        ratingView.setIsIndicator(true);
+
+
         // Taking a Photo activity.
         rootView.findViewById(R.id.takePhoto)
                 .setOnClickListener(new View.OnClickListener() {
@@ -166,7 +170,7 @@ public class LaunchpadSectionFragment extends Fragment {
                 });
 
 
-        // Demonstration of navigating to external activities.
+        // Open Photo Lib by navigating to external activities.
         rootView.findViewById(R.id.demo_external_activity)
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -183,14 +187,25 @@ public class LaunchpadSectionFragment extends Fragment {
                     }
                 });
 
-        // Demonstration of a collection-browsing activity.
-        rootView.findViewById(R.id.send)
+        // Save the data in the local storage.
+        rootView.findViewById(R.id.save)
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+
                         //Intent intent = new Intent(getActivity(), CollectionActivity.class);
                         //startActivity(intent);
-                        upload();
+
+
+                        //MetadataFragment frag=new MetadataFragment();
+                        //mCallback.replaceFragment(frag);
+
+//                       Fragment frag = getActivity().getSupportFragmentManager().
+//                                findFragmentByTag("android:switcher:"
+//                                + R.id.pager + ":" + getActivity().mViewPager.getCurrentItem());
+
+
+                        //upload();
                     }
                 });
 
@@ -368,10 +383,11 @@ public class LaunchpadSectionFragment extends Fragment {
 //        meta.setLatitude();
 //        meta.setLongitude ();
 //        meta.setAccuracy();
-//
+//        meta.setAddress("");
+
+//        meta.setDeviceID();
 //        meta.setTags();
 //        meta.setTitle("");
-//        meta.setAddress("");
         return meta;
     }
 
@@ -393,4 +409,5 @@ public class LaunchpadSectionFragment extends Fragment {
     public void showToast(String message) {
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
+
 }

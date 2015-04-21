@@ -37,10 +37,7 @@ import java.util.Locale;
 
 import de.mpg.mpdl.www.datacollector.app.SectionList.ListSectionFragment;
 import de.mpg.mpdl.www.datacollector.app.Workflow.LaunchpadSectionFragment;
-
-//import android.support.v4.app.FragmentTransaction;
-
-
+import de.mpg.mpdl.www.datacollector.app.Workflow.MetadataFragment;
 
 
 //public class MainActivity extends ActionBarActivity implements ActionBar.TabListener {
@@ -49,12 +46,13 @@ public class MainActivity extends FragmentActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener,
-        LaunchpadSectionFragment.OnLocationUpdatedListener{
+        LaunchpadSectionFragment.OnLocationUpdatedListener,
+        MetadataFragment.OnFragmentInteractionListener{
 
     /**
      * The {@link ViewPager} that will host the section contents.
      */
-    ViewPager mViewPager;
+    public ViewPager mViewPager;
 
 
     /**
@@ -298,6 +296,11 @@ public class MainActivity extends FragmentActivity implements
         }
     }
 
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
+
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -454,6 +457,17 @@ public class MainActivity extends FragmentActivity implements
         togglePeriodicLocationUpdates(btnStartLocationUpdates );
     }
 
+    @Override
+    public void replaceFragment(MetadataFragment fragment) {
+        android.support.v4.app.FragmentTransaction transaction =
+                getSupportFragmentManager().beginTransaction();
+
+        // Replace whatever is in the fragment_container view with this fragment,
+        // and add the transaction to the back stack so the user can navigate back
+          transaction.replace(R.id.pager, fragment);
+          transaction.addToBackStack(null);
+          transaction.commit();
+    }
 
     /**
      * Method to display the location on UI
