@@ -10,6 +10,7 @@
     <string name="dummy_section_text">Section %1d is a dummy section.</string>
     <string name="refresh">Refresh</string>
 
+    <string name="action_uploadList">Data Session</string>
     <string name="action_map">Map Location</string>
     <string name="action_share">Share</string>
     <string name="take_photo">Take a Photo</string>
