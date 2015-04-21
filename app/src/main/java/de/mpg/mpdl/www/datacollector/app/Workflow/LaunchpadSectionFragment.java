@@ -20,6 +20,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -28,6 +29,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import de.mpg.mpdl.www.datacollector.app.Event.AskMetadataFragment;
+import de.mpg.mpdl.www.datacollector.app.Event.MetadataIsReadyEvent;
+import de.mpg.mpdl.www.datacollector.app.Event.OttoSingleton;
 import de.mpg.mpdl.www.datacollector.app.Model.DataItem;
 import de.mpg.mpdl.www.datacollector.app.Model.MetaDataLocal;
 import de.mpg.mpdl.www.datacollector.app.R;
@@ -77,6 +81,8 @@ public class LaunchpadSectionFragment extends Fragment {
     private ImageView btnStartLocationUpdates;
 
     OnLocationUpdatedListener mCallback;
+    private MetaDataLocal meta = new MetaDataLocal();
+
 
     // The container Activity must implement this interface so the frag can deliver messages
     public interface OnLocationUpdatedListener {
@@ -210,6 +216,9 @@ public class LaunchpadSectionFragment extends Fragment {
 
 
                         //upload();
+
+                        AskMetadataFragment newFragment = new AskMetadataFragment();
+                        newFragment.show(getActivity().getSupportFragmentManager(), "askMetadata");
                     }
                 });
 
@@ -248,11 +257,14 @@ public class LaunchpadSectionFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        OttoSingleton.getInstance().register(this);
+
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        OttoSingleton.getInstance().unregister(this);
     }
 
     @Override
@@ -326,12 +338,13 @@ public class LaunchpadSectionFragment extends Fragment {
     }
 
 
-    // set GPS settings
-//    public void onEventMainThread() {
-//        // User touched the dialog's positive button
-//        Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-//        startActivityForResult(intent, INTENT_ENABLE_GPS);
-//    }
+    @Subscribe
+    public void onGetMetadataFromUser(MetadataIsReadyEvent event) {
+        meta.setTags(event.tags);
+        //meta.setTitle(event.tags.get(0)+"");
+        Log.v(LOG_TAG, event.tags.get(0));
+    }
+
 
     // Take a photo using an intent
     private void takePhoto() {
@@ -399,7 +412,7 @@ public class LaunchpadSectionFragment extends Fragment {
     }
 
 
-    private MetaDataLocal collectMetaData(){
+    private MetaDataLocal setCollectMetaData(){
         MetaDataLocal meta = new MetaDataLocal();
         typedFile = new TypedFile("multipart/form-data", new File(photoFilePath));
         json = "{ \"collectionId\" : \"Qwms6Gs040FBS264\"}";

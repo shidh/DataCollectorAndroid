@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="tags_array">
+        <item>cabinet</item>
+        <item>cable</item>
+        <item>converter</item>
+        <item>generator</item>
+        <item>heliostat</item>
+        <item>line</item>
+        <item>minor_line</item>
+        <item>plant</item>
+        <item>pole</item>
+        <item>substation</item>
+        <item>switch</item>
+        <item>tower</item>
+        <item>transformer</item>
+    </string-array>
+
+</resources>

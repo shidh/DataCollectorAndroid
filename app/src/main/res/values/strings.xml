@@ -18,7 +18,9 @@
     <string name="demo_collection">Collection</string>
     <string name="send_data">Save</string>
     <string name="title_activity_detail">DetailActivity</string>
-
+    <string name="dialog_title">Add Metadata</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Back</string>
 
     <string name="accuracy">Ac 0\nLa 0\nLo 0</string>
     <string name="lbl_you_are_at">YOU ARE AT</string>
