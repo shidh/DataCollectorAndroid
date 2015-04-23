@@ -1,4 +1,4 @@
-package de.mpg.mpdl.www.datacollector.app.Event;
+package de.mpg.mpdl.www.datacollector.app.Workflow;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -11,6 +11,8 @@ import com.squareup.otto.Produce;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.mpg.mpdl.www.datacollector.app.Event.MetadataIsReadyEvent;
+import de.mpg.mpdl.www.datacollector.app.Event.OttoSingleton;
 import de.mpg.mpdl.www.datacollector.app.R;
 
 /**
@@ -61,6 +63,7 @@ public class AskMetadataFragment extends DialogFragment {
                    @Produce
                    public void onClick(DialogInterface dialog, int id) {
                        // User cancelled the dialog
+                       mSelectedItems.clear();
                    }
                });
         // Create the AlertDialog object and return it

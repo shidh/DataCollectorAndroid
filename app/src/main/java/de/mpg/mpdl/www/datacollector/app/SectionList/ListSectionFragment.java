@@ -81,7 +81,8 @@ public class ListSectionFragment extends Fragment {
                         Log.v(LOG_TAG, String.valueOf(item.getFilename()));
                         Log.v(LOG_TAG, String.valueOf(item.getMetaDataLocal().getTitle()));
                         Log.v(LOG_TAG, String.valueOf(item.getMetaDataLocal().getAccuracy()));
-//                      item.save();
+//                            item.save();
+//                        }
                     }
                 }
                 ActiveAndroid.setTransactionSuccessful();

@@ -73,18 +73,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center" >
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <MultiAutoCompleteTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/imageView"
                 android:layout_gravity="center" />
-            </LinearLayout>
     </ScrollView>
 
 

@@ -29,7 +29,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import de.mpg.mpdl.www.datacollector.app.Event.AskMetadataFragment;
 import de.mpg.mpdl.www.datacollector.app.Event.MetadataIsReadyEvent;
 import de.mpg.mpdl.www.datacollector.app.Event.OttoSingleton;
 import de.mpg.mpdl.www.datacollector.app.Model.DataItem;
@@ -45,6 +44,7 @@ import retrofit.mime.TypedFile;
 /**
  * Created by allen on 08/04/15.
  */
+
 
 /**
  * A fragment that launches other parts of the demo application.
@@ -66,6 +66,8 @@ public class LaunchpadSectionFragment extends Fragment {
     TypedFile typedFile;
     String json;
     DataItem item;
+    MetaDataLocal meta = new MetaDataLocal();
+
     /*
      * After the intent to take a picture finishes we need to wait for
      * location information thereafter in order to save the data.
@@ -81,7 +83,6 @@ public class LaunchpadSectionFragment extends Fragment {
     private ImageView btnStartLocationUpdates;
 
     OnLocationUpdatedListener mCallback;
-    private MetaDataLocal meta = new MetaDataLocal();
 
 
     // The container Activity must implement this interface so the frag can deliver messages
@@ -97,7 +98,6 @@ public class LaunchpadSectionFragment extends Fragment {
         public void success(DataItem dataItem, Response response) {
             //adapter =  new CustomListAdapter(getActivity(), dataList);
             //listView.setAdapter(adapter);
-            int duration = Toast.LENGTH_SHORT;
             showToast( "Upload data Successfully");
             Log.v(LOG_TAG, dataItem.getCollectionId());
             Log.v(LOG_TAG, String.valueOf(dataItem.getMetadata()));
@@ -280,18 +280,20 @@ public class LaunchpadSectionFragment extends Fragment {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        int id = menuItem.getItemId();
         if (id == R.id.POI_list) {
             //updateWeather();
             //updateDataItem();
             showToast("hi from list icon");
+            Intent intent = new Intent(getActivity(), ReadyToUploadCollectionActivity.class);
+            startActivity(intent);
             return true;
         }
-        return super.onOptionsItemSelected(item);
+        return super.onOptionsItemSelected(menuItem);
     }
 
 
@@ -343,6 +345,10 @@ public class LaunchpadSectionFragment extends Fragment {
         meta.setTags(event.tags);
         //meta.setTitle(event.tags.get(0)+"");
         Log.v(LOG_TAG, event.tags.get(0));
+
+        //TODO
+        //add a dataItem to the list on the top of view
+        //change the color of the view
     }
 
 
@@ -407,7 +413,7 @@ public class LaunchpadSectionFragment extends Fragment {
         typedFile = new TypedFile("multipart/form-data", new File(photoFilePath));
         json = "{ \"collectionId\" : \"Qwms6Gs040FBS264\"}";
 
-        DataItem item = new DataItem();
+        item = new DataItem();
         RetrofitClient.uploadItem(typedFile, json, callback, username, password);
     }
 

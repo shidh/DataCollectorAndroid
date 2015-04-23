@@ -32,9 +32,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".Workflow.CollectionActivity"
             android:label="@string/demo_collection" />
+
         <activity
             android:name=".SectionList.DetailActivity"
             android:label="@string/title_activity_detail"
@@ -44,6 +46,17 @@
                 android:label="ItemDetail"
                 android:value=".MainActivity" />
         </activity>
+
+        <activity
+            android:name=".Workflow.ReadyToUploadCollectionActivity"
+            android:label="@string/ready_collection"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:label="ItemReady"
+                android:value=".MainActivity" />
+        </activity>
+
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"

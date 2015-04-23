@@ -16,6 +16,7 @@
     <string name="take_photo">Take a Photo</string>
     <string name="demo_external_activity">Library</string>
     <string name="demo_collection">Collection</string>
+    <string name="ready_collection">ReadyCollection</string>
     <string name="send_data">Save</string>
     <string name="title_activity_detail">DetailActivity</string>
     <string name="dialog_title">Add Metadata</string>
