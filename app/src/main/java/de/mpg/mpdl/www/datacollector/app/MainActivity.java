@@ -403,9 +403,6 @@ public class MainActivity extends FragmentActivity implements
 
 
 
-
-
-
      /*
      * Google api callback methods which needs for  GoogleApiClient
      *

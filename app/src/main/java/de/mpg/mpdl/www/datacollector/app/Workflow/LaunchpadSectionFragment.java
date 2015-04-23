@@ -82,6 +82,8 @@ public class LaunchpadSectionFragment extends Fragment {
     private TextView lblLocation;
     private ImageView btnStartLocationUpdates;
 
+    private MenuItem poi_list;
+
     OnLocationUpdatedListener mCallback;
 
 
@@ -164,7 +166,6 @@ public class LaunchpadSectionFragment extends Fragment {
         imageView = (ImageView) rootView.findViewById(R.id.imageView);
         ratingView = (RatingBar) rootView.findViewById(R.id.ratingBar);
         ratingView.setIsIndicator(true);
-
         lblLocation = (TextView) rootView.findViewById(R.id.accuracy);
         btnStartLocationUpdates = (ImageView) rootView.findViewById(R.id.btnLocationUpdates);
 
@@ -221,6 +222,7 @@ public class LaunchpadSectionFragment extends Fragment {
                         newFragment.show(getActivity().getSupportFragmentManager(), "askMetadata");
                     }
                 });
+        rootView.findViewById(R.id.save).setVisibility(View.GONE);
 
 //        rootView.findViewById(R.id.section_number)
 //                .setOnClickListener(new View.OnClickListener() {
@@ -277,6 +279,7 @@ public class LaunchpadSectionFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_launchpad, menu);
+        poi_list = menu.findItem(R.id.POI_list);
     }
 
     @Override
@@ -332,6 +335,8 @@ public class LaunchpadSectionFragment extends Fragment {
                 }
 
                 addImageToGallery(photoFilePath);
+                rootView.findViewById(R.id.save).setVisibility(View.VISIBLE);
+
             } else if (resultCode == getActivity().RESULT_CANCELED) {
                 // User cancelled the photo capture
             }
@@ -349,6 +354,7 @@ public class LaunchpadSectionFragment extends Fragment {
         //TODO
         //add a dataItem to the list on the top of view
         //change the color of the view
+        poi_list.setIcon(getResources().getDrawable(R.drawable.marker_green));
     }
 
 
