@@ -2,6 +2,7 @@ package de.mpg.mpdl.www.datacollector.app.Workflow;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -20,15 +21,20 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.otto.Produce;
 import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
+import de.mpg.mpdl.www.datacollector.app.Event.GetNewItemFromUserEvent;
+import de.mpg.mpdl.www.datacollector.app.Event.LocationChangedEvent;
 import de.mpg.mpdl.www.datacollector.app.Event.MetadataIsReadyEvent;
 import de.mpg.mpdl.www.datacollector.app.Event.OttoSingleton;
 import de.mpg.mpdl.www.datacollector.app.Model.DataItem;
@@ -63,10 +69,12 @@ public class LaunchpadSectionFragment extends Fragment {
     private String username = "shi@mpdl.mpg.de";
     private String password = "allen";
 
-    TypedFile typedFile;
-    String json;
-    DataItem item;
-    MetaDataLocal meta = new MetaDataLocal();
+    private TypedFile typedFile;
+    private String json;
+    private List<DataItem> itemList = new ArrayList<DataItem>();
+    private DataItem item = new DataItem();
+    private MetaDataLocal meta = new MetaDataLocal();
+    private Location currentLocation;
 
     /*
      * After the intent to take a picture finishes we need to wait for
@@ -75,8 +83,8 @@ public class LaunchpadSectionFragment extends Fragment {
 
     public Boolean takeAnotherPhoto;
     private String photoFilePath;
-    DeviceStatus status;
-    View rootView;
+    private DeviceStatus status;
+    private View rootView;
     private ImageView imageView;
     private RatingBar ratingView;
     private TextView lblLocation;
@@ -84,7 +92,7 @@ public class LaunchpadSectionFragment extends Fragment {
 
     private MenuItem poi_list;
 
-    OnLocationUpdatedListener mCallback;
+    private OnLocationUpdatedListener mCallback;
 
 
     // The container Activity must implement this interface so the frag can deliver messages
@@ -169,7 +177,9 @@ public class LaunchpadSectionFragment extends Fragment {
         lblLocation = (TextView) rootView.findViewById(R.id.accuracy);
         btnStartLocationUpdates = (ImageView) rootView.findViewById(R.id.btnLocationUpdates);
 
-
+        //TODO
+        //Make the takePhoto button and Gallery Button to one
+        //Ask user to chose when he clicked.
 
         // Taking a Photo activity.
         rootView.findViewById(R.id.takePhoto)
@@ -217,21 +227,25 @@ public class LaunchpadSectionFragment extends Fragment {
 
 
                         //upload();
+                        if(currentLocation != null){
+                            meta.setAccuracy(currentLocation.getAccuracy());
+                            meta.setLatitude(currentLocation.getLatitude());
+                            meta.setLongitude(currentLocation.getLongitude());
+                            meta.setAddress(getAddressByCoordinates(currentLocation.getLatitude(),
+                                    currentLocation.getLongitude()));
 
-                        AskMetadataFragment newFragment = new AskMetadataFragment();
-                        newFragment.show(getActivity().getSupportFragmentManager(), "askMetadata");
+                            AskMetadataFragment newFragment = new AskMetadataFragment();
+                            newFragment.show(getActivity().getSupportFragmentManager(), "askMetadata");
+                        } else{
+                            //TODO
+                            //make a dialog to ask user open gps or save photo without geo information
+                            showToast("Please open the GPS by clicking the marker on top left");
+                        }
                     }
                 });
-        rootView.findViewById(R.id.save).setVisibility(View.GONE);
 
-//        rootView.findViewById(R.id.section_number)
-//                .setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        Intent intent = new Intent(getActivity(), CollectionActivity.class);
-//                        startActivity(intent);
-//                    }
-//                });
+        //Don't show the save button before user taken a photo
+        rootView.findViewById(R.id.save).setVisibility(View.GONE);
 
 
         rootView.findViewById(R.id.btnLocationUpdates)
@@ -331,12 +345,10 @@ public class LaunchpadSectionFragment extends Fragment {
                             .resize(imageView.getWidth(), imageView.getHeight())
                             .into(imageView);
                     System.out.println(photoFilePath);
-
                 }
 
                 addImageToGallery(photoFilePath);
                 rootView.findViewById(R.id.save).setVisibility(View.VISIBLE);
-
             } else if (resultCode == getActivity().RESULT_CANCELED) {
                 // User cancelled the photo capture
             }
@@ -346,15 +358,28 @@ public class LaunchpadSectionFragment extends Fragment {
 
 
     @Subscribe
+    @Produce
     public void onGetMetadataFromUser(MetadataIsReadyEvent event) {
         meta.setTags(event.tags);
         //meta.setTitle(event.tags.get(0)+"");
         Log.v(LOG_TAG, event.tags.get(0));
-
+        meta.setTitle(meta.getTags().get(0)+"@"+meta.getAddress());
         //TODO
         //add a dataItem to the list on the top of view
-        //change the color of the view
+        item.setCollectionId("Qwms6Gs040FBS264");
+        item.setLocalPath(photoFilePath);
+        item.setMetaDataLocal(meta);
+        itemList.add(item);
+        GetNewItemFromUserEvent newEvent = new GetNewItemFromUserEvent(itemList);
+        OttoSingleton.getInstance().post(newEvent);
+
+        //change the icon of the view
         poi_list.setIcon(getResources().getDrawable(R.drawable.marker_green));
+    }
+
+    @Subscribe
+    public void onGetNewLocationFromGPS(LocationChangedEvent event){
+        currentLocation = event.location;
     }
 
 
@@ -429,14 +454,8 @@ public class LaunchpadSectionFragment extends Fragment {
         typedFile = new TypedFile("multipart/form-data", new File(photoFilePath));
         json = "{ \"collectionId\" : \"Qwms6Gs040FBS264\"}";
 
-//        meta.setLatitude();
-//        meta.setLongitude ();
-//        meta.setAccuracy();
-//        meta.setAddress("");
-
-//        meta.setDeviceID();
-//        meta.setTags();
-//        meta.setTitle("");
+        //TODO
+        //meta.setDeviceID();
         return meta;
     }
 
@@ -457,6 +476,13 @@ public class LaunchpadSectionFragment extends Fragment {
      */
     public void showToast(String message) {
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    //TODO
+    public String getAddressByCoordinates(double latitude, double longitude){
+        String address = "";
+
+        return address;
     }
 
 }

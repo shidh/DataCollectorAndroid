@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,19 +17,24 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.squareup.otto.Subscribe;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import de.mpg.mpdl.www.datacollector.app.Event.GetNewItemFromUserEvent;
 import de.mpg.mpdl.www.datacollector.app.Model.DataItem;
 import de.mpg.mpdl.www.datacollector.app.R;
 import de.mpg.mpdl.www.datacollector.app.SectionList.CustomListAdapter;
 import de.mpg.mpdl.www.datacollector.app.SectionList.DetailActivity;
 import de.mpg.mpdl.www.datacollector.app.SettingsActivity;
+import retrofit.mime.TypedFile;
 
 /**
  * Created by allen on 21/04/15.
  */
 public class ReadyToUploadCollectionActivity extends Activity {
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,6 +86,11 @@ public class ReadyToUploadCollectionActivity extends Activity {
         private final String LOG_TAG = ListSectionFragment.class.getSimpleName();
 
 
+        public TypedFile typedFile;
+        String json;
+        List<DataItem> itemList = new ArrayList<DataItem>();
+        DataItem item;
+
         public ListSectionFragment() {
             setHasOptionsMenu(true);
         }
@@ -118,6 +129,21 @@ public class ReadyToUploadCollectionActivity extends Activity {
 
             //listView.setOnScrollListener();
             return rootView;
+        }
+
+        @Subscribe
+        public void OnGetNewItemFromUser(GetNewItemFromUserEvent event){
+            itemList = event.itemList;
+            Log.v(LOG_TAG, "Got a new data item: " +
+                    itemList.get(itemList.size()-1).getMetaDataLocal().getTitle());
+        }
+
+        private void upload(){
+//            typedFile = new TypedFile("multipart/form-data", new File(photoFilePath));
+//            json = "{ \"collectionId\" : \"Qwms6Gs040FBS264\"}";
+//
+//            item = new DataItem();
+//            RetrofitClient.uploadItem(typedFile, json, callback, username, password);
         }
 
         public void showToast(String message) {

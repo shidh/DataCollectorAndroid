@@ -30,11 +30,14 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.squareup.otto.Produce;
 import com.squareup.picasso.Picasso;
 
 import java.math.BigDecimal;
 import java.util.Locale;
 
+import de.mpg.mpdl.www.datacollector.app.Event.LocationChangedEvent;
+import de.mpg.mpdl.www.datacollector.app.Event.OttoSingleton;
 import de.mpg.mpdl.www.datacollector.app.SectionList.ListSectionFragment;
 import de.mpg.mpdl.www.datacollector.app.Workflow.LaunchpadSectionFragment;
 import de.mpg.mpdl.www.datacollector.app.Workflow.MetadataFragment;
@@ -438,6 +441,7 @@ public class MainActivity extends FragmentActivity implements
 
     // the method which needs to be implemented for LocationListener
     @Override
+    @Produce
     public void onLocationChanged(Location location) {
         // Assign the new location
         mLastLocation = location;
@@ -445,7 +449,8 @@ public class MainActivity extends FragmentActivity implements
 
         // Displaying the new location on UI
         displayLocation();
-
+        LocationChangedEvent event = new LocationChangedEvent(location);
+        OttoSingleton.getInstance().post(event);
     }
 
     //the method for LaunchpadSectionFragment.OnLocationUpdatedListener

@@ -14,7 +14,7 @@
     <string name="action_map">Map Location</string>
     <string name="action_share">Share</string>
     <string name="take_photo">Take a Photo</string>
-    <string name="demo_external_activity">Library</string>
+    <string name="demo_external_activity">Gallery</string>
     <string name="demo_collection">Collection</string>
     <string name="ready_collection">ReadyCollection</string>
     <string name="send_data">Save</string>

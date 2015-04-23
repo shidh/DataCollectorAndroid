@@ -54,6 +54,10 @@ public class DataItem extends Model {
     @Column(name = "poi")
     private POI poi;
 
+
+    @Column(name = "localPath")
+    private String localPath;
+
     public DataItem(){
         super();
     }
@@ -141,5 +145,13 @@ public class DataItem extends Model {
 
     public void setMetaDataLocal(MetaDataLocal metaDataLocal) {
         this.metaDataLocal = metaDataLocal;
+    }
+
+    public String getLocalPath() {
+        return localPath;
+    }
+
+    public void setLocalPath(String localPath) {
+        this.localPath = localPath;
     }
 }
