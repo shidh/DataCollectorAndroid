@@ -13,15 +13,22 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.activeandroid.query.Select;
+import com.google.gson.Gson;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import de.mpg.mpdl.www.datacollector.app.Model.DataItem;
+import de.mpg.mpdl.www.datacollector.app.Model.MetaData;
 import de.mpg.mpdl.www.datacollector.app.R;
+import de.mpg.mpdl.www.datacollector.app.Retrofit.RetrofitClient;
 import de.mpg.mpdl.www.datacollector.app.SectionList.CustomListAdapter;
 import de.mpg.mpdl.www.datacollector.app.SectionList.DetailActivity;
 import de.mpg.mpdl.www.datacollector.app.SettingsActivity;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import retrofit.mime.TypedFile;
 
 /**
@@ -43,6 +50,27 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
     List<DataItem> itemList = new ArrayList<DataItem>();
     DataItem item;
 
+    private String username = "shi@mpdl.mpg.de";
+    private String password = "allen";
+
+    Callback<DataItem> callback = new Callback<DataItem>() {
+        @Override
+        public void success(DataItem dataItem, Response response) {
+            //adapter =  new CustomListAdapter(getActivity(), dataList);
+            //listView.setAdapter(adapter);
+            showToast( "Upload data Successfully");
+            Log.v(LOG_TAG, dataItem.getCollectionId());
+            Log.v(LOG_TAG, String.valueOf(dataItem.getMetadata()));
+
+        }
+
+        @Override
+        public void failure(RetrofitError error) {
+            showToast( "Upload data Failed");
+            Log.v(LOG_TAG, error.toString());
+
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,6 +189,7 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
 
     //TODO
     // Edit and delete the list
+
 //        @Subscribe
 //        public void OnGetNewItemFromUser(GetNewItemFromUserEvent event){
 //            itemList = event.itemList;
@@ -168,12 +197,43 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
 //                    itemList.get(itemList.size()-1).getMetaDataLocal().getTitle());
 //        }
 
-        private void upload(){
-//            typedFile = new TypedFile("multipart/form-data", new File(photoFilePath));
-//            json = "{ \"collectionId\" : \"Qwms6Gs040FBS264\"}";
-//
-//            item = new DataItem();
-//            RetrofitClient.uploadItem(typedFile, json, callback, username, password);
+    //TODO upload
+        private void upload(List<DataItem> iList){
+            for (DataItem item : iList){
+                Gson gson = new Gson();
+                String jsonPart1 = "{ \"collectionId\" : \"Qwms6Gs040FBS264\"}";
+                typedFile = new TypedFile("multipart/form-data", new File(item.getLocalPath()));
+
+                String metaDataLocalJson = gson.toJson(item.getMetaDataLocal());
+
+                //TODO somehow convert the metaDataLocalJson to a MetaData
+                //Check the convertMetaData() method
+s
+                MetaData metaData = new MetaData();
+//                metaData.setLabels();
+//                metaData.setStatementUri();
+//                metaData.setTypeUri();
+//                metaData.setValue();
+
+                String metaDataJson = gson.toJson(metaData);
+                //TODO
+                String jsonPart2 ="[ ALL of the metaDataJson]";
+
+
+                json = jsonPart1 + jsonPart2;
+                RetrofitClient.uploadItem(typedFile, json, callback, username, password);
+            }
+
+
+
+//            {
+//                "collectionId" : "abc123", (required)
+//                    "fetchUrl" : "http://example.org/myFile.png", (optional)
+//                    "referenceUrl" : "http://example.org/myFile.png", (optional)
+//                    "filename" : "new filename", (optional)
+//                    "metadata" : [] (optional)
+//            }
+
         }
 
         public void showToast(String message) {

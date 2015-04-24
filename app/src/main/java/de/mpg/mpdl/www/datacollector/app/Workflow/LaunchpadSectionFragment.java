@@ -39,7 +39,6 @@ import de.mpg.mpdl.www.datacollector.app.Model.DataItem;
 import de.mpg.mpdl.www.datacollector.app.Model.MetaDataLocal;
 import de.mpg.mpdl.www.datacollector.app.Model.User;
 import de.mpg.mpdl.www.datacollector.app.R;
-import de.mpg.mpdl.www.datacollector.app.Retrofit.RetrofitClient;
 import de.mpg.mpdl.www.datacollector.app.utils.DeviceStatus;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -64,9 +63,6 @@ public class LaunchpadSectionFragment extends Fragment {
     private static final int INTENT_TAKE_PHOTO = 1005;
     private final String LOG_TAG = LaunchpadSectionFragment.class.getSimpleName();
     public static final String ARG_SECTION_NUMBER = "section_number";
-
-    private String username = "shi@mpdl.mpg.de";
-    private String password = "allen";
 
     private TypedFile typedFile;
     private String json;
@@ -462,13 +458,13 @@ public class LaunchpadSectionFragment extends Fragment {
         getActivity().sendBroadcast(mediaScanIntent);
     }
 
-    private void upload(){
-        typedFile = new TypedFile("multipart/form-data", new File(photoFilePath));
-        json = "{ \"collectionId\" : \"Qwms6Gs040FBS264\"}";
-
-        item = new DataItem();
-        RetrofitClient.uploadItem(typedFile, json, callback, username, password);
-    }
+//    private void upload(){
+//        typedFile = new TypedFile("multipart/form-data", new File(photoFilePath));
+//        json = "{ \"collectionId\" : \"Qwms6Gs040FBS264\"}";
+//
+//        item = new DataItem();
+//        RetrofitClient.uploadItem(typedFile, json, callback, username, password);
+//    }
 
 
     private MetaDataLocal setCollectMetaData(){
