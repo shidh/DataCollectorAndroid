@@ -89,7 +89,6 @@ public class MainActivity extends FragmentActivity implements
     private RatingBar ratingView;
     private ImageView btnStartLocationUpdates;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -597,6 +596,7 @@ public class MainActivity extends FragmentActivity implements
         }
         return true;
     }
+
 
 
 

@@ -1,5 +1,6 @@
 package de.mpg.mpdl.www.datacollector.app.SectionList;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -108,6 +109,11 @@ public class ListSectionFragment extends Fragment {
     }
 
 
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        Log.v(LOG_TAG, "onAttach");
+    }
 
 
     @Override
@@ -115,23 +121,30 @@ public class ListSectionFragment extends Fragment {
         super.onCreate(savedInstanceState);
         // Add this line in order for this fragment to handle menu events.
         setHasOptionsMenu(true);
-        updateDataItem();
+        //updateDataItem();
+        Log.v(LOG_TAG, "start onCreate~~~");
+
     }
 
     @Override
     public void onStart() {
         super.onStart();
+        Log.v(LOG_TAG, "start onStart~~~");
+
 
     }
 
     @Override
     public void onResume(){
         super.onResume();
+        Log.v(LOG_TAG, "start onResume~~~");
+
 
     }
     @Override
     public void onPause(){
         super.onPause();
+        Log.v(LOG_TAG, "start onPause~~~");
     }
 
 
@@ -139,6 +152,7 @@ public class ListSectionFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         hidePDialog();
+        Log.v(LOG_TAG, "start onDestroy~~~");
     }
 
     private void hidePDialog() {
@@ -169,7 +183,6 @@ public class ListSectionFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
 //        List<String> dataList = new ArrayList<String>(Arrays.asList(dummyData));
         // Now that we have some dummy forecast data, create an ArrayAdapter.
         // The ArrayAdapter will take data from a source (like our dummy forecast) and
@@ -227,7 +240,7 @@ public class ListSectionFragment extends Fragment {
         // Showing progress dialog before making http request
         RetrofitClient.getItems(callback);
         pDialog.setMessage("Loading...");
-        pDialog.show();
+        //pDialog.show();
     }
 
 

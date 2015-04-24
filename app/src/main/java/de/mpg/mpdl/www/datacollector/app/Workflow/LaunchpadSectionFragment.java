@@ -267,12 +267,16 @@ public class LaunchpadSectionFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        Log.d(LOG_TAG, "onStart");
+
     }
 
     @Override
     public void onResume() {
         super.onResume();
         OttoSingleton.getInstance().register(this);
+        Log.d(LOG_TAG, "onResume");
+
 
     }
 
@@ -280,12 +284,20 @@ public class LaunchpadSectionFragment extends Fragment {
     public void onPause() {
         super.onPause();
         OttoSingleton.getInstance().unregister(this);
+        Log.d(LOG_TAG, "onPasue");
+
     }
 
     @Override
     public void onStop() {
         super.onStop();
 
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.v(LOG_TAG, "start onDestroy~~~");
     }
 
     // for the POI_list icon in menu_launchpad
@@ -369,12 +381,13 @@ public class LaunchpadSectionFragment extends Fragment {
         item.setCollectionId("Qwms6Gs040FBS264");
         item.setLocalPath(photoFilePath);
         item.setMetaDataLocal(meta);
-        item.setLocal(true);
+        item.setLocal(1);
         item.setCreatedBy(user);
 
         meta.save();
         item.save();
         itemList.add(item);
+
 
         //TODO pass the itemList
 //        GetNewItemFromUserEvent newEvent = new GetNewItemFromUserEvent(itemList);
