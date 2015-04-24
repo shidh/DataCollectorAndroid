@@ -89,7 +89,9 @@ public class ListSectionFragment extends Fragment {
             }
 
             listView.setAdapter(adapter);
-            pDialog.hide();
+            if(pDialog != null) {
+                pDialog.hide();
+            }
             Log.v(LOG_TAG, "get list OK");
 
             showToast("get list OK");
@@ -121,7 +123,7 @@ public class ListSectionFragment extends Fragment {
         super.onCreate(savedInstanceState);
         // Add this line in order for this fragment to handle menu events.
         setHasOptionsMenu(true);
-        //updateDataItem();
+        updateDataItem();
         Log.v(LOG_TAG, "start onCreate~~~");
 
     }
@@ -174,8 +176,10 @@ public class ListSectionFragment extends Fragment {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_refresh) {
-            //updateWeather();
             updateDataItem();
+            pDialog = new ProgressDialog(getActivity());
+            pDialog.setMessage("Loading...");
+            pDialog.show();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -183,6 +187,8 @@ public class ListSectionFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.v(LOG_TAG, "start onCreateView~~~");
+
 //        List<String> dataList = new ArrayList<String>(Arrays.asList(dummyData));
         // Now that we have some dummy forecast data, create an ArrayAdapter.
         // The ArrayAdapter will take data from a source (like our dummy forecast) and
@@ -225,21 +231,12 @@ public class ListSectionFragment extends Fragment {
     }
 
 
-//    private void updateWeather() {
-//        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-//        // then you use
-//        String locationFromSetting = prefs.getString(getString(R.string.pref_location_key),
-//                getString(R.string.pref_location_default));
-//
-//        FetchItemTask fetchTask = new FetchItemTask();
-//        fetchTask.execute(locationFromSetting);
-//    }
 
     private void updateDataItem(){
-        pDialog = new ProgressDialog(getActivity());
         // Showing progress dialog before making http request
         RetrofitClient.getItems(callback);
-        pDialog.setMessage("Loading...");
+        //pDialog = new ProgressDialog(getActivity());
+        //pDialog.setMessage("Loading...");
         //pDialog.show();
     }
 

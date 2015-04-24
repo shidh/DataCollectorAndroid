@@ -159,7 +159,8 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
 
 
 
-
+    //TODO
+    // Edit and delete the list
 //        @Subscribe
 //        public void OnGetNewItemFromUser(GetNewItemFromUserEvent event){
 //            itemList = event.itemList;

@@ -169,8 +169,6 @@ public class MainActivity extends FragmentActivity implements
 //        });
 //
 
-
-
     }
 
     @Override
