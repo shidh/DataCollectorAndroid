@@ -1,16 +1,12 @@
 package de.mpg.mpdl.www.datacollector.app.Workflow;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -31,21 +27,71 @@ import retrofit.mime.TypedFile;
 /**
  * Created by allen on 21/04/15.
  */
-public class ReadyToUploadCollectionActivity extends Activity {
+public class ReadyToUploadCollectionActivity extends FragmentActivity {
     private final String LOG_TAG = ReadyToUploadCollectionActivity.class.getSimpleName();
+
+    public static final String ARG_SECTION_NUMBER = "section_number";
+    public ArrayAdapter<String> mForecastAdapter;
+    private List<DataItem> dataList = new ArrayList<DataItem>();
+    private DataItem dataItem;
+    public CustomListAdapter adapter;
+    ListView listView;
+
+
+    public TypedFile typedFile;
+    String json;
+    List<DataItem> itemList = new ArrayList<DataItem>();
+    DataItem item;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //setHasOptionsMenu(true);
-        Log.v(LOG_TAG, "onCreate");
+        Log.e(LOG_TAG, "start onCreate~~~");
+        setContentView(R.layout.fragment_section_list);
 
-        //setContentView(R.layout.fragment_section_list);
 //        if (savedInstanceState == null) {
 //            getFragmentManager().beginTransaction()
 //                    .add(R.id.container, new ListSectionFragment())
 //                    .commit();
 //        }
+
+        dataList = new Select()
+                .from(DataItem.class)
+                .where("isLocal = ?", 1)
+                .execute();
+
+//        dataItem = new Select()
+//                .from(DataItem.class)
+//                .executeSingle();
+        Log.v(LOG_TAG, dataList.get(0).getLocalPath());
+
+        //Log.v("data1: ", dataList.get(0).getLocalPath());
+        //Log.v("metatadata1: ", String.valueOf(dataList.get(0).getMetaDataLocal().getAccuracy()));
+        Log.v("metatadata1: ", "onCreateView");
+        adapter =  new CustomListAdapter(this, dataList);
+
+        listView = (ListView) findViewById(R.id.item_list);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                DataItem dataItem = (DataItem) adapter.getItem(position);
+                //Context context = getActivity();
+                int duration = Toast.LENGTH_SHORT;
+                showToast(dataItem.getCollectionId());
+
+                Intent showDetailIntent = new Intent(ReadyToUploadCollectionActivity.this,
+                        DetailActivity.class);
+                //showDetailIntent.putExtra(Intent.EXTRA_SUBJECT, dataItem);
+                //showDetailIntent.setData();
+                //startService(showDetailIntent);
+                ReadyToUploadCollectionActivity.this.startActivity(showDetailIntent);
+            }
+        });
+
+        listView.setAdapter(adapter);
     }
 
     @Override
@@ -86,13 +132,13 @@ public class ReadyToUploadCollectionActivity extends Activity {
         Log.e(LOG_TAG, "start onDestroy~~~");
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        // getMenuInflater().inflate(R.menu.menu_detail, menu);
+        getMenuInflater().inflate(R.menu.menu_section_list, menu);
+
         return true;
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -111,75 +157,8 @@ public class ReadyToUploadCollectionActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class ListSectionFragment extends Fragment {
-
-        public static final String ARG_SECTION_NUMBER = "section_number";
-        public ArrayAdapter<String> mForecastAdapter;
-        private List<DataItem> dataList = new ArrayList<DataItem>();
-        private DataItem dataItem;
-        public CustomListAdapter adapter;
-        ListView listView;
-        View rootView;
-        private final String LOG_TAG = ListSectionFragment.class.getSimpleName();
 
 
-        public TypedFile typedFile;
-        String json;
-        List<DataItem> itemList = new ArrayList<DataItem>();
-        DataItem item;
-
-        public ListSectionFragment() {
-            setHasOptionsMenu(true);
-        }
-
-
-        @Override
-        public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-            inflater.inflate(R.menu.menu_section_list, menu);
-        }
-
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            dataList = new Select()
-                    .from(DataItem.class)
-                    .where("isLocal = ?", true)
-                    .execute();
-                    //.executeSingle();
-            Log.v("data1: ", dataList.get(0).getLocalPath());
-            Log.v("metatadata1: ", String.valueOf(dataList.get(0).getMetaDataLocal().getAccuracy()));
-            Log.v("metatadata1: ", "onCreateView");
-            adapter =  new CustomListAdapter(getActivity(), dataList);
-
-            rootView = inflater.inflate(R.layout.fragment_section_list, container, false);
-            listView = (ListView) rootView.findViewById(R.id.item_list);
-
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                    DataItem dataItem = (DataItem) adapter.getItem(position);
-                    //Context context = getActivity();
-                    int duration = Toast.LENGTH_SHORT;
-                    Toast toast = Toast.makeText(getActivity(), dataItem.getCollectionId(), duration);
-                    toast.show();
-
-                    Intent showDetailIntent = new Intent(getActivity(), DetailActivity.class);
-                    //showDetailIntent.putExtra(Intent.EXTRA_SUBJECT, dataItem);
-                    //showDetailIntent.setData();
-                    //startService(showDetailIntent);
-                    startActivity(showDetailIntent);
-                }
-            });
-
-            listView.setAdapter(adapter);
-
-            //listView.setOnScrollListener();
-            return rootView;
-        }
 
 //        @Subscribe
 //        public void OnGetNewItemFromUser(GetNewItemFromUserEvent event){
@@ -197,8 +176,8 @@ public class ReadyToUploadCollectionActivity extends Activity {
         }
 
         public void showToast(String message) {
-            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
         }
 
-    }
+
 }
