@@ -54,6 +54,8 @@ public class DataItem extends Model {
     @Column(name = "poi")
     private POI poi;
 
+    @Column(name = "isLocal")
+    private boolean isLocal;
 
     @Column(name = "localPath")
     private String localPath;
@@ -154,4 +156,13 @@ public class DataItem extends Model {
     public void setLocalPath(String localPath) {
         this.localPath = localPath;
     }
+
+    public boolean isLocal() {
+        return isLocal;
+    }
+
+    public void setLocal(boolean isLocal) {
+        this.isLocal = isLocal;
+    }
+
 }

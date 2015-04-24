@@ -21,7 +21,6 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.squareup.otto.Produce;
 import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Picasso;
 
@@ -33,12 +32,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import de.mpg.mpdl.www.datacollector.app.Event.GetNewItemFromUserEvent;
 import de.mpg.mpdl.www.datacollector.app.Event.LocationChangedEvent;
 import de.mpg.mpdl.www.datacollector.app.Event.MetadataIsReadyEvent;
 import de.mpg.mpdl.www.datacollector.app.Event.OttoSingleton;
 import de.mpg.mpdl.www.datacollector.app.Model.DataItem;
 import de.mpg.mpdl.www.datacollector.app.Model.MetaDataLocal;
+import de.mpg.mpdl.www.datacollector.app.Model.User;
 import de.mpg.mpdl.www.datacollector.app.R;
 import de.mpg.mpdl.www.datacollector.app.Retrofit.RetrofitClient;
 import de.mpg.mpdl.www.datacollector.app.utils.DeviceStatus;
@@ -358,20 +357,30 @@ public class LaunchpadSectionFragment extends Fragment {
 
 
     @Subscribe
-    @Produce
     public void onGetMetadataFromUser(MetadataIsReadyEvent event) {
         meta.setTags(event.tags);
         //meta.setTitle(event.tags.get(0)+"");
         Log.v(LOG_TAG, event.tags.get(0));
         meta.setTitle(meta.getTags().get(0)+"@"+meta.getAddress());
-        //TODO
+
         //add a dataItem to the list on the top of view
+        User user = new User();
+        user.setFullname("Allen");
         item.setCollectionId("Qwms6Gs040FBS264");
         item.setLocalPath(photoFilePath);
         item.setMetaDataLocal(meta);
+        item.setLocal(true);
+        item.setCreatedBy(user);
+
+        meta.save();
+        item.save();
         itemList.add(item);
-        GetNewItemFromUserEvent newEvent = new GetNewItemFromUserEvent(itemList);
-        OttoSingleton.getInstance().post(newEvent);
+
+        //TODO pass the itemList
+//        GetNewItemFromUserEvent newEvent = new GetNewItemFromUserEvent(itemList);
+//        OttoSingleton.getInstance().post(newEvent);
+
+
 
         //change the icon of the view
         poi_list.setIcon(getResources().getDrawable(R.drawable.marker_green));

@@ -1,7 +1,6 @@
 package de.mpg.mpdl.www.datacollector.app.Workflow;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -17,12 +16,11 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.squareup.otto.Subscribe;
+import com.activeandroid.query.Select;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import de.mpg.mpdl.www.datacollector.app.Event.GetNewItemFromUserEvent;
 import de.mpg.mpdl.www.datacollector.app.Model.DataItem;
 import de.mpg.mpdl.www.datacollector.app.R;
 import de.mpg.mpdl.www.datacollector.app.SectionList.CustomListAdapter;
@@ -34,16 +32,58 @@ import retrofit.mime.TypedFile;
  * Created by allen on 21/04/15.
  */
 public class ReadyToUploadCollectionActivity extends Activity {
+    private final String LOG_TAG = ReadyToUploadCollectionActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_detail);
+        //setHasOptionsMenu(true);
+        Log.v(LOG_TAG, "onCreate");
+
+        //setContentView(R.layout.fragment_section_list);
 //        if (savedInstanceState == null) {
 //            getFragmentManager().beginTransaction()
 //                    .add(R.id.container, new ListSectionFragment())
 //                    .commit();
 //        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.e(LOG_TAG, "start onStart~~~");
+    }
+
+    // recover the last status
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.e(LOG_TAG, "start onRestart~~~");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.e(LOG_TAG, "start onResume~~~");
+    }
+
+    // save the current status
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.e(LOG_TAG, "start onPause~~~");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.e(LOG_TAG, "start onStop~~~");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.e(LOG_TAG, "start onDestroy~~~");
     }
 
 
@@ -77,9 +117,9 @@ public class ReadyToUploadCollectionActivity extends Activity {
     public static class ListSectionFragment extends Fragment {
 
         public static final String ARG_SECTION_NUMBER = "section_number";
-        private ProgressDialog pDialog;
         public ArrayAdapter<String> mForecastAdapter;
         private List<DataItem> dataList = new ArrayList<DataItem>();
+        private DataItem dataItem;
         public CustomListAdapter adapter;
         ListView listView;
         View rootView;
@@ -105,6 +145,14 @@ public class ReadyToUploadCollectionActivity extends Activity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
+            dataList = new Select()
+                    .from(DataItem.class)
+                    .where("isLocal = ?", true)
+                    .execute();
+                    //.executeSingle();
+            Log.v("data1: ", dataList.get(0).getLocalPath());
+            Log.v("metatadata1: ", String.valueOf(dataList.get(0).getMetaDataLocal().getAccuracy()));
+            Log.v("metatadata1: ", "onCreateView");
             adapter =  new CustomListAdapter(getActivity(), dataList);
 
             rootView = inflater.inflate(R.layout.fragment_section_list, container, false);
@@ -127,16 +175,18 @@ public class ReadyToUploadCollectionActivity extends Activity {
                 }
             });
 
+            listView.setAdapter(adapter);
+
             //listView.setOnScrollListener();
             return rootView;
         }
 
-        @Subscribe
-        public void OnGetNewItemFromUser(GetNewItemFromUserEvent event){
-            itemList = event.itemList;
-            Log.v(LOG_TAG, "Got a new data item: " +
-                    itemList.get(itemList.size()-1).getMetaDataLocal().getTitle());
-        }
+//        @Subscribe
+//        public void OnGetNewItemFromUser(GetNewItemFromUserEvent event){
+//            itemList = event.itemList;
+//            Log.v(LOG_TAG, "Got a new data item: " +
+//                    itemList.get(itemList.size()-1).getMetaDataLocal().getTitle());
+//        }
 
         private void upload(){
 //            typedFile = new TypedFile("multipart/form-data", new File(photoFilePath));

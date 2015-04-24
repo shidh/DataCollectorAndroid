@@ -2,10 +2,8 @@ package de.mpg.mpdl.www.datacollector.app.SectionList;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -81,8 +79,7 @@ public class ListSectionFragment extends Fragment {
                         Log.v(LOG_TAG, String.valueOf(item.getFilename()));
                         Log.v(LOG_TAG, String.valueOf(item.getMetaDataLocal().getTitle()));
                         Log.v(LOG_TAG, String.valueOf(item.getMetaDataLocal().getAccuracy()));
-//                            item.save();
-//                        }
+                        item.save();
                     }
                 }
                 ActiveAndroid.setTransactionSuccessful();
@@ -215,15 +212,15 @@ public class ListSectionFragment extends Fragment {
     }
 
 
-    private void updateWeather() {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        // then you use
-        String locationFromSetting = prefs.getString(getString(R.string.pref_location_key),
-                getString(R.string.pref_location_default));
-
-        FetchItemTask fetchTask = new FetchItemTask();
-        fetchTask.execute(locationFromSetting);
-    }
+//    private void updateWeather() {
+//        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+//        // then you use
+//        String locationFromSetting = prefs.getString(getString(R.string.pref_location_key),
+//                getString(R.string.pref_location_default));
+//
+//        FetchItemTask fetchTask = new FetchItemTask();
+//        fetchTask.execute(locationFromSetting);
+//    }
 
     private void updateDataItem(){
         pDialog = new ProgressDialog(getActivity());
@@ -338,7 +335,7 @@ public class ListSectionFragment extends Fragment {
             }
             metaDataLocal.setTags(tags);
             //metaDataLocal.setWhichItem(dataItem);
-            //metaDataLocal.save();
+            metaDataLocal.save();
 
             dataItem.setMetaDataLocal(metaDataLocal);
 
