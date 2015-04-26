@@ -54,7 +54,7 @@ public class AskMetadataFragment extends DialogFragment {
                            tags.add(mTagsArray[Integer.parseInt(item.toString())]);
                        }
 
-                       MetadataIsReadyEvent event = new MetadataIsReadyEvent(" ", tags);
+                       MetadataIsReadyEvent event = new MetadataIsReadyEvent(tags);
                        OttoSingleton.getInstance().post(event);
                    }
                })

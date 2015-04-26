@@ -197,7 +197,7 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
 //                    itemList.get(itemList.size()-1).getMetaDataLocal().getTitle());
 //        }
 
-    //TODO upload
+        //TODO upload
         private void upload(List<DataItem> iList){
             for (DataItem item : iList){
                 Gson gson = new Gson();
@@ -208,7 +208,8 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
 
                 //TODO somehow convert the metaDataLocalJson to a MetaData
                 //Check the convertMetaData() method
-s
+
+
                 MetaData metaData = new MetaData();
 //                metaData.setLabels();
 //                metaData.setStatementUri();

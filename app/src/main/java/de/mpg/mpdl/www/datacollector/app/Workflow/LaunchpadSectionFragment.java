@@ -32,6 +32,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import de.mpg.mpdl.www.datacollector.app.AsyncTask.GetAddressByCoordinatesTask;
+import de.mpg.mpdl.www.datacollector.app.Event.GetAddressEvent;
 import de.mpg.mpdl.www.datacollector.app.Event.LocationChangedEvent;
 import de.mpg.mpdl.www.datacollector.app.Event.MetadataIsReadyEvent;
 import de.mpg.mpdl.www.datacollector.app.Event.OttoSingleton;
@@ -174,7 +176,7 @@ public class LaunchpadSectionFragment extends Fragment {
 
         //TODO
         //Make the takePhoto button and Gallery Button to one
-        //Ask user to chose when he clicked.
+        //Ask user to chose when clicked.
 
         // Taking a Photo activity.
         rootView.findViewById(R.id.takePhoto)
@@ -226,8 +228,8 @@ public class LaunchpadSectionFragment extends Fragment {
                             meta.setAccuracy(currentLocation.getAccuracy());
                             meta.setLatitude(currentLocation.getLatitude());
                             meta.setLongitude(currentLocation.getLongitude());
-                            meta.setAddress(getAddressByCoordinates(currentLocation.getLatitude(),
-                                    currentLocation.getLongitude()));
+                            //meta.setAddress(getAddressByCoordinates(currentLocation.getLatitude(),
+                            //        currentLocation.getLongitude()));
 
                             AskMetadataFragment newFragment = new AskMetadataFragment();
                             newFragment.show(getActivity().getSupportFragmentManager(), "askMetadata");
@@ -367,7 +369,6 @@ public class LaunchpadSectionFragment extends Fragment {
     @Subscribe
     public void onGetMetadataFromUser(MetadataIsReadyEvent event) {
         meta.setTags(event.tags);
-        //meta.setTitle(event.tags.get(0)+"");
         Log.v(LOG_TAG, event.tags.get(0));
         meta.setTitle(meta.getTags().get(0)+"@"+meta.getAddress());
 
@@ -380,16 +381,11 @@ public class LaunchpadSectionFragment extends Fragment {
         item.setLocal(1);
         item.setCreatedBy(user);
 
+        Log.v(LOG_TAG, item.getMetaDataLocal().getTitle());
+
         meta.save();
         item.save();
         itemList.add(item);
-
-
-        //TODO pass the itemList
-//        GetNewItemFromUserEvent newEvent = new GetNewItemFromUserEvent(itemList);
-//        OttoSingleton.getInstance().post(newEvent);
-
-
 
         //change the icon of the view
         poi_list.setIcon(getResources().getDrawable(R.drawable.marker_green));
@@ -398,6 +394,8 @@ public class LaunchpadSectionFragment extends Fragment {
     @Subscribe
     public void onGetNewLocationFromGPS(LocationChangedEvent event){
         currentLocation = event.location;
+
+        getAddressByCoordinates(event.location.getLatitude(), event.location.getLongitude());
     }
 
 
@@ -472,7 +470,7 @@ public class LaunchpadSectionFragment extends Fragment {
         typedFile = new TypedFile("multipart/form-data", new File(photoFilePath));
         json = "{ \"collectionId\" : \"Qwms6Gs040FBS264\"}";
 
-        //TODO
+        //TODO   deal with POI id
         //meta.setDeviceID();
         return meta;
     }
@@ -496,11 +494,17 @@ public class LaunchpadSectionFragment extends Fragment {
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 
-    //TODO
-    public String getAddressByCoordinates(double latitude, double longitude){
-        String address = "";
-
-        return address;
+    public void getAddressByCoordinates(double latitude, double longitude){
+        GetAddressByCoordinatesTask fetchTask = new GetAddressByCoordinatesTask();
+        fetchTask.execute(latitude, longitude);
     }
 
+    @Subscribe
+    public void OnGetAddressEvent(GetAddressEvent event){
+        String address = " ";
+        if(event != null){
+            address = event.address;
+        }
+        meta.setAddress(address);
+    }
 }
