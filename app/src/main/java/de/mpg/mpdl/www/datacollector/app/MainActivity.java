@@ -168,8 +168,8 @@ public class MainActivity extends FragmentActivity implements
 //            }
 //        });
 //
-
     }
+
 
     @Override
     protected void onStart() {
@@ -179,6 +179,17 @@ public class MainActivity extends FragmentActivity implements
             mGoogleApiClient.connect();
         }
         Log.e(LOG_TAG, "start onStart~~~");
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        // Restore UI state from the savedInstanceState.
+        // This bundle has also been passed to onCreate.
+        boolean myBoolean = savedInstanceState.getBoolean("MyBoolean");
+        double myDouble = savedInstanceState.getDouble("myDouble");
+        int myInt = savedInstanceState.getInt("MyInt");
+        String myString = savedInstanceState.getString("MyString");
     }
 
     // recover the last status
@@ -200,10 +211,24 @@ public class MainActivity extends FragmentActivity implements
         Log.e(LOG_TAG, "start onResume~~~");
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        // Save UI state changes to the savedInstanceState.
+        // This bundle will be passed to onCreate if the process is
+        // killed and restarted.
+        savedInstanceState.putBoolean("MyBoolean", true);
+        savedInstanceState.putDouble("myDouble", 1.9);
+        savedInstanceState.putInt("MyInt", 1);
+        savedInstanceState.putString("MyString", "Welcome back to Android");
+        // etc.
+    }
+
     // save the current status
     @Override
     protected void onPause() {
         super.onPause();
+        //onSaveInstanceState();
         stopLocationUpdates();
         Log.e(LOG_TAG, "start onPause~~~");
     }
