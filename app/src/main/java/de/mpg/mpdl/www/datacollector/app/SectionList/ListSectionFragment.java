@@ -36,6 +36,7 @@ import de.mpg.mpdl.www.datacollector.app.Model.DataItem;
 import de.mpg.mpdl.www.datacollector.app.Model.MetaDataLocal;
 import de.mpg.mpdl.www.datacollector.app.R;
 import de.mpg.mpdl.www.datacollector.app.Retrofit.ImejiAPI;
+import de.mpg.mpdl.www.datacollector.app.Retrofit.MetaDataConverter;
 import de.mpg.mpdl.www.datacollector.app.Retrofit.RetrofitClient;
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -76,7 +77,13 @@ public class ListSectionFragment extends Fragment {
                 // here get the string of Metadata Json
                 for (DataItem item : dataList) {
                     if (item.getCollectionId().equals("Qwms6Gs040FBS264")) {
-                        convertMetaData(item);
+                        //convertMetaData(item);
+                        MetaDataLocal metaDataLocal = MetaDataConverter.
+                                metaDataToMetaDataLocal(item.getMetadata());
+
+                        metaDataLocal.save();
+                        item.setMetaDataLocal(metaDataLocal);
+
                         Log.v(LOG_TAG, String.valueOf(item.getFilename()));
                         Log.v(LOG_TAG, String.valueOf(item.getMetaDataLocal().getTitle()));
                         Log.v(LOG_TAG, String.valueOf(item.getMetaDataLocal().getAccuracy()));

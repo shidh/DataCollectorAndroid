@@ -561,28 +561,32 @@ public class MainActivity extends FragmentActivity implements
      * Method to toggle periodic location updates
      * */
     private void togglePeriodicLocationUpdates(ImageView btnStartLocationUpdates) {
-        if (!mRequestingLocationUpdates) {
+        if (mGoogleApiClient.isConnected()) {
+            if (!mRequestingLocationUpdates) {
 
-            mRequestingLocationUpdates = true;
+                mRequestingLocationUpdates = true;
 
-            // Starting the location updates
-            startLocationUpdates();
-            Picasso.with(this)
-                    .load(R.drawable.marker_green)
-                    .into(btnStartLocationUpdates);
-            Log.d(LOG_TAG, "Periodic location updates started!");
+                // Starting the location updates
+                startLocationUpdates();
+                Picasso.with(this)
+                        .load(R.drawable.marker_green)
+                        .into(btnStartLocationUpdates);
+                Log.d(LOG_TAG, "Periodic location updates started!");
 
-        } else {
+            } else {
 
-            mRequestingLocationUpdates = false;
+                mRequestingLocationUpdates = false;
 
-            // Stopping the location updates
-            stopLocationUpdates();
-            //btnStartLocationUpdates.setBackgroundColor(Color.BLACK);
-            Picasso.with(this)
-                    .load(R.drawable.marker)
-                    .into(btnStartLocationUpdates);
-            Log.d(LOG_TAG, "Periodic location updates stopped!");
+                // Stopping the location updates
+                stopLocationUpdates();
+                //btnStartLocationUpdates.setBackgroundColor(Color.BLACK);
+                Picasso.with(this)
+                        .load(R.drawable.marker)
+                        .into(btnStartLocationUpdates);
+                Log.d(LOG_TAG, "Periodic location updates stopped!");
+            }
+        } else{
+            showToast("Please check your network");
         }
     }
 

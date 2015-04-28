@@ -1,12 +1,26 @@
-package de.mpg.mpdl.www.datacollector.app.Model;
+package de.mpg.mpdl.www.datacollector.app.Model.Imeji;
+
+import com.google.gson.annotations.Expose;
 
 /**
  * Created by allen on 17/04/15.
  */
-public class GeoLocation {
+public class GeoLocationImeji {
+
+    @Expose
     private String name;
-    private double longitude;
+
+    @Expose
     private double latitude;
+
+    @Expose
+    private double longitude;
+
+    public GeoLocationImeji(String name, double latitude, double longitude) {
+        this.name = name;
+        this.longitude = longitude;
+        this.latitude = latitude;
+    }
 
     public String getName() {
         return name;

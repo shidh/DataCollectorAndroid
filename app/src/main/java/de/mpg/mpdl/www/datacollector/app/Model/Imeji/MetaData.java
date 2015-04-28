@@ -1,4 +1,4 @@
-package de.mpg.mpdl.www.datacollector.app.Model;
+package de.mpg.mpdl.www.datacollector.app.Model.Imeji;
 
 import com.google.gson.annotations.Expose;
 
@@ -8,7 +8,7 @@ import com.google.gson.annotations.Expose;
 public class MetaData {
 
     @Expose
-    private Object value;
+    private GenericValue value;
     // "text": "Item 1"
 
     // "number": 12
@@ -26,7 +26,7 @@ public class MetaData {
     //"typeUri": "http://imeji.org/terms/metadata#geolocation",
 
     @Expose
-    private Object labels;
+    private LabelsImeji labels;
     //json = "{ \"collectionId\" : \"Qwms6Gs040FBS264\"}";
 
     //            "language": "en",
@@ -34,7 +34,7 @@ public class MetaData {
 
 
 
-    public Object getValue() {
+    public GenericValue getValue() {
         return value;
     }
 
@@ -58,11 +58,11 @@ public class MetaData {
         this.typeUri = typeUri;
     }
 
-    public Object getLabels() {
+    public LabelsImeji getLabels() {
         return labels;
     }
 
-    public void setLabels(GenericValue labels) {
+    public void setLabels(LabelsImeji labels) {
         this.labels = labels;
     }
 

@@ -47,7 +47,15 @@ public class RetrofitClient {
         imejiAPI.postItem(typedFile, json, callback);
 }
 
-
+    public static void createPOI(TypedFile typedFile,
+                                  String json,
+                                  Callback<DataItem> callback,
+                                  String username,
+                                  String password) {
+        ImejiAPI imejiAPI = ServiceGenerator.
+                createService(ImejiAPI.class, REST_SERVER, username, password);
+        imejiAPI.postItem(typedFile, json, callback);
+    }
 
 
 }

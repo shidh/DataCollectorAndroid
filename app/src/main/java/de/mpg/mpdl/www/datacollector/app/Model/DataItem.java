@@ -7,6 +7,8 @@ import com.google.gson.annotations.Expose;
 
 import java.util.ArrayList;
 
+import de.mpg.mpdl.www.datacollector.app.Model.Imeji.MetaData;
+
 /**
  * Created by allen on 01/04/15.
  */

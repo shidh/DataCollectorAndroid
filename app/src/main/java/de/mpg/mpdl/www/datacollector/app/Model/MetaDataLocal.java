@@ -4,6 +4,7 @@ package de.mpg.mpdl.www.datacollector.app.Model;
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
+import com.google.gson.annotations.Expose;
 
 import java.util.List;
 
@@ -14,27 +15,34 @@ import java.util.List;
 
 public class MetaDataLocal extends Model{
 
+    @Expose
     @Column(name = "title")
     private String title;
 
+    @Expose
     @Column(name = "address")
     private String address;
 
+    @Expose
     @Column(name = "latitude")
     private double latitude;
 
+    @Expose
     @Column(name = "longitude")
     private double longitude;
 
+    @Expose
     @Column(name = "accuracy")
     private double accuracy;
 
     @Column(name = "deviceID")
     private String deviceID;
 
+    @Expose
     @Column(name = "tags")
     private List<String> tags;
 
+    @Expose
     @Column(name = "creator")
     private String creator;
 

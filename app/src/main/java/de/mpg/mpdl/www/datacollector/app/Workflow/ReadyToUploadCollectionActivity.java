@@ -14,14 +14,17 @@ import android.widget.Toast;
 
 import com.activeandroid.query.Select;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.mpg.mpdl.www.datacollector.app.Event.OttoSingleton;
+import de.mpg.mpdl.www.datacollector.app.Event.UploadEvent;
 import de.mpg.mpdl.www.datacollector.app.Model.DataItem;
-import de.mpg.mpdl.www.datacollector.app.Model.MetaData;
 import de.mpg.mpdl.www.datacollector.app.R;
+import de.mpg.mpdl.www.datacollector.app.Retrofit.MetaDataConverter;
 import de.mpg.mpdl.www.datacollector.app.Retrofit.RetrofitClient;
 import de.mpg.mpdl.www.datacollector.app.SectionList.CustomListAdapter;
 import de.mpg.mpdl.www.datacollector.app.SectionList.DetailActivity;
@@ -59,16 +62,29 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
             //adapter =  new CustomListAdapter(getActivity(), dataList);
             //listView.setAdapter(adapter);
             showToast( "Upload data Successfully");
+            OttoSingleton.getInstance().post(
+                    new UploadEvent(response.getStatus()));
             Log.v(LOG_TAG, dataItem.getCollectionId());
             Log.v(LOG_TAG, String.valueOf(dataItem.getMetadata()));
 
+            //TODO upload a new POI
+            //upload a POI as Album on Imeji
+            //RetrofitClient.createPOI(typedFile, json, callback, username, password);
+
+            //TODO produce a message event to third fragment to display the POI on map
         }
 
         @Override
         public void failure(RetrofitError error) {
             showToast( "Upload data Failed");
-            Log.v(LOG_TAG, error.toString());
-
+            if (error == null || error.getResponse() == null) {
+                OttoSingleton.getInstance().post(new UploadEvent(null));
+            } else {
+                OttoSingleton.getInstance().post(
+                        new UploadEvent(error.getResponse().getStatus()));
+            }
+            Log.v(LOG_TAG, error.getResponse().getHeaders().toString());
+            Log.v(LOG_TAG, error.getResponse().getBody().toString());
         }
     };
 
@@ -105,7 +121,6 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 DataItem dataItem = (DataItem) adapter.getItem(position);
                 //Context context = getActivity();
-                int duration = Toast.LENGTH_SHORT;
                 showToast(dataItem.getCollectionId());
 
                 Intent showDetailIntent = new Intent(ReadyToUploadCollectionActivity.this,
@@ -116,6 +131,10 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
                 ReadyToUploadCollectionActivity.this.startActivity(showDetailIntent);
             }
         });
+
+
+        //TODO
+        // Edit and delete the list
 
         listView.setAdapter(adapter);
     }
@@ -176,67 +195,43 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
         if (id == R.id.upload) {
             //Intent showSettingIntent = new Intent(this, SettingsActivity.class);
             //startActivity(showSettingIntent);
+            createNewPOI();
+            upload(dataList);
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
+    //create a POI locally
+    private void createNewPOI(){
 
+    }
 
-    //TODO
-    // Edit and delete the list
+    private void upload(List<DataItem> iList){
+        String jsonPart1 = "\"collectionId\" : \"Qwms6Gs040FBS264\"";
 
-//        @Subscribe
-//        public void OnGetNewItemFromUser(GetNewItemFromUserEvent event){
-//            itemList = event.itemList;
-//            Log.v(LOG_TAG, "Got a new data item: " +
-//                    itemList.get(itemList.size()-1).getMetaDataLocal().getTitle());
-//        }
+        for (DataItem item : iList){
+            Gson gson = new GsonBuilder()
+                    .serializeNulls()
+                    .excludeFieldsWithoutExposeAnnotation()
+                    .create();
+            item.getMetaDataLocal().setDeviceID("1");
+            typedFile = new TypedFile("multipart/form-data", new File(item.getLocalPath()));
 
-        //TODO upload
-        private void upload(List<DataItem> iList){
-            for (DataItem item : iList){
-                Gson gson = new Gson();
-                String jsonPart1 = "{ \"collectionId\" : \"Qwms6Gs040FBS264\"}";
-                typedFile = new TypedFile("multipart/form-data", new File(item.getLocalPath()));
+            String jsonPart2 = "\"metadata\": "+ gson.toJson( MetaDataConverter.metaDataLocalToMetaDataList(item.getMetaDataLocal()));
 
-                String metaDataLocalJson = gson.toJson(item.getMetaDataLocal());
+            json ="{" + jsonPart1 +"," + jsonPart2 +"}";
 
-                //TODO somehow convert the metaDataLocalJson to a MetaData
-                //Check the convertMetaData() method
-
-
-                MetaData metaData = new MetaData();
-//                metaData.setLabels();
-//                metaData.setStatementUri();
-//                metaData.setTypeUri();
-//                metaData.setValue();
-
-                String metaDataJson = gson.toJson(metaData);
-                //TODO
-                String jsonPart2 ="[ ALL of the metaDataJson]";
-
-
-                json = jsonPart1 + jsonPart2;
-                RetrofitClient.uploadItem(typedFile, json, callback, username, password);
-            }
-
-
-
-//            {
-//                "collectionId" : "abc123", (required)
-//                    "fetchUrl" : "http://example.org/myFile.png", (optional)
-//                    "referenceUrl" : "http://example.org/myFile.png", (optional)
-//                    "filename" : "new filename", (optional)
-//                    "metadata" : [] (optional)
-//            }
-
+            Log.v(LOG_TAG, json);
+            RetrofitClient.uploadItem(typedFile, json, callback, username, password);
         }
 
-        public void showToast(String message) {
-            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-        }
+    }
+
+    public void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
 
 
 }
