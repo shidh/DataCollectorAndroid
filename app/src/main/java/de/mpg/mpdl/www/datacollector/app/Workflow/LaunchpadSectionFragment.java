@@ -21,6 +21,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.activeandroid.query.Select;
 import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Picasso;
 
@@ -157,6 +158,14 @@ public class LaunchpadSectionFragment extends Fragment {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Restore UI state from the savedInstanceState.
+        // This bundle has also been passed to onCreate.
+//        boolean myBoolean = savedInstanceState.getBoolean("MyBoolean");
+//        double myDouble = savedInstanceState.getDouble("myDouble");
+//        int myInt = savedInstanceState.getInt("MyInt");
+//        String myString = savedInstanceState.getString("MyString");
+
         setHasOptionsMenu(true);
         Log.d(LOG_TAG, "onCreate");
     }
@@ -271,17 +280,31 @@ public class LaunchpadSectionFragment extends Fragment {
     public void onStart() {
         super.onStart();
         Log.d(LOG_TAG, "onStart");
-
     }
+
+
 
     @Override
     public void onResume() {
         super.onResume();
         OttoSingleton.getInstance().register(this);
         Log.d(LOG_TAG, "onResume");
-
-
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        Log.d(LOG_TAG, "onSaveInstanceState");
+        // Save UI state changes to the savedInstanceState.
+        // This bundle will be passed to onCreate if the process is
+        // killed and restarted.
+        savedInstanceState.putBoolean("MyBoolean", true);
+        savedInstanceState.putDouble("myDouble", 1.9);
+        savedInstanceState.putInt("MyInt", 1);
+        savedInstanceState.putString("MyString", "Welcome back to Android");
+    }
+
+
 
     @Override
     public void onPause() {
@@ -308,6 +331,14 @@ public class LaunchpadSectionFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_launchpad, menu);
         poi_list = menu.findItem(R.id.POI_list);
+
+        if(new Select()
+                .from(DataItem.class)
+                .where("isLocal = ?", 1)
+                .execute().size() >0) {
+            poi_list.setIcon(getResources().getDrawable(R.drawable.marker_green));
+        }
+
     }
 
     @Override
@@ -341,7 +372,8 @@ public class LaunchpadSectionFragment extends Fragment {
                 Toast.makeText(getActivity(), R.string.problem_no_net,
                         Toast.LENGTH_SHORT).show();
             }
-        } else if ((requestCode == INTENT_RECOVER_FROM_AUTH_ERROR || requestCode == INTENT_RECOVER_FROM_PLAY_SERVICES_ERROR)
+        } else if ((requestCode == INTENT_RECOVER_FROM_AUTH_ERROR ||
+                requestCode == INTENT_RECOVER_FROM_PLAY_SERVICES_ERROR)
                 && resultCode == getActivity().RESULT_OK) {
 			/*
 			 * Receiving a result that follows a GoogleAuthException, try auth
@@ -373,6 +405,8 @@ public class LaunchpadSectionFragment extends Fragment {
                         .load(imageUri)
                         .resize(imageView.getWidth(), imageView.getHeight())
                         .into(imageView);
+                rootView.findViewById(R.id.save).setVisibility(View.VISIBLE);
+
             } else if (resultCode == getActivity().RESULT_CANCELED) {
                 // User cancelled the photo picking
             }

@@ -24,6 +24,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.activeandroid.query.Delete;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -38,6 +39,7 @@ import java.util.Locale;
 
 import de.mpg.mpdl.www.datacollector.app.Event.LocationChangedEvent;
 import de.mpg.mpdl.www.datacollector.app.Event.OttoSingleton;
+import de.mpg.mpdl.www.datacollector.app.Model.DataItem;
 import de.mpg.mpdl.www.datacollector.app.SectionList.ListSectionFragment;
 import de.mpg.mpdl.www.datacollector.app.Workflow.LaunchpadSectionFragment;
 import de.mpg.mpdl.www.datacollector.app.Workflow.MetadataFragment;
@@ -229,7 +231,9 @@ public class MainActivity extends FragmentActivity implements
     protected void onPause() {
         super.onPause();
         //onSaveInstanceState();
-        stopLocationUpdates();
+        if (mRequestingLocationUpdates) {
+            stopLocationUpdates();
+        }
         Log.e(LOG_TAG, "start onPause~~~");
     }
 
@@ -245,6 +249,8 @@ public class MainActivity extends FragmentActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        //TODO clean the data when exit or not?
+        new Delete().from(DataItem.class).where("isLocal = ?", 1).execute();
         Log.e(LOG_TAG, "start onDestroy~~~");
     }
 
@@ -556,9 +562,6 @@ public class MainActivity extends FragmentActivity implements
      * */
     private void togglePeriodicLocationUpdates(ImageView btnStartLocationUpdates) {
         if (!mRequestingLocationUpdates) {
-            // Changing the button text
-            //btnStartLocationUpdates
-            //        .setText(getString(R.string.btn_stop_location_updates));
 
             mRequestingLocationUpdates = true;
 
@@ -570,9 +573,6 @@ public class MainActivity extends FragmentActivity implements
             Log.d(LOG_TAG, "Periodic location updates started!");
 
         } else {
-            // Changing the button text
-            //btnStartLocationUpdates
-            //        .setText(getString(R.string.btn_start_location_updates));
 
             mRequestingLocationUpdates = false;
 

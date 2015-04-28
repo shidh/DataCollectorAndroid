@@ -25,7 +25,6 @@ import de.mpg.mpdl.www.datacollector.app.R;
 import de.mpg.mpdl.www.datacollector.app.Retrofit.RetrofitClient;
 import de.mpg.mpdl.www.datacollector.app.SectionList.CustomListAdapter;
 import de.mpg.mpdl.www.datacollector.app.SectionList.DetailActivity;
-import de.mpg.mpdl.www.datacollector.app.SettingsActivity;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -43,6 +42,7 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
     private DataItem dataItem;
     public CustomListAdapter adapter;
     ListView listView;
+    private MenuItem upload;
 
 
     public TypedFile typedFile;
@@ -90,11 +90,9 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
                 .where("isLocal = ?", 1)
                 .execute();
 
-//        dataItem = new Select()
-//                .from(DataItem.class)
-//                .executeSingle();
-        Log.v(LOG_TAG, dataList.get(0).getLocalPath());
-
+        if(dataList == null){
+            showToast("Go back to get some data");
+        }
         //Log.v("data1: ", dataList.get(0).getLocalPath());
         //Log.v("metatadata1: ", String.valueOf(dataList.get(0).getMetaDataLocal().getAccuracy()));
         Log.v("metatadata1: ", "onCreateView");
@@ -162,8 +160,8 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_section_list, menu);
-
+        getMenuInflater().inflate(R.menu.menu_ready_to_update, menu);
+        upload = menu.findItem(R.id.upload);
         return true;
     }
 
@@ -175,10 +173,9 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            Intent showSettingIntent = new Intent(this, SettingsActivity.class);
-            startActivity(showSettingIntent);
+        if (id == R.id.upload) {
+            //Intent showSettingIntent = new Intent(this, SettingsActivity.class);
+            //startActivity(showSettingIntent);
             return true;
         }
 
