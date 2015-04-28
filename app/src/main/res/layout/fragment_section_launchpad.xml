@@ -48,7 +48,7 @@
         android:src="@drawable/camera"
         android:layout_gravity="left|bottom" />
 
-    <ImageView android:id="@+id/demo_external_activity"
+    <ImageView android:id="@+id/gallery_activity"
         android:layout_width="60dp"
         android:layout_height="40dp"
         android:layout_alignParentBottom="true"

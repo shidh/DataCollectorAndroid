@@ -222,6 +222,9 @@ public class ListSectionFragment extends Fragment {
                 //showDetailIntent.putExtra(Intent.EXTRA_SUBJECT, dataItem);
                 //showDetailIntent.setData();
                 //startService(showDetailIntent);
+
+                showDetailIntent.addFlags(
+                        Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
                 startActivity(showDetailIntent);
             }
         });

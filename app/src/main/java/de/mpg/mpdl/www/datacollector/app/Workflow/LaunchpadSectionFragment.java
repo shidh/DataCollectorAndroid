@@ -63,6 +63,8 @@ public class LaunchpadSectionFragment extends Fragment {
     private static final int INTENT_RECOVER_FROM_AUTH_ERROR = 1003;
     private static final int INTENT_RECOVER_FROM_PLAY_SERVICES_ERROR = 1004;
     private static final int INTENT_TAKE_PHOTO = 1005;
+    private static final int INTENT_PICK_PHOTO = 1006;
+
     private final String LOG_TAG = LaunchpadSectionFragment.class.getSimpleName();
     public static final String ARG_SECTION_NUMBER = "section_number";
 
@@ -189,7 +191,7 @@ public class LaunchpadSectionFragment extends Fragment {
 
 
         // Open Photo Lib by navigating to external activities.
-        rootView.findViewById(R.id.demo_external_activity)
+        rootView.findViewById(R.id.gallery_activity)
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -197,11 +199,14 @@ public class LaunchpadSectionFragment extends Fragment {
                         // FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET, ensures that relaunching
                         // the application from the device home screen does not return
                         // to the external activity.
-                        Intent externalActivityIntent = new Intent(Intent.ACTION_PICK);
-                        externalActivityIntent.setType("image/*");
-                        externalActivityIntent.addFlags(
-                                Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-                        startActivity(externalActivityIntent);
+
+                        Intent gallery = new Intent(Intent.ACTION_PICK,
+                                        android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+                        gallery.setType("image/*");
+                        gallery.setAction(Intent.ACTION_GET_CONTENT);
+                        //gallery.addFlags(
+                        //        Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+                        startActivityForResult(gallery, INTENT_PICK_PHOTO);
                     }
                 });
 
@@ -360,6 +365,16 @@ public class LaunchpadSectionFragment extends Fragment {
                 rootView.findViewById(R.id.save).setVisibility(View.VISIBLE);
             } else if (resultCode == getActivity().RESULT_CANCELED) {
                 // User cancelled the photo capture
+            }
+        } else if (requestCode == INTENT_PICK_PHOTO){
+            if (resultCode == getActivity().RESULT_OK) {
+                Uri imageUri = data.getData();
+                Picasso.with(getActivity())
+                        .load(imageUri)
+                        .resize(imageView.getWidth(), imageView.getHeight())
+                        .into(imageView);
+            } else if (resultCode == getActivity().RESULT_CANCELED) {
+                // User cancelled the photo picking
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
