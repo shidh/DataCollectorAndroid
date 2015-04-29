@@ -1,4 +1,4 @@
-package de.mpg.mpdl.www.datacollector.app.Model.Imeji;
+package de.mpg.mpdl.www.datacollector.app.Model.ImejiModel;
 
 import com.google.gson.annotations.Expose;
 
