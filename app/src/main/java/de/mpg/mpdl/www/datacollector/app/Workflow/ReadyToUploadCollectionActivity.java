@@ -84,7 +84,9 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
                         new UploadEvent(error.getResponse().getStatus()));
             }
             Log.v(LOG_TAG, error.getResponse().getHeaders().toString());
-            Log.v(LOG_TAG, error.getResponse().getBody().toString());
+            Log.v(LOG_TAG, String.valueOf(error.getResponse().getStatus()));
+            Log.v(LOG_TAG, String.valueOf(error));
+
         }
     };
 
@@ -220,8 +222,10 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
             typedFile = new TypedFile("multipart/form-data", new File(item.getLocalPath()));
 
             String jsonPart2 = "\"metadata\": "+ gson.toJson( MetaDataConverter.metaDataLocalToMetaDataList(item.getMetaDataLocal()));
+            Log.v(LOG_TAG, jsonPart2);
 
             json ="{" + jsonPart1 +"," + jsonPart2 +"}";
+            //json ="{" + jsonPart1  +"}";
 
             Log.v(LOG_TAG, json);
             RetrofitClient.uploadItem(typedFile, json, callback, username, password);

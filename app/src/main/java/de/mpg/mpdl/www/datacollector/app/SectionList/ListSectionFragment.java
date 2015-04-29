@@ -109,7 +109,6 @@ public class ListSectionFragment extends Fragment {
         public void failure(RetrofitError error) {
             Log.v(LOG_TAG, "get list failed");
             Log.v(LOG_TAG, error.toString());
-
             showToast("get list failed");
         }
     };
