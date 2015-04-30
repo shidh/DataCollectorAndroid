@@ -418,13 +418,13 @@ public class WorkflowSectionFragment extends Fragment {
     @Subscribe
     public void onGetMetadataFromUser(MetadataIsReadyEvent event) {
         User user = new User();
-        user.setFullname("Allen");
+        user.setCompleteName("Allen");
 
         meta.setTags(event.tags);
         Log.v(LOG_TAG, event.tags.get(0));
         meta.setTitle(meta.getTags().get(0)+"@"+meta.getAddress());
 
-        meta.setCreator(user.getFullname());
+        meta.setCreator(user.getCompleteName());
         //add a dataItem to the list on the top of view
         item.setCollectionId("Qwms6Gs040FBS264");
         item.setLocalPath(photoFilePath);

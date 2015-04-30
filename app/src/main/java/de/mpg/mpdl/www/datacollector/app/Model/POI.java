@@ -4,7 +4,6 @@ import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -14,29 +13,14 @@ import java.util.List;
 @Table(name = "POI")
 public class POI extends Model{
 
-    @Column(name = "date")
-    private Date date;
-
     @Column(name = "title")
     private String title;
 
-    @Column(name = "createdBy")
-    private User createdBy;
+    @Column(name = "description")
+    private String description;
 
-    public List<DataItem> items() {
-        return getMany(DataItem.class, "DataItem");
-    }
-    //private ArrayList<DataItem>items;
-
-
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
+    @Column(name = "contributors")
+    private List<User> contributors;
 
     public String getTitle() {
         return title;
@@ -46,20 +30,19 @@ public class POI extends Model{
         this.title = title;
     }
 
-    public User getCreatedBy() {
-        return createdBy;
+    public String getDescription() {
+        return description;
     }
 
-    public void setCreatedBy(User createdBy) {
-        this.createdBy = createdBy;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-//    public ArrayList<DataItem> getItems() {
-//        return items;
-//    }
-//
-//    public void setItems(ArrayList<DataItem> items) {
-//        this.items = items;
-//    }
+    public List<User> getContributors() {
+        return contributors;
+    }
 
+    public void setContributors(List<User> contributors) {
+        this.contributors = contributors;
+    }
 }

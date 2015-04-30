@@ -1,30 +1,52 @@
 package de.mpg.mpdl.www.datacollector.app.Model;
 
+import com.activeandroid.Model;
+import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Table;
+import com.google.gson.annotations.Expose;
+
 import java.sql.Blob;
 import java.util.ArrayList;
+import java.util.List;
+
+import de.mpg.mpdl.www.datacollector.app.Model.ImejiModel.Organization;
 
 /**
  * Created by allen on 01/04/15.
  */
-public class User {
-    private String desc;
+
+@Table(name = "User")
+public class User extends Model{
+    @Column(name = "email")
     private String  email;
-    private String  familyName;
-    private String givenName;
-    private String fullname;
-    private Blob image;
+
+    @Column(name = "pass")
     private String password;
-    private String userId;
+
+    @Column(name = "image")
+    private Blob image;
+
+    @Column(name = "familyName")
+    @Expose
+    private String  familyName;
+
+    @Column(name = "givenName")
+    @Expose
+    private String givenName;
+
+    @Column(name = "completeName")
+    @Expose
+    private String completeName;
+
+    @Expose
+    private List<Organization> organizations;
+
+    @Column(name = "collections")
     private ImejiCollection collections;
+
+    @Column(name = "items")
     private ArrayList<DataItem> items;
 
-    public String getDesc() {
-        return desc;
-    }
-
-    public void setDesc(String desc) {
-        this.desc = desc;
-    }
 
     public String getEmail() {
         return email;
@@ -32,6 +54,22 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Blob getImage() {
+        return image;
+    }
+
+    public void setImage(Blob image) {
+        this.image = image;
     }
 
     public String getFamilyName() {
@@ -50,28 +88,20 @@ public class User {
         this.givenName = givenName;
     }
 
-    public Blob getImage() {
-        return image;
+    public String getCompleteName() {
+        return completeName;
     }
 
-    public void setImage(Blob image) {
-        this.image = image;
+    public void setCompleteName(String completeName) {
+        this.completeName = completeName;
     }
 
-    public String getPassword() {
-        return password;
+    public List<Organization> getOrganizations() {
+        return organizations;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setOrganizations(List<Organization> organizations) {
+        this.organizations = organizations;
     }
 
     public ImejiCollection getCollections() {
@@ -89,15 +119,4 @@ public class User {
     public void setItems(ArrayList<DataItem> items) {
         this.items = items;
     }
-
-
-    public String getFullname() {
-        return fullname;
-    }
-
-    public void setFullname(String fullname) {
-        this.fullname = fullname;
-    }
-
-
 }

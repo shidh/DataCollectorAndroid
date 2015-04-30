@@ -57,5 +57,10 @@ public class RetrofitClient {
         //imejiAPI.postItem(typedFile, json, callback);
     }
 
+    public static void getPoiMembers(String albumId, Callback<List<DataItem>> callback) {
+        ImejiAPI imejiAPI = ServiceGenerator.createService(ImejiAPI.class, REST_SERVER);
+        imejiAPI.getPoiMembers(albumId, callback);
+    }
+
 
 }

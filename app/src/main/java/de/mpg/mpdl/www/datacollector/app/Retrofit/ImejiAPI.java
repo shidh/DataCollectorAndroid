@@ -34,6 +34,11 @@ public interface ImejiAPI {
     @POST("/login")
     User basicLogin();
 
+
+
+    /*
+     *  For items
+    */
     //get all items
     //http://dev-faces.mpdl.mpg.de/imeji/rest/items
     @GET("/items")
@@ -44,7 +49,8 @@ public interface ImejiAPI {
 
     //get one item by itemId
     @GET("/items/{itemId}")
-    List<DataItem> getItemById(@Path("itemId") String itemId, Callback<Response> callback);
+    List<DataItem> getItemById(@Path("itemId") String itemId,
+                               Callback<Response> callback);
 
     //@POST("/items")
     //void postItem(@Body DataItem item, Callback<DataItem> callback);
@@ -55,6 +61,11 @@ public interface ImejiAPI {
                   @Part("json") String json,
                   Callback<DataItem> callback);
 
+
+
+    /*
+     *  For users
+    */
     //get all users
     @GET("/users")
     void getUsers(Callback<List<User>> callback);
@@ -66,6 +77,12 @@ public interface ImejiAPI {
 
 
 
+    /*
+     *  For POI
+    */
+    @GET("/albums/{id}/members")
+    void getPoiMembers(@Path("albumId") String albumId,
+                       Callback<List<DataItem>> callback);
 
 
 }
