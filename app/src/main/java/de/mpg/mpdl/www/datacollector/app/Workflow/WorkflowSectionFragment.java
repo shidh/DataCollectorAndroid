@@ -83,6 +83,7 @@ public class WorkflowSectionFragment extends Fragment {
 
     public Boolean takeAnotherPhoto;
     private String photoFilePath;
+    private String fileName;
     private DeviceStatus status;
     private View rootView;
     private ImageView imageView;
@@ -430,11 +431,13 @@ public class WorkflowSectionFragment extends Fragment {
         item.setMetaDataLocal(meta);
         item.setLocal(1);
         item.setCreatedBy(user);
+        item.setFilename(fileName);
 
         Log.v(LOG_TAG, item.getMetaDataLocal().getTitle());
 
         meta.save();
         item.save();
+        Log.v(LOG_TAG, item.getFilename());
         itemList.add(item);
 
         //change the icon of the view
@@ -485,6 +488,7 @@ public class WorkflowSectionFragment extends Fragment {
                     getString(R.string.app_name));
             photoFilePath = new File(storageDir.getPath(), photoFileName
                     + ".jpg").getPath();
+            fileName = photoFileName + ".jpg";
 
             //Toast.makeText(getActivity(), photoFilePath, Toast.LENGTH_LONG).show();
             Log.v(LOG_TAG, photoFilePath);

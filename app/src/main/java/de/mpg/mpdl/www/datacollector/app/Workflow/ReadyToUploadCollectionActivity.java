@@ -72,7 +72,7 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
             //upload a POI as Album on Imeji
             //RetrofitClient.createPOI(typedFile, json, callback, username, password);
 
-            //TODO produce a message event to third fragment to display the POI on map
+            //TODO produce a message event to third-party fragment to display the POI on map
             OttoSingleton.getInstance().post(
                     new UploadEvent(response.getStatus()));
             new Delete().from(DataItem.class).where("filename = ?", dataItem.getFilename()).execute();
@@ -229,8 +229,8 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
 
             Log.v(LOG_TAG, json);
             RetrofitClient.uploadItem(typedFile, json, callback, username, password);
+            //TODO  popup a progress bar to show the uploading
         }
-
     }
 
     public void showToast(String message) {

@@ -101,7 +101,7 @@ public class ListSectionFragment extends Fragment {
             }
             Log.v(LOG_TAG, "get list OK");
 
-            showToast("get list OK");
+            showToast("got new data");
 
         }
 
@@ -109,7 +109,7 @@ public class ListSectionFragment extends Fragment {
         public void failure(RetrofitError error) {
             Log.v(LOG_TAG, "get list failed");
             Log.v(LOG_TAG, error.toString());
-            showToast("get list failed");
+            showToast("update data failed");
         }
     };
 
@@ -303,10 +303,13 @@ public class ListSectionFragment extends Fragment {
             }
         }
 
-
-
-
     }
+
+
+    //TODO
+    // Edit and delete the list
+
+
     public void showToast(String message) {
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
