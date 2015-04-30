@@ -24,7 +24,6 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.activeandroid.query.Delete;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -39,10 +38,10 @@ import java.util.Locale;
 
 import de.mpg.mpdl.www.datacollector.app.Event.LocationChangedEvent;
 import de.mpg.mpdl.www.datacollector.app.Event.OttoSingleton;
-import de.mpg.mpdl.www.datacollector.app.Model.DataItem;
+import de.mpg.mpdl.www.datacollector.app.POI.POIFragment;
 import de.mpg.mpdl.www.datacollector.app.SectionList.ListSectionFragment;
-import de.mpg.mpdl.www.datacollector.app.Workflow.LaunchpadSectionFragment;
 import de.mpg.mpdl.www.datacollector.app.Workflow.MetadataFragment;
+import de.mpg.mpdl.www.datacollector.app.Workflow.WorkflowSectionFragment;
 
 
 //public class MainActivity extends ActionBarActivity implements ActionBar.TabListener {
@@ -51,7 +50,7 @@ public class MainActivity extends FragmentActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener,
-        LaunchpadSectionFragment.OnLocationUpdatedListener,
+        WorkflowSectionFragment.OnLocationUpdatedListener,
         MetadataFragment.OnFragmentInteractionListener{
 
     /**
@@ -69,7 +68,7 @@ public class MainActivity extends FragmentActivity implements
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     SectionsPagerAdapter mSectionsPagerAdapter;
-    LaunchpadSectionFragment workflow;
+    WorkflowSectionFragment workflow;
     private final String LOG_TAG = MainActivity.class.getSimpleName();
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 1000;
 
@@ -250,7 +249,7 @@ public class MainActivity extends FragmentActivity implements
     protected void onDestroy() {
         super.onDestroy();
         //TODO clean the data when exit or not?
-        new Delete().from(DataItem.class).where("isLocal = ?", 1).execute();
+        //new Delete().from(DataItem.class).where("isLocal = ?", 1).execute();
         Log.e(LOG_TAG, "start onDestroy~~~");
     }
 
@@ -352,21 +351,19 @@ public class MainActivity extends FragmentActivity implements
                 case 0:
                     // The first section of the app is the most interesting -- it offers
                     // a launchpad into the other demonstrations in this example application.
-                    fragment =  new LaunchpadSectionFragment();
-                    args.putInt(LaunchpadSectionFragment.ARG_SECTION_NUMBER, position + 1);
+                    fragment =  new WorkflowSectionFragment();
+                    args.putInt(WorkflowSectionFragment.ARG_SECTION_NUMBER, position + 1);
                     fragment.setArguments(args);
                     return fragment;
-
                 case 1:
                     fragment =  new ListSectionFragment();
                     args.putInt(ListSectionFragment.ARG_SECTION_NUMBER, position + 1);
                     fragment.setArguments(args);
                     return fragment;
-
                 case 2:
                     // The other sections of the app are dummy placeholders.
-                    fragment = new CollectionFragment();
-                    args.putInt(CollectionFragment.ARG_SECTION_NUMBER, position + 1);
+                    fragment = new POIFragment();
+                    args.putInt(POIFragment.ARG_SECTION_NUMBER, position + 1);
                     fragment.setArguments(args);
                     return fragment;
                 default:
@@ -519,7 +516,7 @@ public class MainActivity extends FragmentActivity implements
 
             // based on the current position, cast the page to the correct fragment
             if (mViewPager.getCurrentItem() == 0 && frag != null) {
-                workflow = (LaunchpadSectionFragment) frag;
+                workflow = (WorkflowSectionFragment) frag;
                         lblLocation = workflow.getLblLocation();
 
                 // Call a method in the LaunchpadSectionFragment to update its content

@@ -390,7 +390,6 @@ public class WorkflowSectionFragment extends Fragment {
                             .load(imgFile)
                             .resize(imageView.getWidth(), imageView.getHeight())
                             .into(imageView);
-                    System.out.println(photoFilePath);
                 }
 
                 addImageToGallery(photoFilePath);
@@ -488,7 +487,7 @@ public class WorkflowSectionFragment extends Fragment {
                     + ".jpg").getPath();
 
             //Toast.makeText(getActivity(), photoFilePath, Toast.LENGTH_LONG).show();
-            System.out.println(photoFilePath);
+            Log.v(LOG_TAG, photoFilePath);
             // Create the storage directory if it does not exist
             if (!storageDir.exists() && !storageDir.mkdirs()) {
                 photoFilePath = null;

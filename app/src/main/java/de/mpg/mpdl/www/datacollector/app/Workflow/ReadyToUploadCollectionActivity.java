@@ -12,9 +12,11 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.activeandroid.query.Delete;
 import com.activeandroid.query.Select;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.squareup.otto.Produce;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -58,20 +60,22 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
 
     Callback<DataItem> callback = new Callback<DataItem>() {
         @Override
+        @Produce
         public void success(DataItem dataItem, Response response) {
             //adapter =  new CustomListAdapter(getActivity(), dataList);
             //listView.setAdapter(adapter);
-            showToast( "Upload data Successfully");
-            OttoSingleton.getInstance().post(
-                    new UploadEvent(response.getStatus()));
-            Log.v(LOG_TAG, dataItem.getCollectionId());
-            Log.v(LOG_TAG, String.valueOf(dataItem.getMetadata()));
+            showToast("Upload data Successfully");
+            Log.v(LOG_TAG, dataItem.getFilename());
 
+                //Log.v(LOG_TAG, item.getFilename());
             //TODO upload a new POI
             //upload a POI as Album on Imeji
             //RetrofitClient.createPOI(typedFile, json, callback, username, password);
 
             //TODO produce a message event to third fragment to display the POI on map
+            OttoSingleton.getInstance().post(
+                    new UploadEvent(response.getStatus()));
+            new Delete().from(DataItem.class).where("filename = ?", dataItem.getFilename()).execute();
         }
 
         @Override
@@ -83,10 +87,8 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
                 OttoSingleton.getInstance().post(
                         new UploadEvent(error.getResponse().getStatus()));
             }
-            Log.v(LOG_TAG, error.getResponse().getHeaders().toString());
             Log.v(LOG_TAG, String.valueOf(error.getResponse().getStatus()));
             Log.v(LOG_TAG, String.valueOf(error));
-
         }
     };
 
@@ -113,7 +115,6 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
         }
         //Log.v("data1: ", dataList.get(0).getLocalPath());
         //Log.v("metatadata1: ", String.valueOf(dataList.get(0).getMetaDataLocal().getAccuracy()));
-        Log.v("metatadata1: ", "onCreateView");
         adapter =  new CustomListAdapter(this, dataList);
 
         listView = (ListView) findViewById(R.id.item_list);
@@ -222,7 +223,6 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
             typedFile = new TypedFile("multipart/form-data", new File(item.getLocalPath()));
 
             String jsonPart2 = "\"metadata\": "+ gson.toJson( MetaDataConverter.metaDataLocalToMetaDataList(item.getMetaDataLocal()));
-            Log.v(LOG_TAG, jsonPart2);
 
             json ="{" + jsonPart1 +"," + jsonPart2 +"}";
             //json ="{" + jsonPart1  +"}";
