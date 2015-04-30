@@ -65,6 +65,7 @@ public class CustomListAdapter extends BaseAdapter {
         Picasso.with(activity)
                 .load(m.getThumbnailUrl())
                 .into(imageView);
+        //Log.v("getThumbnailUrl ",m.getThumbnailUrl());
 
         // title
         title.setText(m.getCollectionId());

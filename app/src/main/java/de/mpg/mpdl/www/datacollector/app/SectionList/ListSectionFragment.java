@@ -212,7 +212,7 @@ public class ListSectionFragment extends Fragment {
 
         rootView = inflater.inflate(R.layout.fragment_section_list, container, false);
         listView = (ListView) rootView.findViewById(R.id.item_list);
-        //listView.setAdapter(adapter);
+        listView.setAdapter(adapter);
 
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){

@@ -29,7 +29,7 @@ public interface ImejiAPI {
     //@GET("/users/{user}")
     //public Response fetchUsers(@Path("user") String user);
 
-    public static final String BASE_URL = "https://api.yourdomain.com";
+    public static final String BASE_URL = "https://dev-faces.mpdl.mpg.de/imeji/rest/";
 
     @POST("/login")
     User basicLogin();

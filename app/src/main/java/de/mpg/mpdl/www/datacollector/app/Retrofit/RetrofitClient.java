@@ -11,7 +11,7 @@ import retrofit.mime.TypedFile;
  */
 public class RetrofitClient {
     private final String LOG_TAG = RetrofitClient.class.getSimpleName();
-    private static final String REST_SERVER = "http://dev-faces.mpdl.mpg.de/imeji/rest/";
+    private static final String REST_SERVER = "https://dev-faces.mpdl.mpg.de/imeji/rest/";
 
     public static void getItems(Callback<List<DataItem>> callback) {
         // Create a very simple REST adapter which points the GitHub API
@@ -54,7 +54,7 @@ public class RetrofitClient {
                                   String password) {
         ImejiAPI imejiAPI = ServiceGenerator.
                 createService(ImejiAPI.class, REST_SERVER, username, password);
-        imejiAPI.postItem(typedFile, json, callback);
+        //imejiAPI.postItem(typedFile, json, callback);
     }
 
 

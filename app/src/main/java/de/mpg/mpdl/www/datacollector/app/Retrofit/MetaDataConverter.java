@@ -12,11 +12,11 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.mpg.mpdl.www.datacollector.app.Model.ImejiModel.GenericValue;
 import de.mpg.mpdl.www.datacollector.app.Model.ImejiModel.GeoLocationImeji;
 import de.mpg.mpdl.www.datacollector.app.Model.ImejiModel.LabelsImeji;
 import de.mpg.mpdl.www.datacollector.app.Model.ImejiModel.MetaData;
-import de.mpg.mpdl.www.datacollector.app.Model.ImejiModel.MetaDataUpload;
+import de.mpg.mpdl.www.datacollector.app.Model.ImejiModel.NumberImeji;
+import de.mpg.mpdl.www.datacollector.app.Model.ImejiModel.TextImeji;
 import de.mpg.mpdl.www.datacollector.app.Model.MetaDataLocal;
 
 /**
@@ -81,29 +81,29 @@ public class MetaDataConverter {
     }
 
 
-    public static List<MetaDataUpload> metaDataLocalToMetaDataList(MetaDataLocal metaDataLocal){
-        List<MetaDataUpload> metaDataList = new ArrayList<MetaDataUpload>();
+    public static List<MetaData> metaDataLocalToMetaDataList(MetaDataLocal metaDataLocal){
+        List<MetaData> metaDataList = new ArrayList<MetaData>();
 
         Log.v(LOG_TAG + metaDataLocal, gson.toJson(metaDataLocal));
 
 
         //for title
-        MetaDataUpload m1 = new MetaDataUpload();
-        GenericValue<String> titleValue = new GenericValue<String>(metaDataLocal.getTitle());
-        //m.setValue(new TextImeji(metaDataLocal.getTitle()));
+        MetaData m1 = new MetaData();
+        //GenericValue<String> titleValue = new GenericValue<String>(metaDataLocal.getTitle());
+        m1.setValue(new TextImeji(metaDataLocal.getTitle()));
         List<LabelsImeji> labels1 = new ArrayList<LabelsImeji>();
         labels1.add(new LabelsImeji("en", "title"));
         m1.setLabels(labels1);
         m1.setTypeUri("http://imeji.org/terms/metadata#text");
         m1.setStatementUri("http://dev-faces.mpdl.mpg.de/imeji/statement/8Di1zD7GzAGIgUaY");
-        m1.setValue(titleValue);
+        //m1.setValue(titleValue);
         metaDataList.add(m1);
 
         //for creator
-        MetaDataUpload m2 = new MetaDataUpload();
-        GenericValue<String> creatorValue = new GenericValue<String>(metaDataLocal.getCreator());
-        m2.setValue(creatorValue);
-        //m.setValue(new TextImeji(metaDataLocal.getCreator()));
+        MetaData m2 = new MetaData();
+        //GenericValue<String> creatorValue = new GenericValue<String>(metaDataLocal.getCreator());
+        //m2.setValue(creatorValue);
+        m2.setValue(new TextImeji(metaDataLocal.getCreator()));
         m2.setStatementUri("http://dev-faces.mpdl.mpg.de/imeji/statement/B7bSBqhGySbxCM8Q");
         m2.setTypeUri("http://imeji.org/terms/metadata#text");
 
@@ -113,11 +113,11 @@ public class MetaDataConverter {
         metaDataList.add(m2);
 
         //for location
-        MetaDataUpload m3 = new MetaDataUpload();
+        MetaData m3 = new MetaData();
         GeoLocationImeji geo = new GeoLocationImeji(metaDataLocal.getAddress(),
                 metaDataLocal.getLatitude(), metaDataLocal.getLongitude());
-        GenericValue<GeoLocationImeji> geoValue = new GenericValue<GeoLocationImeji>(geo);
-        m3.setValue(geoValue);
+        //GenericValue<GeoLocationImeji> geoValue = new GenericValue<GeoLocationImeji>(geo);
+        m3.setValue(geo);
         //m.setValue(geo);
         m3.setStatementUri("http://dev-faces.mpdl.mpg.de/imeji/statement/2_FHehws3iKrRDAX");
         m3.setTypeUri("http://imeji.org/terms/metadata#geolocation");
@@ -128,10 +128,10 @@ public class MetaDataConverter {
         metaDataList.add(m3);
 
         //for accuracy
-        MetaDataUpload m4 = new MetaDataUpload();
-        GenericValue<Double> accuracyValue = new GenericValue<Double>(metaDataLocal.getAccuracy());
-        m4.setValue(accuracyValue);
-        //m.setValue(new NumberImeji(metaDataLocal.getAccuracy()));
+        MetaData m4 = new MetaData();
+        //GenericValue<Double> accuracyValue = new GenericValue<Double>(metaDataLocal.getAccuracy());
+        //m4.setValue(accuracyValue);
+        m4.setValue(new NumberImeji(metaDataLocal.getAccuracy()));
         m4.setStatementUri("http://dev-faces.mpdl.mpg.de/imeji/statement/reIk3qTBpcOxyjKb");
         m4.setTypeUri("http://imeji.org/terms/metadata#number");
         List<LabelsImeji> labels4 = new ArrayList<LabelsImeji>();
@@ -140,10 +140,10 @@ public class MetaDataConverter {
         metaDataList.add(m4);
 
         //for deviceID
-        MetaDataUpload m5 = new MetaDataUpload();
-        GenericValue<String> deviceValue = new GenericValue<String>(metaDataLocal.getDeviceID());
-        m5.setValue(deviceValue);
-        //m.setValue(new TextImeji(metaDataLocal.getDeviceID()));
+        MetaData m5 = new MetaData();
+        //GenericValue<String> deviceValue = new GenericValue<String>(metaDataLocal.getDeviceID());
+        //m5.setValue(deviceValue);
+        m5.setValue(new TextImeji(metaDataLocal.getDeviceID()));
         m5.setStatementUri("http://dev-faces.mpdl.mpg.de/imeji/statement/IqPfT4dfewwmB2aN");
         m5.setTypeUri("http://imeji.org/terms/metadata#text");
 
@@ -154,11 +154,11 @@ public class MetaDataConverter {
 
         //for tags
         for(String tag : metaDataLocal.getTags() ) {
-            MetaDataUpload mTag = new MetaDataUpload();
-            GenericValue<String> tagValue = new GenericValue<String>(tag);
-            mTag.setValue(tagValue);
+            MetaData mTag = new MetaData();
+            //GenericValue<String> tagValue = new GenericValue<String>(tag);
+            //mTag.setValue(tagValue);
 
-            //m.setValue(new TextImeji(tag));
+            mTag.setValue(new TextImeji(tag));
             mTag.setStatementUri("http://dev-faces.mpdl.mpg.de/imeji/statement/bWK8zwhEtNL259a");
             mTag.setTypeUri("http://imeji.org/terms/metadata#text");
 
