@@ -56,7 +56,7 @@ import retrofit.mime.TypedFile;
 /**
  * A fragment that launches other parts of the demo application.
  */
-public class LaunchpadSectionFragment extends Fragment {
+public class WorkflowSectionFragment extends Fragment {
 
     // Attributes for starting the intent and used by onActivityResult
     private static final int INTENT_ENABLE_GPS = 1000;
@@ -66,7 +66,7 @@ public class LaunchpadSectionFragment extends Fragment {
     private static final int INTENT_TAKE_PHOTO = 1005;
     private static final int INTENT_PICK_PHOTO = 1006;
 
-    private final String LOG_TAG = LaunchpadSectionFragment.class.getSimpleName();
+    private final String LOG_TAG = WorkflowSectionFragment.class.getSimpleName();
     public static final String ARG_SECTION_NUMBER = "section_number";
 
     private TypedFile typedFile;
@@ -178,7 +178,7 @@ public class LaunchpadSectionFragment extends Fragment {
         Log.d(LOG_TAG, "onCreateView");
 
         status = new DeviceStatus(getActivity());
-        rootView = inflater.inflate(R.layout.fragment_section_launchpad, container, false);
+        rootView = inflater.inflate(R.layout.fragment_section_workflow, container, false);
         imageView = (ImageView) rootView.findViewById(R.id.imageView);
         ratingView = (RatingBar) rootView.findViewById(R.id.ratingBar);
         ratingView.setIsIndicator(true);
@@ -336,7 +336,7 @@ public class LaunchpadSectionFragment extends Fragment {
                 .from(DataItem.class)
                 .where("isLocal = ?", 1)
                 .execute().size() >0) {
-            poi_list.setIcon(getResources().getDrawable(R.drawable.marker_green));
+            poi_list.setIcon(getResources().getDrawable(R.drawable.action_uploadlist_blue));
         }
 
     }
@@ -439,7 +439,7 @@ public class LaunchpadSectionFragment extends Fragment {
         itemList.add(item);
 
         //change the icon of the view
-        poi_list.setIcon(getResources().getDrawable(R.drawable.marker_green));
+        poi_list.setIcon(getResources().getDrawable(R.drawable.action_uploadlist_blue));
     }
 
     @Subscribe
