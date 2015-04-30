@@ -53,7 +53,6 @@ public class POIFragment extends Fragment {
             e.printStackTrace();
         }
 
-
         googleMap = mMapView.getMap();
 
         if(currentLocation != null){
@@ -71,6 +70,7 @@ public class POIFragment extends Fragment {
                 .defaultMarker(BitmapDescriptorFactory.HUE_ROSE));
 
         //marker.draggable();
+        //googleMap.setOnMarkerClickListener();
 
         // adding marker
         googleMap.addMarker(marker);
@@ -78,7 +78,6 @@ public class POIFragment extends Fragment {
                 .target(new LatLng(latitude, longitude)).zoom(12).build();
         googleMap.animateCamera(CameraUpdateFactory
                 .newCameraPosition(cameraPosition));
-
         return rootView;
 
     }
@@ -90,9 +89,9 @@ public class POIFragment extends Fragment {
 
         cameraPosition = new CameraPosition.Builder()
                 .target(new LatLng(latitude, longitude)).zoom(12).build();
-        googleMap.animateCamera(CameraUpdateFactory
-                .newCameraPosition(cameraPosition));
 
+        googleMap.moveCamera(CameraUpdateFactory
+                .newCameraPosition(cameraPosition));
         getAddressByCoordinates(event.location.getLatitude(), event.location.getLongitude());
 
     }
