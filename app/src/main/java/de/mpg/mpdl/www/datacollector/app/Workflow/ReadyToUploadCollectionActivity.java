@@ -30,6 +30,7 @@ import de.mpg.mpdl.www.datacollector.app.Retrofit.MetaDataConverter;
 import de.mpg.mpdl.www.datacollector.app.Retrofit.RetrofitClient;
 import de.mpg.mpdl.www.datacollector.app.SectionList.CustomListAdapter;
 import de.mpg.mpdl.www.datacollector.app.SectionList.DetailActivity;
+import de.mpg.mpdl.www.datacollector.app.utils.DeviceStatus;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -80,7 +81,7 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
 
         @Override
         public void failure(RetrofitError error) {
-            showToast( "Upload data Failed");
+            showToast("Upload data Failed");
             if (error == null || error.getResponse() == null) {
                 OttoSingleton.getInstance().post(new UploadEvent(null));
             } else {
@@ -111,7 +112,7 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
                 .execute();
 
         if(dataList == null){
-            showToast("Go back to get some data");
+            DeviceStatus.showToast(this, "Go back to get some data");
         }
         //Log.v("data1: ", dataList.get(0).getLocalPath());
         //Log.v("metatadata1: ", String.valueOf(dataList.get(0).getMetaDataLocal().getAccuracy()));

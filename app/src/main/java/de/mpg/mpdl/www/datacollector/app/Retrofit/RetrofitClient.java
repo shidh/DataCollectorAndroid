@@ -3,6 +3,7 @@ package de.mpg.mpdl.www.datacollector.app.Retrofit;
 import java.util.List;
 
 import de.mpg.mpdl.www.datacollector.app.Model.DataItem;
+import de.mpg.mpdl.www.datacollector.app.Model.POI;
 import retrofit.Callback;
 import retrofit.mime.TypedFile;
 
@@ -47,6 +48,33 @@ public class RetrofitClient {
         imejiAPI.postItem(typedFile, json, callback);
 }
 
+
+
+    public static void getPOIs(Callback<List<POI>> callback, String username,
+                               String password) {
+        ImejiAPI imejiAPI = ServiceGenerator.createService(ImejiAPI.class, REST_SERVER,
+                username, password);
+        imejiAPI.getPOIs(callback);
+    }
+
+    public static void getPOIsByQuery(String query, Callback<List<POI>> callback,
+                                      String username,
+                                      String password) {
+        ImejiAPI imejiAPI = ServiceGenerator.createService(ImejiAPI.class, REST_SERVER,
+                username, password);
+        imejiAPI.getPOIsByQuery(query, callback);
+    }
+
+    public static void getPOIById(String poiId, Callback<List<POI>> callback,
+                                  String username,
+                                  String password,
+                                  StringConverter converter) {
+        ImejiAPI imejiAPI = ServiceGenerator.createService(ImejiAPI.class, REST_SERVER,
+                username, password, converter);
+        imejiAPI.getPOIById(poiId, callback);
+    }
+
+
     public static void createPOI(TypedFile typedFile,
                                   String json,
                                   Callback<DataItem> callback,
@@ -57,8 +85,12 @@ public class RetrofitClient {
         //imejiAPI.postItem(typedFile, json, callback);
     }
 
-    public static void getPoiMembers(String albumId, Callback<List<DataItem>> callback) {
-        ImejiAPI imejiAPI = ServiceGenerator.createService(ImejiAPI.class, REST_SERVER);
+
+    public static void getPoiMembers(String albumId, Callback<List<DataItem>> callback,
+                                     String username,
+                                     String password) {
+        ImejiAPI imejiAPI = ServiceGenerator.createService(ImejiAPI.class, REST_SERVER,
+                username, password);
         imejiAPI.getPoiMembers(albumId, callback);
     }
 

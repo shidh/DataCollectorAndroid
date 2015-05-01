@@ -3,6 +3,7 @@ package de.mpg.mpdl.www.datacollector.app.Retrofit;
 import java.util.List;
 
 import de.mpg.mpdl.www.datacollector.app.Model.DataItem;
+import de.mpg.mpdl.www.datacollector.app.Model.POI;
 import de.mpg.mpdl.www.datacollector.app.Model.User;
 import retrofit.Callback;
 import retrofit.client.Response;
@@ -11,6 +12,7 @@ import retrofit.http.Multipart;
 import retrofit.http.POST;
 import retrofit.http.Part;
 import retrofit.http.Path;
+import retrofit.http.Query;
 import retrofit.mime.TypedFile;
 
 /**
@@ -48,8 +50,8 @@ public interface ImejiAPI {
     void getItems(Callback<List<DataItem>> callback);
 
     //get one item by itemId
-    @GET("/items/{itemId}")
-    List<DataItem> getItemById(@Path("itemId") String itemId,
+    @GET("/items/{id}")
+    List<DataItem> getItemById(@Path("id") String itemId,
                                Callback<Response> callback);
 
     //@POST("/items")
@@ -80,8 +82,22 @@ public interface ImejiAPI {
     /*
      *  For POI
     */
+
+    //get all items
+    //http://dev-faces.mpdl.mpg.de/imeji/rest/items
+    @GET("/albums")
+    void getPOIs(Callback<List<POI>> callback);
+
+    @GET("/albums")
+    void getPOIsByQuery(@Query("q") String query,
+                Callback<List<POI>> callback);
+
+    @GET("/albums/{id}")
+    void getPOIById(@Path("id") String albumId,
+                      Callback<List<POI>> callback);
+
     @GET("/albums/{id}/members")
-    void getPoiMembers(@Path("albumId") String albumId,
+    void getPoiMembers(@Path("id") String albumId,
                        Callback<List<DataItem>> callback);
 
 

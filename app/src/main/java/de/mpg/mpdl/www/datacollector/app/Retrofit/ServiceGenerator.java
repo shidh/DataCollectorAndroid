@@ -9,12 +9,14 @@ import com.squareup.okhttp.OkHttpClient;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.client.OkClient;
+import retrofit.converter.Converter;
 import retrofit.converter.GsonConverter;
 
 /**
  * Created by allen on 09/04/15.
  */
 public class ServiceGenerator {
+
 
     // No need to instantiate this class.
     private ServiceGenerator() {
@@ -25,20 +27,33 @@ public class ServiceGenerator {
         return createService(serviceClass, baseUrl, null, null);
     }
 
+    public static <S> S createService(Class<S> serviceClass, String baseUrl,
+                                      String username, String password) {
+        return createService(serviceClass, baseUrl, username, password, null);
+    }
     // Almost every webservice and API evaluates the Authorization header of the HTTP request.
     // That's why we set the encoded credentials value to that header field.
-    public static <S> S createService(Class<S> serviceClass, String baseUrl, String username, String password) {
+    public static <S> S createService(Class<S> serviceClass, String baseUrl,
+                                      String username, String password,
+                                      Converter converter) {
+        RestAdapter.Builder builder = new RestAdapter.Builder();
+
         Gson gson = new GsonBuilder()
                 .serializeNulls()
                 .excludeFieldsWithoutExposeAnnotation()
                 .create();
 
-        // set endpoint url and use OkHTTP as HTTP client
-        RestAdapter.Builder builder = new RestAdapter.Builder()
-                .setEndpoint(baseUrl)
-                .setConverter(new GsonConverter(gson))
-                .setClient(new OkClient(new OkHttpClient()));
+        if(converter != null){
+            builder.setEndpoint(baseUrl)
+                    .setConverter(new StringConverter())
+                    .setClient(new OkClient(new OkHttpClient()));
 
+        } else {
+            // set endpoint url and use OkHTTP as HTTP client
+            builder.setEndpoint(baseUrl)
+                    .setConverter(new GsonConverter(gson))
+                    .setClient(new OkClient(new OkHttpClient()));
+        }
 
 
         // execute only when user provide the username and password
