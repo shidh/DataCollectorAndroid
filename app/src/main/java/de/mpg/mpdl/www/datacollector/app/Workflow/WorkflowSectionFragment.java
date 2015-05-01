@@ -90,7 +90,7 @@ public class WorkflowSectionFragment extends Fragment {
     private RatingBar ratingView;
     private TextView lblLocation;
     private ImageView btnStartLocationUpdates;
-
+    private User user;
     private MenuItem poi_list;
 
     private OnLocationUpdatedListener mCallback;
@@ -166,6 +166,7 @@ public class WorkflowSectionFragment extends Fragment {
 //        double myDouble = savedInstanceState.getDouble("myDouble");
 //        int myInt = savedInstanceState.getInt("MyInt");
 //        String myString = savedInstanceState.getString("MyString");
+        user = new User();
 
         setHasOptionsMenu(true);
         Log.d(LOG_TAG, "onCreate");
@@ -178,7 +179,6 @@ public class WorkflowSectionFragment extends Fragment {
                              Bundle savedInstanceState) {
         Log.d(LOG_TAG, "onCreateView");
 
-        status = new DeviceStatus(getActivity());
         rootView = inflater.inflate(R.layout.fragment_section_workflow, container, false);
         imageView = (ImageView) rootView.findViewById(R.id.imageView);
         ratingView = (RatingBar) rootView.findViewById(R.id.ratingBar);
@@ -363,13 +363,13 @@ public class WorkflowSectionFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == INTENT_ENABLE_GPS) {
-            if (!status.isGPSEnabled()) {
+            if (!DeviceStatus.isGPSEnabled(getActivity())) {
                 Toast.makeText(getActivity(), R.string.problem_no_gps,
                         Toast.LENGTH_SHORT).show();
                 getActivity().finish();
             }
         } else if (requestCode == INTENT_ENABLE_NET) {
-            if (!status.isNetworkEnabled()) {
+            if (!DeviceStatus.isNetworkEnabled(getActivity())) {
                 Toast.makeText(getActivity(), R.string.problem_no_net,
                         Toast.LENGTH_SHORT).show();
             }
@@ -417,9 +417,8 @@ public class WorkflowSectionFragment extends Fragment {
 
     @Subscribe
     public void onGetMetadataFromUser(MetadataIsReadyEvent event) {
-        User user = new User();
         user.setCompleteName("Allen");
-
+        user.save();
         meta.setTags(event.tags);
         Log.v(LOG_TAG, event.tags.get(0));
         meta.setTitle(meta.getTags().get(0)+"@"+meta.getAddress());
