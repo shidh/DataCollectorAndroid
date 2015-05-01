@@ -53,8 +53,8 @@ public class DataItem extends Model {
     private String collectionId;
 
 
-    @Column(name = "poi")
-    private POI poi;
+    //@Column(name = "poi")
+    //private POI poi;
 
     @Column(name = "isLocal")
     private int isLocal;

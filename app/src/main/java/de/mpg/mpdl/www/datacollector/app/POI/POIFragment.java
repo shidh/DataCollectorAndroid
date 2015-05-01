@@ -31,9 +31,11 @@ import de.mpg.mpdl.www.datacollector.app.AsyncTask.GetAddressByCoordinatesTask;
 import de.mpg.mpdl.www.datacollector.app.Event.LocationChangedEvent;
 import de.mpg.mpdl.www.datacollector.app.Model.DataItem;
 import de.mpg.mpdl.www.datacollector.app.Model.MetaDataLocal;
+import de.mpg.mpdl.www.datacollector.app.Model.POI;
 import de.mpg.mpdl.www.datacollector.app.R;
 import de.mpg.mpdl.www.datacollector.app.Retrofit.MetaDataConverter;
 import de.mpg.mpdl.www.datacollector.app.Retrofit.RetrofitClient;
+import de.mpg.mpdl.www.datacollector.app.Retrofit.StringConverter;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -50,6 +52,10 @@ public class POIFragment extends Fragment {
     private final String LOG_TAG = POIFragment.class.getSimpleName();
     private ProgressDialog pDialog;
 
+    private String username = "shi@mpdl.mpg.de";
+    private String password = "allen";
+    String poiId = "XNdKJWI70TliDG4g";
+    String queryKeyword = "DataCollector";
     MapView mMapView;
     private GoogleMap googleMap;
 
@@ -59,45 +65,85 @@ public class POIFragment extends Fragment {
     private double longitude = 11.57648;
     CameraPosition cameraPosition;
 
+    Callback<List<POI>> callbackAlbum = new Callback<List<POI>>() {
+
+        @Override
+        public void success(List<POI> pois, Response response) {
+            Log.v(LOG_TAG, "get poi OK");
+            Log.v(LOG_TAG, pois.toString());
+            Log.v(LOG_TAG, response.getBody().toString());
+
+//            for (POI poi : pois) {
+//                Log.v(LOG_TAG, poi.getId());
+////                MetaDataLocal metaDataLocal = MetaDataConverter.
+////                        metaDataToMetaDataLocal(poi.getMetadata());
+////                metaDataLocal.save();
+////                poi.setMetaDataLocal(metaDataLocal);
+////
+////                poi.save();
+//                getDataItemFroPoi(poi.getId());
+//            }
+        }
+
+        @Override
+        public void failure(RetrofitError error) {
+            Log.v(LOG_TAG, String.valueOf(error));
+            Log.v(LOG_TAG, String.valueOf(error.getResponse()));
+
+            Log.v(LOG_TAG, "get poi failed");
+
+        }
+    };
 
 
-    Callback<List<DataItem>> callback = new Callback<List<DataItem>>() {
+    Callback<List<DataItem>> callbackMember = new Callback<List<DataItem>>() {
         @Override
         public void success(List<DataItem> dataList, Response response) {
             //adapter =  new CustomListAdapter(getActivity(), dataList);
+            Log.v(LOG_TAG, "get poi members OK");
 
             ActiveAndroid.beginTransaction();
             try {
                 // here get the string of Metadata Json
                 for (DataItem item : dataList) {
-                    if (item.getCollectionId().equals("Qwms6Gs040FBS264")) {
-                        //convertMetaData(item);
-                        MetaDataLocal metaDataLocal = MetaDataConverter.
-                                metaDataToMetaDataLocal(item.getMetadata());
+                    //convertMetaData(item);
+                    MetaDataLocal metaDataLocal = MetaDataConverter.
+                            metaDataToMetaDataLocal(item.getMetadata());
 
-                        metaDataLocal.save();
-                        item.setMetaDataLocal(metaDataLocal);
+                    metaDataLocal.save();
+                    item.setMetaDataLocal(metaDataLocal);
+                    item.save();
 
-                        item.save();
-                    }
+                    latitude = item.getMetaDataLocal().getLatitude();
+                    longitude = item.getMetaDataLocal().getLongitude();
+
+                    // create marker
+                    MarkerOptions marker = new MarkerOptions().position(
+                            new LatLng(latitude, longitude)).
+                            title(item.getMetaDataLocal().getTitle());
+
+                    // Changing marker icon
+                    marker.icon(BitmapDescriptorFactory
+                            .defaultMarker(BitmapDescriptorFactory.HUE_ROSE));
+                    googleMap.addMarker(marker);
                 }
+
                 ActiveAndroid.setTransactionSuccessful();
             } finally{
                 ActiveAndroid.endTransaction();
             }
 
-            //listView.setAdapter(adapter);
-            Log.v(LOG_TAG, "get poi OK");
 
-            showToast("got new POIs");
+            showToast("got new POI members");
 
         }
 
         @Override
         public void failure(RetrofitError error) {
-            Log.v(LOG_TAG, "get poi failed");
-            Log.v(LOG_TAG, error.toString());
-            showToast("update poi failed");
+            Log.v(LOG_TAG, String.valueOf(error.getResponse().getStatus()));
+            Log.v(LOG_TAG, String.valueOf(error));
+            Log.v(LOG_TAG, "get poi members failed");
+            showToast("update poi members failed");
         }
     };
 
@@ -117,6 +163,7 @@ public class POIFragment extends Fragment {
         setHasOptionsMenu(true);
         //TODO
         //updateDataItem(String AlbumId);
+        updatePoi(queryKeyword);
         Log.v(LOG_TAG, "start onCreate~~~");
 
     }
@@ -247,9 +294,21 @@ public class POIFragment extends Fragment {
         fetchTask.execute(latitude, longitude);
     }
 
-    private void updateDataItem(String AlbumId){
-        RetrofitClient.getPoiMembers(AlbumId, callback);
+
+    private void updatePoi(String query){
+        RetrofitClient.getPOIsByQuery(query, callbackAlbum, username, password);
     }
+    private void getPoiById(String poiId){
+        RetrofitClient.getPOIById(poiId, callbackAlbum, username, password, new StringConverter());
+    }
+
+
+
+    private void getDataItemFroPoi(String poiId){
+        RetrofitClient.getPoiMembers(poiId, callbackMember, username, password);
+    }
+
+
 
 
     public void showToast(String message) {
