@@ -41,10 +41,10 @@ public class User extends Model{
     @Expose
     private List<Organization> organizations;
 
-    @Column(name = "collections")
+    //@Column(name = "collections")
     private ImejiCollection collections;
 
-    @Column(name = "items")
+    //@Column(name = "items")
     private ArrayList<DataItem> items;
 
 

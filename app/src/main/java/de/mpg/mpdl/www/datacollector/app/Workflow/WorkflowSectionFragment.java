@@ -42,6 +42,7 @@ import de.mpg.mpdl.www.datacollector.app.Model.DataItem;
 import de.mpg.mpdl.www.datacollector.app.Model.MetaDataLocal;
 import de.mpg.mpdl.www.datacollector.app.Model.User;
 import de.mpg.mpdl.www.datacollector.app.R;
+import de.mpg.mpdl.www.datacollector.app.Workflow.UploadView.ReadyToUploadCollectionActivity;
 import de.mpg.mpdl.www.datacollector.app.utils.DeviceStatus;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -167,7 +168,8 @@ public class WorkflowSectionFragment extends Fragment {
 //        int myInt = savedInstanceState.getInt("MyInt");
 //        String myString = savedInstanceState.getString("MyString");
         user = new User();
-
+        user.setCompleteName("Allen");
+        user.save();
         setHasOptionsMenu(true);
         Log.d(LOG_TAG, "onCreate");
     }
@@ -351,7 +353,6 @@ public class WorkflowSectionFragment extends Fragment {
         if (id == R.id.POI_list) {
             //updateWeather();
             //updateDataItem();
-            showToast("hi from list icon");
             Intent intent = new Intent(getActivity(), ReadyToUploadCollectionActivity.class);
             startActivity(intent);
             return true;
@@ -385,12 +386,14 @@ public class WorkflowSectionFragment extends Fragment {
             if (resultCode == getActivity().RESULT_OK) {
                 takeAnotherPhoto = true;
 
-                File imgFile = new File(photoFilePath);
-                if(imgFile.exists()){
-                    Picasso.with(getActivity())
-                            .load(imgFile)
-                            .resize(imageView.getWidth(), imageView.getHeight())
-                            .into(imageView);
+                if(photoFilePath != null) {
+                    File imgFile = new File(photoFilePath);
+                    if (imgFile.exists()) {
+                        Picasso.with(getActivity())
+                                .load(imgFile)
+                                .resize(imageView.getWidth(), imageView.getHeight())
+                                .into(imageView);
+                    }
                 }
 
                 addImageToGallery(photoFilePath);
@@ -417,8 +420,7 @@ public class WorkflowSectionFragment extends Fragment {
 
     @Subscribe
     public void onGetMetadataFromUser(MetadataIsReadyEvent event) {
-        user.setCompleteName("Allen");
-        user.save();
+
         meta.setTags(event.tags);
         Log.v(LOG_TAG, event.tags.get(0));
         meta.setTitle(meta.getTags().get(0)+"@"+meta.getAddress());
@@ -493,7 +495,7 @@ public class WorkflowSectionFragment extends Fragment {
             Log.v(LOG_TAG, photoFilePath);
             // Create the storage directory if it does not exist
             if (!storageDir.exists() && !storageDir.mkdirs()) {
-                photoFilePath = null;
+                //photoFilePath = null;
             }
         } catch (Exception e) {
             Toast.makeText(getActivity(), R.string.problem_create_file,
@@ -517,16 +519,6 @@ public class WorkflowSectionFragment extends Fragment {
 //        RetrofitClient.uploadItem(typedFile, json, callback, username, password);
 //    }
 
-
-    private MetaDataLocal setCollectMetaData(){
-        MetaDataLocal meta = new MetaDataLocal();
-        typedFile = new TypedFile("multipart/form-data", new File(photoFilePath));
-        json = "{ \"collectionId\" : \"Qwms6Gs040FBS264\"}";
-
-        //TODO   deal with POI id
-        //meta.setDeviceID();
-        return meta;
-    }
 
     public String encodeBae64(String src){
         // Sending side

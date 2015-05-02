@@ -449,7 +449,7 @@ public class MainActivity extends FragmentActivity implements
 
         mLastLocation = LocationServices.FusedLocationApi
                 .getLastLocation(mGoogleApiClient);
-        //togglePeriodicLocationUpdates();
+        //togglePeriodicLocationUpdates(btnStartLocationUpdates);
 
         if (mRequestingLocationUpdates) {
             startLocationUpdates();
@@ -582,7 +582,7 @@ public class MainActivity extends FragmentActivity implements
                 Log.d(LOG_TAG, "Periodic location updates stopped!");
             }
         } else{
-            showToast("Please check your network");
+            showToast("Can not connect the Google Location Service");
         }
     }
 
