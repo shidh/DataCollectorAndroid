@@ -229,7 +229,7 @@ public class MainActivity extends FragmentActivity implements
     protected void onPause() {
         super.onPause();
         //onSaveInstanceState();
-        if (mRequestingLocationUpdates) {
+        if (mRequestingLocationUpdates && mGoogleApiClient.isConnected()) {
             stopLocationUpdates();
         }
         Log.e(LOG_TAG, "start onPause~~~");

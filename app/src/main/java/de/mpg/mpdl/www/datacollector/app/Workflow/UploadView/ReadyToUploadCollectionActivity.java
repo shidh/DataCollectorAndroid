@@ -3,6 +3,7 @@ package de.mpg.mpdl.www.datacollector.app.Workflow.UploadView;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -136,31 +137,68 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
 
         adapter = new GridImageAdapter(this, dataList);
         GridView gridview = (GridView) findViewById(R.id.grid_view);
+        registerForContextMenu(gridview);
+
         gridview.setAdapter(adapter);
 
         //TODO
         // Edit and delete the list
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View v,
+            public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                showToast("" + position);
+                showToast("id" + id);
             }
         });
 
-        gridview.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view,
-                                           final int position, long id) {
-                new Delete().from(DataItem.class).
-                        where("filename = ?", dataList.get(position).getFilename()).execute();
-                dataList.remove(position);
-                adapter.notifyDataSetChanged();
-                return false;
-            }
-        });
+//        gridview.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+//            @Override
+//            public boolean onItemLongClick(AdapterView<?> parent, View view,
+//                                           final int position, long id) {
+//                new Delete().from(DataItem.class).
+//                        where("filename = ?", dataList.get(position).getFilename()).execute();
+//                dataList.remove(position);
+//                adapter.notifyDataSetChanged();
+//                return false;
+//            }
+//        });
     }
 
-        @Override
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        menu.setHeaderTitle("Context Menu");
+        AdapterView.AdapterContextMenuInfo cmi = (AdapterView.AdapterContextMenuInfo) menuInfo;
+        //menu.add(0, v.getId(), 0, "Delete");
+        //menu.add(0, v.getId(), 0, "Cancel");
+        menu.add(1, cmi.position, 0, "Delete");
+        menu.add(2, cmi.position, 0, "Cancel");
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+
+        //GridView g = (GridView) findViewById(R.id.grid_view);
+        //String s = (String) g.getItemAtPosition(item.getItemId());
+
+        if(item.getTitle().equals("Delete")){
+            new Delete().from(DataItem.class).
+                        where("filename = ?", dataList.get(item.getItemId()).getFilename()).execute();
+            dataList.remove(item.getItemId());
+            adapter.notifyDataSetChanged();
+            Log.v("", String.valueOf(item.getItemId()));
+        }
+        else if(item.getTitle().equals("Cancel")){
+            //function2(item.getItemId());
+            Log.v("", String.valueOf(item.getItemId()));
+        }
+        else {
+            return false;
+
+        }
+        return true;
+    }
+
+    @Override
         protected void onStart() {
             super.onStart();
             Log.e(LOG_TAG, "start onStart~~~");

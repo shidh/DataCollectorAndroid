@@ -10,7 +10,6 @@
         android:gravity="center"
         android:layout_gravity="center"
         android:id="@+id/upload_item_cell_thumbnail"
-        android:src="@drawable/ic_launcher"
         android:layout_centerInParent="true"/>
 
 
