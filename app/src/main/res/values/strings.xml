@@ -21,6 +21,8 @@
     <string name="send_data">Save</string>
     <string name="title_activity_detail">DetailActivity</string>
     <string name="dialog_title">Add Metadata</string>
+    <string name="dialog_delete_title">Delete Metadata</string>
+
     <string name="ok">OK</string>
     <string name="cancel">Back</string>
 
