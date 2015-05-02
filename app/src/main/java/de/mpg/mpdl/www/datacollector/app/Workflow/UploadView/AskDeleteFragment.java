@@ -6,9 +6,6 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import de.mpg.mpdl.www.datacollector.app.R;
 
 /**
@@ -26,13 +23,6 @@ public class AskDeleteFragment extends DialogFragment {
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int id) {
-                        // User clicked OK button
-                        String[]  mTagsArray = getResources().getStringArray(R.array.tags_array);
-
-                        List<String> tags = new ArrayList<String>();
-                        for (Object item : mSelectedItems) {
-                            tags.add(mTagsArray[Integer.parseInt(item.toString())]);
-                        }
 
                     }
                 })
@@ -40,7 +30,6 @@ public class AskDeleteFragment extends DialogFragment {
 
                     public void onClick(DialogInterface dialog, int id) {
                         // User cancelled the dialog
-                        mSelectedItems.clear();
                     }
                 });
         // Create the AlertDialog object and return it
