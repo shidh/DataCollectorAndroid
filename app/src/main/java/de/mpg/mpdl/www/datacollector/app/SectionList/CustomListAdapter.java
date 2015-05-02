@@ -53,17 +53,17 @@ public class CustomListAdapter extends BaseAdapter {
         if (convertView == null)
             convertView = inflater.inflate(R.layout.list_item_cell, null);
 
-        ImageView imageView = (ImageView) convertView.findViewById(R.id.thumbnail);
-        TextView title = (TextView) convertView.findViewById(R.id.list_item_forecast_textview);
-        TextView artist = (TextView) convertView.findViewById(R.id.artist);
-        TextView date = (TextView) convertView.findViewById(R.id.date);
+        ImageView imageView = (ImageView) convertView.findViewById(R.id.list_item_cell_thumbnail);
+        TextView title = (TextView) convertView.findViewById(R.id.list_item_cell_title);
+        TextView fileName = (TextView) convertView.findViewById(R.id.list_item_cell_filename);
+        TextView date = (TextView) convertView.findViewById(R.id.list_item_cell_date);
 
         // getting item data for the row
         DataItem m = dataItems.get(position);
 
         // thumbnail image
         Picasso.with(activity)
-                .load(m.getThumbnailUrl())
+                .load(m.getLocalPath())
                 .into(imageView);
         //Log.v("getThumbnailUrl ",m.getThumbnailUrl());
 
@@ -72,7 +72,7 @@ public class CustomListAdapter extends BaseAdapter {
 
         // user
         //artist.setText(m.getCreatedBy().getFamilyName());
-        artist.setText(m.getFilename());
+        fileName.setText(m.getFilename());
 
         // date
         date.setText(String.valueOf(m.getCreatedDate()).split("\\+")[0]);

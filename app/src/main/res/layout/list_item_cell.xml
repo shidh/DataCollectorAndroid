@@ -17,17 +17,17 @@ android:padding="5dip" >
 <ImageView
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:id="@+id/thumbnail"
+    android:id="@+id/list_item_cell_thumbnail"
     android:layout_alignParentTop="true"
     android:layout_alignParentLeft="true"
     android:layout_marginRight="5dip"/>
 
 <TextView
-    android:id="@+id/list_item_forecast_textview"
+    android:id="@+id/list_item_cell_title"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_alignTop="@+id/thumbnail"
-    android:layout_toRightOf="@+id/thumbnail"
+    android:layout_alignTop="@+id/list_item_cell_thumbnail"
+    android:layout_toRightOf="@+id/list_item_cell_thumbnail"
     android:textColor="#040404"
     android:text="Title"
     android:typeface="sans"
@@ -36,24 +36,24 @@ android:padding="5dip" >
 
 <!-- creator name-->
 <TextView
-    android:id="@+id/artist"
+    android:id="@+id/list_item_cell_filename"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:layout_below="@id/list_item_forecast_textview"
+    android:layout_below="@id/list_item_cell_title"
     android:textColor="#343434"
     android:textSize="10dip"
     android:text="Allen"
     android:layout_marginTop="1dip"
-    android:layout_toRightOf="@+id/thumbnail"
+    android:layout_toRightOf="@+id/list_item_cell_thumbnail"
  />
 
 <!-- time -->
 <TextView
-    android:id="@+id/date"
+    android:id="@+id/list_item_cell_date"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_alignParentRight="true"
-    android:layout_alignTop="@id/list_item_forecast_textview"
+    android:layout_alignTop="@id/list_item_cell_title"
     android:gravity="right"
     android:text="5:45"
     android:layout_marginRight="15dip"
