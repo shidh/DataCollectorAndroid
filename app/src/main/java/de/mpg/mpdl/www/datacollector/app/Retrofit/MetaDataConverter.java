@@ -29,7 +29,7 @@ public class MetaDataConverter {
             .excludeFieldsWithoutExposeAnnotation()
             .create();
 
-    public static MetaDataLocal metaDataToMetaDataLocal(List<MetaData> metaDataList){
+    public static MetaDataLocal metaDataToMetaDataLocal(List<MetaData> metaDataList) {
         MetaDataLocal metaDataLocal = new MetaDataLocal();
         List<String> tags = new ArrayList<String>();
         // here get the string of Metadata Json
@@ -39,32 +39,32 @@ public class MetaDataConverter {
         try {
             JSONArray jsonArray = new JSONArray(json);
 
-            for(int i = 0; i < jsonArray.length(); i++ ){
+            for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject meta = jsonArray.getJSONObject(i);
                 //String type = meta.getString("typeUri").split("#")[1];
                 String label = meta.getString("labels").split("\"")[3];
                 //String statementUri = meta.getString("statementUri");
 
-                if(label.equals("title")){
+                if (label.equals("title")) {
                     JSONObject value = (JSONObject) meta.get("value");
                     metaDataLocal.setTitle(value.getString("text"));
-                } else if(label.equals("author")){
+                } else if (label.equals("author")) {
                     JSONObject value = (JSONObject) meta.get("value");
                     metaDataLocal.setCreator(value.getString("text"));
-                } else if(label.equals("accuracy")){
+                } else if (label.equals("accuracy")) {
                     JSONObject value = (JSONObject) meta.get("value");
                     metaDataLocal.setAccuracy(value.getDouble("number"));
 
-                } else if(label.equals("deviceID")){
+                } else if (label.equals("deviceID")) {
                     JSONObject value = (JSONObject) meta.get("value");
                     metaDataLocal.setDeviceID(value.getString("text"));
-                } else if(label.equals("location")){
+                } else if (label.equals("location")) {
                     //"value":{"name":"Amalienstr. 33 D-80799 München","longitude":11.57648,"latitude":48.147899}
                     JSONObject value = (JSONObject) meta.get("value");
                     metaDataLocal.setAddress(value.getString("name"));
                     metaDataLocal.setLatitude(value.getDouble("latitude"));
                     metaDataLocal.setLongitude(value.getDouble("longitude"));
-                } else if(label.equals("tags")){
+                } else if (label.equals("tags")) {
                     JSONObject value = (JSONObject) meta.get("value");
                     tags.add(value.getString("text"));
                 }
@@ -81,7 +81,7 @@ public class MetaDataConverter {
     }
 
 
-    public static List<MetaData> metaDataLocalToMetaDataList(MetaDataLocal metaDataLocal){
+    public static List<MetaData> metaDataLocalToMetaDataList(MetaDataLocal metaDataLocal) {
         List<MetaData> metaDataList = new ArrayList<MetaData>();
 
         Log.v(LOG_TAG + metaDataLocal, gson.toJson(metaDataLocal));
@@ -153,7 +153,7 @@ public class MetaDataConverter {
         metaDataList.add(m5);
 
         //for tags
-        for(String tag : metaDataLocal.getTags() ) {
+        for (String tag : metaDataLocal.getTags()) {
             MetaData mTag = new MetaData();
             //GenericValue<String> tagValue = new GenericValue<String>(tag);
             //mTag.setValue(tagValue);
@@ -170,5 +170,4 @@ public class MetaDataConverter {
         Log.v(LOG_TAG, gson.toJson(metaDataList));
         return metaDataList;
     }
-
 }

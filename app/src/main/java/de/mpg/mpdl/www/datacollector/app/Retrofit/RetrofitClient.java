@@ -75,14 +75,13 @@ public class RetrofitClient {
     }
 
 
-    public static void createPOI(TypedFile typedFile,
-                                  String json,
-                                  Callback<DataItem> callback,
+    public static void createPOI( POI poi,
+                                  Callback<POI> callback,
                                   String username,
                                   String password) {
         ImejiAPI imejiAPI = ServiceGenerator.
                 createService(ImejiAPI.class, REST_SERVER, username, password);
-        //imejiAPI.postItem(typedFile, json, callback);
+        imejiAPI.postPOI(poi, callback);
     }
 
 
@@ -93,6 +92,15 @@ public class RetrofitClient {
                 username, password);
         imejiAPI.getPoiMembers(albumId, callback);
     }
+
+    public static void linkItems(String albumId, String body,
+                                     String username,
+                                     String password) {
+        ImejiAPI imejiAPI = ServiceGenerator.createService(ImejiAPI.class, REST_SERVER,
+                username, password);
+        imejiAPI.linkItems(albumId, body);
+    }
+
 
 
 }

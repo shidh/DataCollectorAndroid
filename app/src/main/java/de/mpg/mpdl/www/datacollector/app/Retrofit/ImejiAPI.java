@@ -7,9 +7,13 @@ import de.mpg.mpdl.www.datacollector.app.Model.POI;
 import de.mpg.mpdl.www.datacollector.app.Model.User;
 import retrofit.Callback;
 import retrofit.client.Response;
+import retrofit.http.Body;
+import retrofit.http.Field;
+import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
 import retrofit.http.Multipart;
 import retrofit.http.POST;
+import retrofit.http.PUT;
 import retrofit.http.Part;
 import retrofit.http.Path;
 import retrofit.http.Query;
@@ -99,6 +103,15 @@ public interface ImejiAPI {
     @GET("/albums/{id}/members")
     void getPoiMembers(@Path("id") String albumId,
                        Callback<List<DataItem>> callback);
+
+    @POST("/albums")
+    void postPOI(@Body POI poi,
+                  Callback<POI> callback);
+
+    @FormUrlEncoded
+    @PUT("/albums/{id}/members/link")
+    Response linkItems(@Path("id") String albumId,
+                       @Field("body") String body);
 
 
 }

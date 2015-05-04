@@ -26,6 +26,9 @@ import java.util.List;
 import de.mpg.mpdl.www.datacollector.app.Event.OttoSingleton;
 import de.mpg.mpdl.www.datacollector.app.Event.UploadEvent;
 import de.mpg.mpdl.www.datacollector.app.Model.DataItem;
+import de.mpg.mpdl.www.datacollector.app.Model.ImejiModel.Organization;
+import de.mpg.mpdl.www.datacollector.app.Model.POI;
+import de.mpg.mpdl.www.datacollector.app.Model.User;
 import de.mpg.mpdl.www.datacollector.app.R;
 import de.mpg.mpdl.www.datacollector.app.Retrofit.MetaDataConverter;
 import de.mpg.mpdl.www.datacollector.app.Retrofit.RetrofitClient;
@@ -49,6 +52,8 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
     ListView listView;
     private MenuItem upload;
 
+    private Gson gson = new Gson();
+    List<String> itemIds = new ArrayList<String>();
 
     public TypedFile typedFile;
     String json;
@@ -58,6 +63,7 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
     private String username = "shi@mpdl.mpg.de";
     private String password = "allen";
 
+
     Callback<DataItem> callback = new Callback<DataItem>() {
         @Override
         @Produce
@@ -65,12 +71,13 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
             //adapter =  new CustomListAdapter(getActivity(), dataList);
             //listView.setAdapter(adapter);
             showToast("Upload data Successfully");
-            Log.v(LOG_TAG, dataItem.getFilename());
+            Log.v(LOG_TAG, dataItem.getId().toString());
+            itemIds.add(dataItem.getId().toString());
 
                 //Log.v(LOG_TAG, item.getFilename());
             //TODO upload a new POI
             //upload a POI as Album on Imeji
-            //RetrofitClient.createPOI(typedFile, json, callback, username, password);
+            RetrofitClient.createPOI(createNewPOI(), callbackPoi, username, password);
 
             //TODO produce a message event to third-party fragment to display the POI on map
             OttoSingleton.getInstance().post(
@@ -87,6 +94,23 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
                 OttoSingleton.getInstance().post(
                         new UploadEvent(error.getResponse().getStatus()));
             }
+            Log.v(LOG_TAG, String.valueOf(error.getResponse().getStatus()));
+            Log.v(LOG_TAG, String.valueOf(error));
+        }
+    };
+
+
+    Callback<POI> callbackPoi = new Callback<POI>() {
+        @Override
+        public void success(POI poi, Response response) {
+            Log.v(LOG_TAG, poi.getId());
+            Log.v("json: ",gson.toJson(itemIds));
+            RetrofitClient.linkItems(poi.getId(), gson.toJson(itemIds), username, password);
+
+        }
+
+        @Override
+        public void failure(RetrofitError error) {
             Log.v(LOG_TAG, String.valueOf(error.getResponse().getStatus()));
             Log.v(LOG_TAG, String.valueOf(error));
         }
@@ -115,6 +139,7 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
             DeviceStatus.showToast(this, "Go back to get some data");
         }
 
+
 //        adapter =  new CustomListAdapter(this, dataList);
 //        listView = (ListView) findViewById(R.id.item_list);
 //
@@ -141,7 +166,6 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
 
         gridview.setAdapter(adapter);
 
-        //TODO
         // Edit and delete the list
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view,
@@ -166,19 +190,14 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        menu.setHeaderTitle("Context Menu");
+        menu.setHeaderTitle("Are you sure to delete?");
         AdapterView.AdapterContextMenuInfo cmi = (AdapterView.AdapterContextMenuInfo) menuInfo;
-        //menu.add(0, v.getId(), 0, "Delete");
-        //menu.add(0, v.getId(), 0, "Cancel");
         menu.add(1, cmi.position, 0, "Delete");
         menu.add(2, cmi.position, 0, "Cancel");
     }
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-
-        //GridView g = (GridView) findViewById(R.id.grid_view);
-        //String s = (String) g.getItemAtPosition(item.getItemId());
 
         if(item.getTitle().equals("Delete")){
             new Delete().from(DataItem.class).
@@ -188,13 +207,14 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
             Log.v("", String.valueOf(item.getItemId()));
         }
         else if(item.getTitle().equals("Cancel")){
-            //function2(item.getItemId());
             Log.v("", String.valueOf(item.getItemId()));
         }
         else {
             return false;
 
         }
+        // Return false to allow normal context menu processing to proceed,
+        //        true to consume it here.
         return true;
     }
 
@@ -254,7 +274,8 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
             if (id == R.id.upload) {
                 //Intent showSettingIntent = new Intent(this, SettingsActivity.class);
                 //startActivity(showSettingIntent);
-                createNewPOI();
+
+                //createNewPOI();
                 upload(dataList);
                 return true;
             }
@@ -262,9 +283,27 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
             return super.onOptionsItemSelected(item);
         }
 
-        //create a POI locally
-        private void createNewPOI() {
+        private POI createNewPOI() {
+            List<User> contributors = new ArrayList<User>();
+            User user = new User();
+            List<Organization> orgs = new ArrayList<Organization>();
+            Organization org = new Organization();
+            org.setName("TUM");
+            org.setDescription("OpenGridMap");
+            org.setCity("Munich");
+            org.setCountry("Germany");
+            orgs.add(org);
 
+            user.setFamilyName("Shi");
+            user.setGivenName("Allen");
+            user.setOrganizations(orgs);
+            contributors.add(user);
+
+            POI poi = new POI();
+            poi.setTitle("Allen's POI");
+            poi.setDescription("just test");
+            poi.setContributors(contributors);
+            return poi;
         }
 
         private void upload(List<DataItem> iList) {
@@ -285,7 +324,7 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
 
                 Log.v(LOG_TAG, json);
                 RetrofitClient.uploadItem(typedFile, json, callback, username, password);
-                //TODO  popup a progress bar to show the uploading
+                //TODO  popup a progress bar to show the uploading is running
             }
         }
 
