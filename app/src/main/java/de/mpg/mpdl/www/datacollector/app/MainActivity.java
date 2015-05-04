@@ -1,6 +1,7 @@
 package de.mpg.mpdl.www.datacollector.app;
 
 import android.app.ActionBar;
+import android.app.Dialog;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -85,6 +86,12 @@ public class MainActivity extends FragmentActivity implements
     private static int UPDATE_INTERVAL = 2000; // Update location every 5 sec
     private static int FATEST_INTERVAL = 1000; // 2 sec
     private static int DISPLACEMENT = 0; // 2 meters
+    // Request code to use when launching the resolution activity
+    private static final int REQUEST_RESOLVE_ERROR = 1001;
+    // Unique tag for the error dialog fragment
+    private static final String DIALOG_ERROR = "dialog_error";
+    // Bool to track whether the app is already resolving an error
+    private boolean mResolvingError = false;
 
     private TextView lblLocation;
     private RatingBar ratingView;
@@ -202,11 +209,19 @@ public class MainActivity extends FragmentActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        checkPlayServices();
 
-        // Resuming the periodic location updates
-        if (mGoogleApiClient.isConnected() && mRequestingLocationUpdates) {
-            startLocationUpdates();
+        int code = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        if(code != ConnectionResult.SUCCESS) {
+            Dialog dialog = GooglePlayServicesUtil.getErrorDialog(code, this, 1);
+            dialog.show();
+        }
+
+        checkPlayServices();
+        if (mGoogleApiClient != null) {
+            // Resuming the periodic location updates
+            if (mGoogleApiClient.isConnected() && mRequestingLocationUpdates) {
+                startLocationUpdates();
+            }
         }
         Log.e(LOG_TAG, "start onResume~~~");
     }
@@ -583,6 +598,7 @@ public class MainActivity extends FragmentActivity implements
             }
         } else{
             showToast("Can not connect the Google Location Service");
+            mGoogleApiClient.connect();
         }
     }
 
