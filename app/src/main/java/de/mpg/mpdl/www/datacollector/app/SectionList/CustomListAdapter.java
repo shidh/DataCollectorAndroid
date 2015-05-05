@@ -63,12 +63,12 @@ public class CustomListAdapter extends BaseAdapter {
 
         // thumbnail image
         Picasso.with(activity)
-                .load(m.getLocalPath())
+                .load(m.getThumbnailUrl())
                 .into(imageView);
         //Log.v("getThumbnailUrl ",m.getThumbnailUrl());
 
         // title
-        title.setText(m.getCollectionId());
+        title.setText(m.getMetaDataLocal().getTitle());
 
         // user
         //artist.setText(m.getCreatedBy().getFamilyName());

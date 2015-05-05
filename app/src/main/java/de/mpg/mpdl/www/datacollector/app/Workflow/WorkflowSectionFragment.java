@@ -22,6 +22,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.activeandroid.query.Select;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Picasso;
 
@@ -69,6 +71,7 @@ public class WorkflowSectionFragment extends Fragment {
 
     private final String LOG_TAG = WorkflowSectionFragment.class.getSimpleName();
     public static final String ARG_SECTION_NUMBER = "section_number";
+    private String collectionID = "DCQVKA8esikfRTWi";
 
     private TypedFile typedFile;
     private String json;
@@ -76,6 +79,10 @@ public class WorkflowSectionFragment extends Fragment {
     private DataItem item = new DataItem();
     private MetaDataLocal meta = new MetaDataLocal();
     private Location currentLocation;
+    private static Gson gson = new GsonBuilder()
+            .serializeNulls()
+            .excludeFieldsWithoutExposeAnnotation()
+            .create();
 
     /*
      * After the intent to take a picture finishes we need to wait for
@@ -163,6 +170,7 @@ public class WorkflowSectionFragment extends Fragment {
 
         // Restore UI state from the savedInstanceState.
         // This bundle has also been passed to onCreate.
+//        photoFilePath = savedInstanceState.getString("photoFilePath");
 //        boolean myBoolean = savedInstanceState.getBoolean("MyBoolean");
 //        double myDouble = savedInstanceState.getDouble("myDouble");
 //        int myInt = savedInstanceState.getInt("MyInt");
@@ -180,6 +188,11 @@ public class WorkflowSectionFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.d(LOG_TAG, "onCreateView");
+
+        if (savedInstanceState != null) {
+            // Restore last state for checked position.
+            photoFilePath = savedInstanceState.getString("photoFilePath");
+        }
 
         rootView = inflater.inflate(R.layout.fragment_section_workflow, container, false);
         imageView = (ImageView) rootView.findViewById(R.id.imageView);
@@ -273,12 +286,6 @@ public class WorkflowSectionFragment extends Fragment {
         return rootView;
     }
 
-      @Override
-      public void onActivityCreated(Bundle savedInstanceState) {
-          super.onActivityCreated(savedInstanceState);
-          Log.d(LOG_TAG, "onActivityCreated");
-      }
-
     @Override
     public void onStart() {
         super.onStart();
@@ -294,20 +301,24 @@ public class WorkflowSectionFragment extends Fragment {
         Log.d(LOG_TAG, "onResume");
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-        super.onSaveInstanceState(savedInstanceState);
-        Log.v(LOG_TAG, "onSaveInstanceState");
-        // Save UI state changes to the savedInstanceState.
-        // This bundle will be passed to onCreate if the process is
-        // killed and restarted.
-        savedInstanceState.putBoolean("MyBoolean", true);
-        savedInstanceState.putDouble("myDouble", 1.9);
-        savedInstanceState.putInt("MyInt", 1);
-        savedInstanceState.putString("MyString", "Welcome back to Android");
-    }
-
-
+//    @Override
+//    public void onSaveInstanceState(Bundle savedInstanceState) {
+//        super.onSaveInstanceState(savedInstanceState);
+//        Log.v(LOG_TAG, "onSaveInstanceState");
+//        // Save UI state changes to the savedInstanceState.
+//        // This bundle will be passed to onCreate if the process is
+//        // killed and restarted.
+//        savedInstanceState.putString("photoFilePath", photoFilePath);
+//    }
+//
+//    @Override
+//    public void onActivityCreated(Bundle savedInstanceState) {
+//        super.onActivityCreated(savedInstanceState);
+//        if (savedInstanceState != null) {
+//            // Restore last state for checked position.
+//            photoFilePath = savedInstanceState.getString("photoFilePath");
+//        }
+//    }
 
     @Override
     public void onPause() {
@@ -326,6 +337,7 @@ public class WorkflowSectionFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+
         Log.v(LOG_TAG, "start onDestroy~~~");
     }
 
@@ -383,8 +395,11 @@ public class WorkflowSectionFragment extends Fragment {
 			 */
             //getUsername();
         } else if (requestCode == INTENT_TAKE_PHOTO) {
+            Log.v(LOG_TAG+ " resultCode", String.valueOf(resultCode));
             if (resultCode == getActivity().RESULT_OK) {
                 takeAnotherPhoto = true;
+                //Bitmap photo = (Bitmap) data.getExtras().get("output");
+                //imageView.setImageBitmap(photo);
 
                 if(photoFilePath != null) {
                     File imgFile = new File(photoFilePath);
@@ -394,12 +409,15 @@ public class WorkflowSectionFragment extends Fragment {
                                 .resize(imageView.getWidth(), imageView.getHeight())
                                 .into(imageView);
                     }
+                    addImageToGallery(photoFilePath);
+                    rootView.findViewById(R.id.save).setVisibility(View.VISIBLE);
                 }
+                getActivity().finish();
 
-                addImageToGallery(photoFilePath);
-                rootView.findViewById(R.id.save).setVisibility(View.VISIBLE);
             } else if (resultCode == getActivity().RESULT_CANCELED) {
                 // User cancelled the photo capture
+            } else{
+                takePhoto();
             }
         } else if (requestCode == INTENT_PICK_PHOTO){
             if (resultCode == getActivity().RESULT_OK) {
@@ -426,8 +444,10 @@ public class WorkflowSectionFragment extends Fragment {
         meta.setTitle(meta.getTags().get(0)+"@"+meta.getAddress());
 
         meta.setCreator(user.getCompleteName());
+        meta.save();
+
         //add a dataItem to the list on the top of view
-        item.setCollectionId("Qwms6Gs040FBS264");
+        item.setCollectionId(collectionID);
         item.setLocalPath(photoFilePath);
         item.setMetaDataLocal(meta);
         item.setLocal(1);
@@ -435,12 +455,18 @@ public class WorkflowSectionFragment extends Fragment {
         item.setFilename(fileName);
 
         Log.v(LOG_TAG, item.getMetaDataLocal().getTitle());
-
-        meta.save();
         item.save();
         Log.v(LOG_TAG, item.getFilename());
         itemList.add(item);
 
+        DataItem dataItem = new Select()
+                .from(DataItem.class)
+                .where("isLocal = ?", 1)
+                .executeSingle();
+
+
+
+        Log.v(LOG_TAG, gson.toJson(dataItem));
         //change the icon of the view
         poi_list.setIcon(getResources().getDrawable(R.drawable.action_uploadlist_blue));
     }
@@ -471,7 +497,6 @@ public class WorkflowSectionFragment extends Fragment {
                         Uri.fromFile(new File(photoFilePath)));
                 startActivityForResult(takePhotoIntent, INTENT_TAKE_PHOTO);
             }
-
         }
     }
 
@@ -495,7 +520,7 @@ public class WorkflowSectionFragment extends Fragment {
             Log.v(LOG_TAG, photoFilePath);
             // Create the storage directory if it does not exist
             if (!storageDir.exists() && !storageDir.mkdirs()) {
-                //photoFilePath = null;
+                photoFilePath = null;
             }
         } catch (Exception e) {
             Toast.makeText(getActivity(), R.string.problem_create_file,

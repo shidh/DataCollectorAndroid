@@ -102,6 +102,12 @@ public class MainActivity extends FragmentActivity implements
         super.onCreate(savedInstanceState);
         //ActiveAndroid.initialize(this);
 
+        int code = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        if(code != ConnectionResult.SUCCESS) {
+            Dialog dialog = GooglePlayServicesUtil.getErrorDialog(code, this, 1);
+            dialog.show();
+        }
+
         setContentView(R.layout.activity_main);
 
         // Set up the action bar.
@@ -188,16 +194,16 @@ public class MainActivity extends FragmentActivity implements
         Log.e(LOG_TAG, "start onStart~~~");
     }
 
-    @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        // Restore UI state from the savedInstanceState.
-        // This bundle has also been passed to onCreate.
-        boolean myBoolean = savedInstanceState.getBoolean("MyBoolean");
-        double myDouble = savedInstanceState.getDouble("myDouble");
-        int myInt = savedInstanceState.getInt("MyInt");
-        String myString = savedInstanceState.getString("MyString");
-    }
+//    @Override
+//    public void onRestoreInstanceState(Bundle savedInstanceState) {
+//        super.onRestoreInstanceState(savedInstanceState);
+//        // Restore UI state from the savedInstanceState.
+//        // This bundle has also been passed to onCreate.
+//        boolean myBoolean = savedInstanceState.getBoolean("MyBoolean");
+//        double myDouble = savedInstanceState.getDouble("myDouble");
+//        int myInt = savedInstanceState.getInt("MyInt");
+//        String myString = savedInstanceState.getString("MyString");
+//    }
 
     // recover the last status
     @Override
@@ -210,13 +216,7 @@ public class MainActivity extends FragmentActivity implements
     protected void onResume() {
         super.onResume();
 
-        int code = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-        if(code != ConnectionResult.SUCCESS) {
-            Dialog dialog = GooglePlayServicesUtil.getErrorDialog(code, this, 1);
-            dialog.show();
-        }
-
-        checkPlayServices();
+        //checkPlayServices();
         if (mGoogleApiClient != null) {
             // Resuming the periodic location updates
             if (mGoogleApiClient.isConnected() && mRequestingLocationUpdates) {
@@ -226,18 +226,18 @@ public class MainActivity extends FragmentActivity implements
         Log.e(LOG_TAG, "start onResume~~~");
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-        super.onSaveInstanceState(savedInstanceState);
-        // Save UI state changes to the savedInstanceState.
-        // This bundle will be passed to onCreate if the process is
-        // killed and restarted.
-        savedInstanceState.putBoolean("MyBoolean", true);
-        savedInstanceState.putDouble("myDouble", 1.9);
-        savedInstanceState.putInt("MyInt", 1);
-        savedInstanceState.putString("MyString", "Welcome back to Android");
-        // etc.
-    }
+//    @Override
+//    public void onSaveInstanceState(Bundle savedInstanceState) {
+//        super.onSaveInstanceState(savedInstanceState);
+//        // Save UI state changes to the savedInstanceState.
+//        // This bundle will be passed to onCreate if the process is
+//        // killed and restarted.
+//        savedInstanceState.putBoolean("MyBoolean", true);
+//        savedInstanceState.putDouble("myDouble", 1.9);
+//        savedInstanceState.putInt("MyInt", 1);
+//        savedInstanceState.putString("MyString", "Welcome back to Android");
+//        // etc.
+//    }
 
     // save the current status
     @Override

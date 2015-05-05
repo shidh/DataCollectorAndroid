@@ -2,7 +2,6 @@ package de.mpg.mpdl.www.datacollector.app.Workflow.UploadView;
 
 import android.content.Context;
 import android.graphics.Point;
-import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -59,7 +58,7 @@ public class GridImageAdapter extends BaseAdapter {
         Point size = new Point();
         display.getSize(size);
 
-        Log.v(size.x/2+" ",size.y/2+"");
+        //Log.v(size.x/2+" ",size.y/2+"");
 
         if(convertView==null){
             grid = new View(mContext);

@@ -51,8 +51,14 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
     public GridImageAdapter adapter;
     ListView listView;
     private MenuItem upload;
+    private String collectionID = "DCQVKA8esikfRTWi";
 
-    private Gson gson = new Gson();
+
+    private static Gson gson = new GsonBuilder()
+            .serializeNulls()
+            .excludeFieldsWithoutExposeAnnotation()
+            .create();
+
     List<String> itemIds = new ArrayList<String>();
 
     public TypedFile typedFile;
@@ -135,6 +141,10 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
                 .where("isLocal = ?", 1)
                 .execute();
 
+
+        Log.v(LOG_TAG, gson.toJson(dataList.get(0)));
+
+
         if (dataList == null) {
             DeviceStatus.showToast(this, "Go back to get some data");
         }
@@ -198,7 +208,6 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-
         if(item.getTitle().equals("Delete")){
             new Delete().from(DataItem.class).
                         where("filename = ?", dataList.get(item.getItemId()).getFilename()).execute();
@@ -276,6 +285,7 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
                 //startActivity(showSettingIntent);
 
                 //createNewPOI();
+                Log.v("dataList", dataList.get(0).getMetaDataLocal().toString());
                 upload(dataList);
                 return true;
             }
@@ -307,7 +317,9 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
         }
 
         private void upload(List<DataItem> iList) {
-            String jsonPart1 = "\"collectionId\" : \"Qwms6Gs040FBS264\"";
+            String jsonPart1 = "\"collectionId\" : \"" +
+                    collectionID +
+                    "\"";
 
             for (DataItem item : iList) {
                 Gson gson = new GsonBuilder()

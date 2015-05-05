@@ -65,7 +65,7 @@ public class ListSectionFragment extends Fragment {
     ListView listView;
     View rootView;
     private final String LOG_TAG = ListSectionFragment.class.getSimpleName();
-
+    private String collectionID = "DCQVKA8esikfRTWi";
 
     Callback<List<DataItem>> callback = new Callback<List<DataItem>>() {
         @Override
@@ -76,13 +76,15 @@ public class ListSectionFragment extends Fragment {
             try {
                 // here get the string of Metadata Json
                 for (DataItem item : dataList) {
-                    if (item.getCollectionId().equals("Qwms6Gs040FBS264")) {
+                    if (item.getCollectionId().equals(collectionID)) {
                         //convertMetaData(item);
+
                         MetaDataLocal metaDataLocal = MetaDataConverter.
                                 metaDataToMetaDataLocal(item.getMetadata());
 
                         metaDataLocal.save();
                         item.setMetaDataLocal(metaDataLocal);
+                        Log.v(LOG_TAG, String.valueOf(item.getThumbnailUrl()));
 
                         Log.v(LOG_TAG, String.valueOf(item.getFilename()));
                         Log.v(LOG_TAG, String.valueOf(item.getMetaDataLocal().getTitle()));

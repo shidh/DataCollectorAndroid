@@ -23,7 +23,7 @@ public class User extends Model{
     @Column(name = "pass")
     private String password;
 
-    @Column(name = "image")
+    //@Column(name = "image")
     private Blob image;
 
     @Column(name = "familyName")

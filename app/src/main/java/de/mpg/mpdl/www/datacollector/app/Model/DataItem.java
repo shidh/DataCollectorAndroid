@@ -13,12 +13,9 @@ import de.mpg.mpdl.www.datacollector.app.Model.ImejiModel.MetaData;
  * Created by allen on 01/04/15.
  */
 
-@Table(name = "DataItem", id = "_id")
+//@Table(name = "DataItem", id = "_id")
+@Table(name = "DataItem")
 public class DataItem extends Model {
-
-    @Column(name = "id")
-    @Expose
-    public String id;
 
     @Expose
     @Column(name = "filename")
@@ -47,7 +44,7 @@ public class DataItem extends Model {
     @Expose
     private ArrayList<MetaData> metadata;
 
-    @Column(name = "metaData")
+    @Column(name = "metaDataLocal")
     private MetaDataLocal metaDataLocal;
 
     @Expose
@@ -69,7 +66,7 @@ public class DataItem extends Model {
     }
 
     public DataItem(String filename, String createdDate, String fileUrl, String webResolutionUrlUrl,
-                    String thumbnailUrl, User createdBy, ArrayList<MetaData> metadata,
+                    String thumbnailUrl, User createdBy, ArrayList<MetaData> metadata, MetaDataLocal metaDataLocal,
                     String collectionId) {
         this.filename = filename;
         this.createdDate = createdDate;
@@ -78,12 +75,13 @@ public class DataItem extends Model {
         this.thumbnailUrl = thumbnailUrl;
         this.createdBy = createdBy;
         this.metadata = metadata;
+        this.metaDataLocal = metaDataLocal;
         this.collectionId = collectionId;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
+//    public void setId(String id) {
+//        this.id = id;
+//    }
 
 //    public String getId(){
 //        return id;
