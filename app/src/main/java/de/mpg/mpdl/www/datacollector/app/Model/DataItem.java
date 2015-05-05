@@ -12,11 +12,13 @@ import de.mpg.mpdl.www.datacollector.app.Model.ImejiModel.MetaData;
 /**
  * Created by allen on 01/04/15.
  */
-@Table(name = "DataItem")
+
+@Table(name = "DataItem", id = "_id")
 public class DataItem extends Model {
-//    @Expose
-//    @Column(name = "DataId")
-//    private String id;
+
+    @Column(name = "id")
+    @Expose
+    public String id;
 
     @Expose
     @Column(name = "filename")
@@ -78,6 +80,14 @@ public class DataItem extends Model {
         this.metadata = metadata;
         this.collectionId = collectionId;
     }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+//    public String getId(){
+//        return id;
+//    }
 
     public String getFilename() {
         return filename;

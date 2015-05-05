@@ -71,7 +71,7 @@ public class POIFragment extends Fragment {
         public void success(List<POI> pois, Response response) {
             Log.v(LOG_TAG, "get poi OK");
             Log.v(LOG_TAG, pois.toString());
-            Log.v(LOG_TAG, response.getBody().toString());
+            Log.v(LOG_TAG, String.valueOf(response.getStatus()));
 
 //            for (POI poi : pois) {
 //                Log.v(LOG_TAG, poi.getId());
