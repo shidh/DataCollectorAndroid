@@ -142,8 +142,6 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
                 .execute();
 
 
-        Log.v(LOG_TAG, gson.toJson(dataList.get(0)));
-
 
         if (dataList == null) {
             DeviceStatus.showToast(this, "Go back to get some data");
@@ -285,7 +283,6 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
                 //startActivity(showSettingIntent);
 
                 //createNewPOI();
-                Log.v("dataList", dataList.get(0).getMetaDataLocal().toString());
                 upload(dataList);
                 return true;
             }

@@ -443,7 +443,6 @@ public class WorkflowSectionFragment extends Fragment {
         meta.setTitle(meta.getTags().get(0)+"@"+meta.getAddress());
 
         meta.setCreator(user.getCompleteName());
-        meta.save();
 
         //add a dataItem to the list on the top of view
         item.setCollectionId(collectionID);
@@ -453,8 +452,10 @@ public class WorkflowSectionFragment extends Fragment {
         item.setCreatedBy(user);
         item.setFilename(fileName);
 
-        Log.v(LOG_TAG, item.getMetaDataLocal().getTitle());
+        meta.save();
         item.save();
+
+        Log.v(LOG_TAG, item.getMetaDataLocal().getTags().get(0));
         Log.v(LOG_TAG, item.getFilename());
         itemList.add(item);
 
@@ -462,10 +463,12 @@ public class WorkflowSectionFragment extends Fragment {
                 .from(DataItem.class)
                 .where("isLocal = ?", 1)
                 .executeSingle();
+        List<MetaDataLocal> locals = new Select()
+                .from(MetaDataLocal.class)
+                .execute();
 
 
-
-        Log.v(LOG_TAG, gson.toJson(dataItem));
+        Log.v(LOG_TAG+"when save", gson.toJson(locals));
         //change the icon of the view
         poi_list.setIcon(getResources().getDrawable(R.drawable.action_uploadlist_blue));
     }

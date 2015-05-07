@@ -44,7 +44,8 @@ public class DataItem extends Model {
     @Expose
     private ArrayList<MetaData> metadata;
 
-    @Column(name = "metaDataLocal")
+    @Expose
+    @Column(name = "metaData")
     private MetaDataLocal metaDataLocal;
 
     @Expose
@@ -66,7 +67,7 @@ public class DataItem extends Model {
     }
 
     public DataItem(String filename, String createdDate, String fileUrl, String webResolutionUrlUrl,
-                    String thumbnailUrl, User createdBy, ArrayList<MetaData> metadata, MetaDataLocal metaDataLocal,
+                    String thumbnailUrl, User createdBy, ArrayList<MetaData> metadata,
                     String collectionId) {
         this.filename = filename;
         this.createdDate = createdDate;
@@ -75,7 +76,6 @@ public class DataItem extends Model {
         this.thumbnailUrl = thumbnailUrl;
         this.createdBy = createdBy;
         this.metadata = metadata;
-        this.metaDataLocal = metaDataLocal;
         this.collectionId = collectionId;
     }
 

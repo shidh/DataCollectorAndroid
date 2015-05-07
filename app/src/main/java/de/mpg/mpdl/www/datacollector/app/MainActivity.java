@@ -25,6 +25,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.activeandroid.query.Delete;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -39,6 +40,8 @@ import java.util.Locale;
 
 import de.mpg.mpdl.www.datacollector.app.Event.LocationChangedEvent;
 import de.mpg.mpdl.www.datacollector.app.Event.OttoSingleton;
+import de.mpg.mpdl.www.datacollector.app.Model.DataItem;
+import de.mpg.mpdl.www.datacollector.app.Model.MetaDataLocal;
 import de.mpg.mpdl.www.datacollector.app.POI.POIFragment;
 import de.mpg.mpdl.www.datacollector.app.SectionList.ListSectionFragment;
 import de.mpg.mpdl.www.datacollector.app.Workflow.MetadataFragment;
@@ -263,6 +266,9 @@ public class MainActivity extends FragmentActivity implements
     protected void onDestroy() {
         super.onDestroy();
         //TODO clean the data when exit or not?
+        new Delete().from(DataItem.class).execute(); // all records
+        new Delete().from(MetaDataLocal.class).execute(); // all records
+
         //new Delete().from(DataItem.class).where("isLocal = ?", 1).execute();
         Log.e(LOG_TAG, "start onDestroy~~~");
     }

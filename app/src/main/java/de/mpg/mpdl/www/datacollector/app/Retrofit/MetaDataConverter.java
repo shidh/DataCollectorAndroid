@@ -159,7 +159,7 @@ public class MetaDataConverter {
             //mTag.setValue(tagValue);
 
             mTag.setValue(new TextImeji(tag));
-            mTag.setStatementUri("http://dev-faces.mpdl.mpg.de/imeji/statement/bWK8zwhEtNL259a");
+            mTag.setStatementUri("http://dev-faces.mpdl.mpg.de/imeji/statement/VwC_f_NcbS8vQhjV");
             mTag.setTypeUri("http://imeji.org/terms/metadata#text");
 
             List<LabelsImeji> labels6 = new ArrayList<LabelsImeji>();
