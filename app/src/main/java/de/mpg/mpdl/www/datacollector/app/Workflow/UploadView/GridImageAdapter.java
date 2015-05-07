@@ -1,7 +1,10 @@
 package de.mpg.mpdl.www.datacollector.app.Workflow.UploadView;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Point;
+import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,8 +14,6 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.util.List;
@@ -58,7 +59,7 @@ public class GridImageAdapter extends BaseAdapter {
         Point size = new Point();
         display.getSize(size);
 
-        //Log.v(size.x/2+" ",size.y/2+"");
+        Log.v(size.x / 2 + " ", size.y / 2 + "");
 
         if(convertView==null){
             grid = new View(mContext);
@@ -80,27 +81,67 @@ public class GridImageAdapter extends BaseAdapter {
         // getting item data for the row
         DataItem m = dataItems.get(position);
 
-        if (convertView == null) {
+        //if (convertView == null) {
             // if it's not recycled, initialize some attributes
-            imageView = new ImageView(mContext);
-            imageView.setLayoutParams(new GridView.LayoutParams(size.x/2, size.y/2));
-            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imageView.setPadding(8, 8, 8, 8);
+        if(size.x > size.y){
+            grid.setLayoutParams(new GridView.LayoutParams(size.x/2, size.y*2/3));
+        }else{
+            grid.setLayoutParams(new GridView.LayoutParams(size.x/2, size.y/3));
         }
+        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            //imageView.setPadding(8, 8, 8, 8);
+        //}
 
+
+        //imageView.setLayoutParams(new GridView.LayoutParams(88, 88));
 
 
         File imgFile = new File(m.getLocalPath());
-        Picasso.with(mContext)
-                .load(imgFile)
-                .resize(size.x/2, imageView.getHeight())
-                .into(imageView);
+//        Picasso.with(mContext)
+//                .load(imgFile)
+//                .resize(imageView.getWidth(),imageView.getHeight())
+//                //.resize(size.x/2-10, size.y/2-10)
+//                .into(imageView);
 
+        if(imgFile.exists()){
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            Bitmap myBitmap = BitmapFactory.decodeFile(m.getLocalPath(),options );
+
+            options.inSampleSize = calculateInSampleSize(options, 100, 100);
+            options.inJustDecodeBounds = false;
+
+            myBitmap = BitmapFactory.decodeFile(m.getLocalPath(), options );
+            imageView.setImageBitmap(myBitmap);
+        }
         title.setText(m.getMetaDataLocal().getTitle());
 
         //DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         //date.setText(dateFormat.format(new Date()));
         return grid;
 
+    }
+
+    public static int calculateInSampleSize(
+            BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) > reqHeight
+                    && (halfWidth / inSampleSize) > reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+
+        return inSampleSize;
     }
 }

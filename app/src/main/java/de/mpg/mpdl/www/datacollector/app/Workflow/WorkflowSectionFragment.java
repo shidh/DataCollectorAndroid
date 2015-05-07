@@ -463,14 +463,17 @@ public class WorkflowSectionFragment extends Fragment {
                 .from(DataItem.class)
                 .where("isLocal = ?", 1)
                 .executeSingle();
-        List<MetaDataLocal> locals = new Select()
-                .from(MetaDataLocal.class)
-                .execute();
+        if(dataItem.getMetaDataLocal().getTags() == null){
+            meta.save();
+        }
 
+        Log.v(LOG_TAG+"when save", gson.toJson(dataItem));
 
-        Log.v(LOG_TAG+"when save", gson.toJson(locals));
         //change the icon of the view
         poi_list.setIcon(getResources().getDrawable(R.drawable.action_uploadlist_blue));
+        imageView.clearAnimation();
+        imageView.setImageBitmap(null);
+
     }
 
     @Subscribe
