@@ -72,7 +72,7 @@ public class CustomListAdapter extends BaseAdapter {
 
         // user
         //artist.setText(m.getCreatedBy().getFamilyName());
-        fileName.setText(m.getFilename());
+        fileName.setText(m.getMetaDataLocal().getCreator());
 
         // date
         date.setText(String.valueOf(m.getCreatedDate()).split("\\+")[0]);

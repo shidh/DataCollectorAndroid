@@ -70,7 +70,11 @@ public class ListSectionFragment extends Fragment {
     Callback<List<DataItem>> callback = new Callback<List<DataItem>>() {
         @Override
         public void success(List<DataItem> dataList, Response response) {
+            //load all data from imeji
             adapter =  new CustomListAdapter(getActivity(), dataList);
+            listView.setAdapter(adapter);
+
+            List<DataItem> dataListLocal = new ArrayList<DataItem>();
 
             ActiveAndroid.beginTransaction();
             try {
@@ -89,15 +93,18 @@ public class ListSectionFragment extends Fragment {
                         Log.v(LOG_TAG, String.valueOf(item.getFilename()));
                         Log.v(LOG_TAG, String.valueOf(item.getMetaDataLocal().getTitle()));
                         Log.v(LOG_TAG, String.valueOf(item.getMetaDataLocal().getAccuracy()));
-                        //item.save();
+                        dataListLocal.add(item);
+                        item.save();
                     }
                 }
                 ActiveAndroid.setTransactionSuccessful();
             } finally{
                 ActiveAndroid.endTransaction();
+                //load local data only
+                adapter =  new CustomListAdapter(getActivity(), dataListLocal);
+                listView.setAdapter(adapter);
             }
 
-            listView.setAdapter(adapter);
             if(pDialog != null) {
                 pDialog.hide();
             }
@@ -214,7 +221,7 @@ public class ListSectionFragment extends Fragment {
 
         rootView = inflater.inflate(R.layout.fragment_section_list, container, false);
         listView = (ListView) rootView.findViewById(R.id.item_list);
-        listView.setAdapter(adapter);
+        //listView.setAdapter(adapter);
 
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
