@@ -379,7 +379,7 @@ public class WorkflowSectionFragment extends Fragment {
             if (!DeviceStatus.isGPSEnabled(getActivity())) {
                 Toast.makeText(getActivity(), R.string.problem_no_gps,
                         Toast.LENGTH_SHORT).show();
-                getActivity().finish();
+                //getActivity().finish();
             }
         } else if (requestCode == INTENT_ENABLE_NET) {
             if (!DeviceStatus.isNetworkEnabled(getActivity())) {
@@ -412,7 +412,6 @@ public class WorkflowSectionFragment extends Fragment {
                     addImageToGallery(photoFilePath);
                     rootView.findViewById(R.id.save).setVisibility(View.VISIBLE);
                 }
-                getActivity().finish();
 
             } else if (resultCode == getActivity().RESULT_CANCELED) {
                 // User cancelled the photo capture
