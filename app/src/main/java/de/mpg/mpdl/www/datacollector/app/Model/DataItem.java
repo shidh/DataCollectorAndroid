@@ -45,7 +45,9 @@ public class DataItem extends Model {
     private ArrayList<MetaData> metadata;
 
     @Expose
-    @Column(name = "metaData")
+    @Column(name = "metaData",
+            onUpdate = Column.ForeignKeyAction.CASCADE,
+            onDelete = Column.ForeignKeyAction.CASCADE)
     private MetaDataLocal metaDataLocal;
 
     @Expose

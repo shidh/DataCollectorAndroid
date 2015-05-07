@@ -71,8 +71,6 @@ public class GridImageAdapter extends BaseAdapter {
         }
 
 
-
-
         ImageView imageView = (ImageView) grid.findViewById(R.id.upload_item_cell_thumbnail);
         TextView title = (TextView) grid.findViewById(R.id.upload_item_cell_title);
         //TextView date = (TextView) grid.findViewById(R.id.upload_item_cell_date);
@@ -81,19 +79,12 @@ public class GridImageAdapter extends BaseAdapter {
         // getting item data for the row
         DataItem m = dataItems.get(position);
 
-        //if (convertView == null) {
-            // if it's not recycled, initialize some attributes
         if(size.x > size.y){
             grid.setLayoutParams(new GridView.LayoutParams(size.x/2, size.y*2/3));
         }else{
             grid.setLayoutParams(new GridView.LayoutParams(size.x/2, size.y/3));
         }
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            //imageView.setPadding(8, 8, 8, 8);
-        //}
-
-
-        //imageView.setLayoutParams(new GridView.LayoutParams(88, 88));
 
 
         File imgFile = new File(m.getLocalPath());

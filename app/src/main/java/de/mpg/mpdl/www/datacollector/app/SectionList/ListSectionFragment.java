@@ -19,12 +19,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.activeandroid.ActiveAndroid;
-import com.google.gson.Gson;
 import com.squareup.okhttp.OkHttpClient;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.net.HttpURLConnection;
@@ -321,57 +316,5 @@ public class ListSectionFragment extends Fragment {
 
     public void showToast(String message) {
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
-    }
-
-
-    public void convertMetaData(DataItem dataItem){
-
-        MetaDataLocal metaDataLocal = new MetaDataLocal();
-        List<String> tags = new ArrayList<String>();
-        // here get the string of Metadata Json
-        Gson gson = new Gson();
-        String json = gson.toJson(dataItem.getMetadata());
-        try {
-            JSONArray jsonArray = new JSONArray(json);
-
-            for(int i = 0; i < jsonArray.length(); i++ ){
-                JSONObject meta = jsonArray.getJSONObject(i);
-                //String type = meta.getString("typeUri").split("#")[1];
-                String label = meta.getString("labels").split("\"")[3];
-                //String statementUri = meta.getString("statementUri");
-
-                if(label.equals("title")){
-                    JSONObject value = (JSONObject) meta.get("value");
-                    metaDataLocal.setTitle(value.getString("text"));
-                } else if(label.equals("author")){
-                    JSONObject value = (JSONObject) meta.get("value");
-                    metaDataLocal.setCreator(value.getString("text"));
-                } else if(label.equals("accuracy")){
-                    JSONObject value = (JSONObject) meta.get("value");
-                    metaDataLocal.setAccuracy(value.getDouble("number"));
-
-                } else if(label.equals("deviceID")){
-                    JSONObject value = (JSONObject) meta.get("value");
-                    metaDataLocal.setDeviceID(value.getString("text"));
-                } else if(label.equals("location")){
-                    //"value":{"name":"Amalienstr. 33 D-80799 München","longitude":11.57648,"latitude":48.147899}
-                    JSONObject value = (JSONObject) meta.get("value");
-                    metaDataLocal.setAddress(value.getString("name"));
-                    metaDataLocal.setLatitude(value.getDouble("latitude"));
-                    metaDataLocal.setLongitude(value.getDouble("longitude"));
-                } else if(label.equals("tags")){
-                    JSONObject value = (JSONObject) meta.get("value");
-                    tags.add(value.getString("text"));
-                }
-            }
-            metaDataLocal.setTags(tags);
-            //metaDataLocal.setWhichItem(dataItem);
-            metaDataLocal.save();
-
-            dataItem.setMetaDataLocal(metaDataLocal);
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
     }
 }
