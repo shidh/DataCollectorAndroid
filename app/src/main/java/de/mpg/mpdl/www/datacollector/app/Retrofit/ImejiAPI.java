@@ -106,11 +106,12 @@ public interface ImejiAPI {
 
     @POST("/albums")
     void postPOI(@Body POI poi,
-                  Callback<POI> callback);
+                 Callback<POI> callback);
 
     @PUT("/albums/{id}/members/link")
-    Response linkItems(@Path("id") String albumId,
-                       @Body TypedString body);
+    void linkItems(@Path("id") String albumId,
+                   @Body TypedString body,
+                   Callback<List<String>> callback);
 
 
 }

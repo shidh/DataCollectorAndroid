@@ -97,10 +97,11 @@ public class RetrofitClient {
 
     public static void linkItems(String albumId, TypedString body,
                                      String username,
-                                     String password) {
+                                     String password,
+                                     Callback<List<String>> callback) {
         ImejiAPI imejiAPI = ServiceGenerator.createService(ImejiAPI.class, REST_SERVER,
                 username, password);
-        imejiAPI.linkItems(albumId, body);
+        imejiAPI.linkItems(albumId, body, callback);
     }
 
 

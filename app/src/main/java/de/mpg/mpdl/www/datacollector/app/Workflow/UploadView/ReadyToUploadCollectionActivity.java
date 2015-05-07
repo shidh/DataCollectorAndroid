@@ -73,6 +73,7 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
     private String password = "allen";
 
 
+    // callback for Item uploading
     Callback<ItemImeji> callback = new Callback<ItemImeji>() {
         @Override
         @Produce
@@ -113,18 +114,18 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
         }
     };
 
-
+    // callback for POI uploading
     Callback<POI> callbackPoi = new Callback<POI>() {
 
         @Override
         public void success(POI poi, Response response) {
             showToast("Upload POI success!");
             Log.v(LOG_TAG, poi.getId());
-            Log.v("json: ",gson.toJson(itemIds));
 
             TypedString typedString = new TypedString(gson.toJson(itemIds));
 
-            RetrofitClient.linkItems(poi.getId(), typedString, username, password);
+            Log.v("json typedString : ", typedString.toString());
+            RetrofitClient.linkItems(poi.getId(), typedString, username, password, callbackLink);
 
         }
 
@@ -146,6 +147,20 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
             Log.v(LOG_TAG, String.valueOf(restError.getCode()));
             Log.v(LOG_TAG,restError.getStrMessage());
 
+        }
+    };
+
+    // callback for POI linking
+    Callback<List<String>> callbackLink = new Callback<List<String>>() {
+        @Override
+        public void success(List<String> strings, Response response) {
+            Log.v(LOG_TAG, gson.toJson(strings));
+        }
+
+        @Override
+        public void failure(RetrofitError error) {
+            Log.v(LOG_TAG, String.valueOf(error.getResponse().getStatus()));
+            Log.v(LOG_TAG, String.valueOf(error));
         }
     };
 
