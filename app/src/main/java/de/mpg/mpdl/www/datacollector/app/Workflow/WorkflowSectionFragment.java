@@ -89,7 +89,6 @@ public class WorkflowSectionFragment extends Fragment {
      * location information thereafter in order to save the data.
      */
 
-    public Boolean takeAnotherPhoto;
     private String photoFilePath;
     private String fileName;
     private DeviceStatus status;
@@ -210,6 +209,7 @@ public class WorkflowSectionFragment extends Fragment {
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        rootView.findViewById(R.id.save).setVisibility(View.VISIBLE);
                         takePhoto();
                     }
                 });
@@ -397,20 +397,20 @@ public class WorkflowSectionFragment extends Fragment {
         } else if (requestCode == INTENT_TAKE_PHOTO) {
             Log.v(LOG_TAG+ " resultCode", String.valueOf(resultCode));
             if (resultCode == getActivity().RESULT_OK) {
-                takeAnotherPhoto = true;
                 //Bitmap photo = (Bitmap) data.getExtras().get("output");
                 //imageView.setImageBitmap(photo);
 
                 if(photoFilePath != null) {
                     File imgFile = new File(photoFilePath);
                     if (imgFile.exists()) {
+                        imageView.setVisibility(View.VISIBLE);
+
                         Picasso.with(getActivity())
                                 .load(imgFile)
                                 .resize(imageView.getWidth(), imageView.getHeight())
                                 .into(imageView);
                     }
                     addImageToGallery(photoFilePath);
-                    rootView.findViewById(R.id.save).setVisibility(View.VISIBLE);
                 }
 
             } else if (resultCode == getActivity().RESULT_CANCELED) {
@@ -471,9 +471,9 @@ public class WorkflowSectionFragment extends Fragment {
 
         //change the icon of the view
         poi_list.setIcon(getResources().getDrawable(R.drawable.action_uploadlist_blue));
-        imageView.clearAnimation();
-        imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_launcher));
+        //imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_launcher));
 
+        reSetUpView();
     }
 
     @Subscribe
@@ -581,5 +581,12 @@ public class WorkflowSectionFragment extends Fragment {
             address = event.address;
         }
         meta.setAddress(address);
+    }
+
+    private void reSetUpView(){
+        imageView.setVisibility(View.INVISIBLE);
+        rootView.findViewById(R.id.save).setVisibility(View.INVISIBLE);
+        item = new DataItem();
+        meta = new MetaDataLocal();
     }
 }
