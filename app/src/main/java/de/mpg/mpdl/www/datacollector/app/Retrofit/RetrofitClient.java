@@ -3,9 +3,11 @@ package de.mpg.mpdl.www.datacollector.app.Retrofit;
 import java.util.List;
 
 import de.mpg.mpdl.www.datacollector.app.Model.DataItem;
+import de.mpg.mpdl.www.datacollector.app.Model.ImejiModel.ItemImeji;
 import de.mpg.mpdl.www.datacollector.app.Model.POI;
 import retrofit.Callback;
 import retrofit.mime.TypedFile;
+import retrofit.mime.TypedString;
 
 /**
  * Created by allen on 07/04/15.
@@ -40,7 +42,7 @@ public class RetrofitClient {
 //    }
     public static void uploadItem(TypedFile typedFile,
                                   String json,
-                                  Callback<DataItem> callback,
+                                  Callback<ItemImeji> callback,
                                   String username,
                                   String password) {
         ImejiAPI imejiAPI = ServiceGenerator.
@@ -93,7 +95,7 @@ public class RetrofitClient {
         imejiAPI.getPoiMembers(albumId, callback);
     }
 
-    public static void linkItems(String albumId, String body,
+    public static void linkItems(String albumId, TypedString body,
                                      String username,
                                      String password) {
         ImejiAPI imejiAPI = ServiceGenerator.createService(ImejiAPI.class, REST_SERVER,

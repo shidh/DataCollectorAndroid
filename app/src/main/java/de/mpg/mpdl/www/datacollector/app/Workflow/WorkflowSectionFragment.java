@@ -472,7 +472,7 @@ public class WorkflowSectionFragment extends Fragment {
         //change the icon of the view
         poi_list.setIcon(getResources().getDrawable(R.drawable.action_uploadlist_blue));
         imageView.clearAnimation();
-        imageView.setImageBitmap(null);
+        imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_launcher));
 
     }
 

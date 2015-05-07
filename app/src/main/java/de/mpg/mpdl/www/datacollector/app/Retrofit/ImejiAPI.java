@@ -3,13 +3,12 @@ package de.mpg.mpdl.www.datacollector.app.Retrofit;
 import java.util.List;
 
 import de.mpg.mpdl.www.datacollector.app.Model.DataItem;
+import de.mpg.mpdl.www.datacollector.app.Model.ImejiModel.ItemImeji;
 import de.mpg.mpdl.www.datacollector.app.Model.POI;
 import de.mpg.mpdl.www.datacollector.app.Model.User;
 import retrofit.Callback;
 import retrofit.client.Response;
 import retrofit.http.Body;
-import retrofit.http.Field;
-import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
 import retrofit.http.Multipart;
 import retrofit.http.POST;
@@ -18,6 +17,7 @@ import retrofit.http.Part;
 import retrofit.http.Path;
 import retrofit.http.Query;
 import retrofit.mime.TypedFile;
+import retrofit.mime.TypedString;
 
 /**
  * Created by allen on 01/04/15.
@@ -65,7 +65,7 @@ public interface ImejiAPI {
     @POST("/items")
     void postItem(@Part("file") TypedFile file,
                   @Part("json") String json,
-                  Callback<DataItem> callback);
+                  Callback<ItemImeji> callback);
 
 
 
@@ -108,10 +108,9 @@ public interface ImejiAPI {
     void postPOI(@Body POI poi,
                   Callback<POI> callback);
 
-    @FormUrlEncoded
     @PUT("/albums/{id}/members/link")
     Response linkItems(@Path("id") String albumId,
-                       @Field("body") String body);
+                       @Body TypedString body);
 
 
 }

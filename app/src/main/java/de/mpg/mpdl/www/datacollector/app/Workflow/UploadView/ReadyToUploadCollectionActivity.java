@@ -26,17 +26,20 @@ import java.util.List;
 import de.mpg.mpdl.www.datacollector.app.Event.OttoSingleton;
 import de.mpg.mpdl.www.datacollector.app.Event.UploadEvent;
 import de.mpg.mpdl.www.datacollector.app.Model.DataItem;
+import de.mpg.mpdl.www.datacollector.app.Model.ImejiModel.ItemImeji;
 import de.mpg.mpdl.www.datacollector.app.Model.ImejiModel.Organization;
 import de.mpg.mpdl.www.datacollector.app.Model.POI;
 import de.mpg.mpdl.www.datacollector.app.Model.User;
 import de.mpg.mpdl.www.datacollector.app.R;
 import de.mpg.mpdl.www.datacollector.app.Retrofit.MetaDataConverter;
+import de.mpg.mpdl.www.datacollector.app.Retrofit.RestError;
 import de.mpg.mpdl.www.datacollector.app.Retrofit.RetrofitClient;
 import de.mpg.mpdl.www.datacollector.app.utils.DeviceStatus;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import retrofit.mime.TypedFile;
+import retrofit.mime.TypedString;
 
 /**
  * Created by allen on 21/04/15.
@@ -70,25 +73,30 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
     private String password = "allen";
 
 
-    Callback<DataItem> callback = new Callback<DataItem>() {
+    Callback<ItemImeji> callback = new Callback<ItemImeji>() {
         @Override
         @Produce
-        public void success(DataItem dataItem, Response response) {
+        public void success(ItemImeji dataItem, Response response) {
             //adapter =  new CustomListAdapter(getActivity(), dataList);
             //listView.setAdapter(adapter);
             showToast("Upload data Successfully");
-            Log.v(LOG_TAG, dataItem.getId().toString());
-            itemIds.add(dataItem.getId().toString());
+            Log.v(LOG_TAG, dataItem.getId() + ":" + dataItem.getFilename());
+            itemIds.add(dataItem.getId());
 
-                //Log.v(LOG_TAG, item.getFilename());
-            //TODO upload a new POI
-            //upload a POI as Album on Imeji
-            RetrofitClient.createPOI(createNewPOI(), callbackPoi, username, password);
-
-            //TODO produce a message event to third-party fragment to display the POI on map
-            OttoSingleton.getInstance().post(
-                    new UploadEvent(response.getStatus()));
             new Delete().from(DataItem.class).where("filename = ?", dataItem.getFilename()).execute();
+
+            //begin to upload only when all the dataItem are uploaded
+            if(new Select()
+                    .from(DataItem.class)
+                    .where("isLocal = ?", 1)
+                    .execute().size()<1){
+                //upload a POI as Album on Imeji
+                RetrofitClient.createPOI(createNewPOI(), callbackPoi, username, password);
+
+                //TODO produce a message event to third-party fragment to display the POI on map
+                OttoSingleton.getInstance().post(
+                        new UploadEvent(response.getStatus()));
+            }
         }
 
         @Override
@@ -107,18 +115,37 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
 
 
     Callback<POI> callbackPoi = new Callback<POI>() {
+
         @Override
         public void success(POI poi, Response response) {
+            showToast("Upload POI success!");
             Log.v(LOG_TAG, poi.getId());
             Log.v("json: ",gson.toJson(itemIds));
-            RetrofitClient.linkItems(poi.getId(), gson.toJson(itemIds), username, password);
+
+            TypedString typedString = new TypedString(gson.toJson(itemIds));
+
+            RetrofitClient.linkItems(poi.getId(), typedString, username, password);
 
         }
 
         @Override
         public void failure(RetrofitError error) {
+
+            showToast("Upload POI Failed");
             Log.v(LOG_TAG, String.valueOf(error.getResponse().getStatus()));
             Log.v(LOG_TAG, String.valueOf(error));
+
+            RestError restError = (RestError) error.getBodyAs(RestError.class);
+
+            if (restError != null)
+                failure(error);
+            else
+            {
+                //failure(new RetrofitError(error.getMessage()));
+            }
+            Log.v(LOG_TAG, String.valueOf(restError.getCode()));
+            Log.v(LOG_TAG,restError.getStrMessage());
+
         }
     };
 
@@ -178,7 +205,8 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                showToast("id" + id);
+                showToast(dataList.get((int) id).getFilename()+"\n"
+                            +"Long press to delete.");
             }
         });
 
@@ -326,7 +354,8 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
                 item.getMetaDataLocal().setDeviceID("1");
                 typedFile = new TypedFile("multipart/form-data", new File(item.getLocalPath()));
 
-                String jsonPart2 = "\"metadata\": " + gson.toJson(MetaDataConverter.metaDataLocalToMetaDataList(item.getMetaDataLocal()));
+                String jsonPart2 = "\"metadata\": " +
+                        gson.toJson(MetaDataConverter.metaDataLocalToMetaDataList(item.getMetaDataLocal()));
 
                 json = "{" + jsonPart1 + "," + jsonPart2 + "}";
                 //json ="{" + jsonPart1  +"}";
