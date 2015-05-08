@@ -109,7 +109,7 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
                 OttoSingleton.getInstance().post(
                         new UploadEvent(error.getResponse().getStatus()));
             }
-            Log.v(LOG_TAG, String.valueOf(error.getResponse().getStatus()));
+            //Log.v(LOG_TAG, String.valueOf(error.getResponse().getStatus()));
             Log.v(LOG_TAG, String.valueOf(error));
         }
     };
@@ -350,7 +350,7 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
             contributors.add(user);
 
             POI poi = new POI();
-            poi.setTitle("Allen's POI");
+            poi.setTitle("DataCollector");
             poi.setDescription("just test");
             poi.setContributors(contributors);
             return poi;

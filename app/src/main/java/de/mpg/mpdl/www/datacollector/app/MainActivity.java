@@ -601,7 +601,7 @@ public class MainActivity extends FragmentActivity implements
             }
         } else{
             showToast("Can not connect the Google Location Service");
-            mGoogleApiClient.connect();
+            mGoogleApiClient.reconnect();
         }
     }
 

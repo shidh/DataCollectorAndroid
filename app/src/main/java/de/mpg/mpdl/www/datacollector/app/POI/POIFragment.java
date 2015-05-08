@@ -102,6 +102,7 @@ public class POIFragment extends Fragment {
             //adapter =  new CustomListAdapter(getActivity(), dataList);
             Log.v(LOG_TAG, "get poi members OK");
             Log.v(LOG_TAG, gson.toJson(dataList));
+            hidePDialog();
 
             // here get the string of Metadata Json
             for (DataItem item : dataList) {
@@ -113,6 +114,11 @@ public class POIFragment extends Fragment {
 //                metaDataLocal.save();
 //                item.save();
 
+                //TODO
+                //zumme in and show markers
+                //or click then zoome in and show
+
+                //click marker show pictures
                 latitude = item.getMetaDataLocal().getLatitude();
                 longitude = item.getMetaDataLocal().getLongitude();
 
@@ -214,6 +220,7 @@ public class POIFragment extends Fragment {
             //TODO
             //updateDataItem(String AlbumId);
             updatePoi(queryKeyword);
+            updatePoi("Allen");
 
             pDialog = new ProgressDialog(getActivity());
             pDialog.setMessage("Loading...");
@@ -269,6 +276,7 @@ public class POIFragment extends Fragment {
         googleMap.animateCamera(CameraUpdateFactory
                 .newCameraPosition(cameraPosition));
         updatePoi(queryKeyword);
+        updatePoi("Allen");
 
         return rootView;
 
