@@ -14,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.activeandroid.ActiveAndroid;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -23,6 +22,8 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.squareup.otto.Subscribe;
 
 import java.util.List;
@@ -59,6 +60,10 @@ public class POIFragment extends Fragment {
     MapView mMapView;
     private GoogleMap googleMap;
 
+    private static Gson gson = new GsonBuilder()
+            .serializeNulls()
+            .excludeFieldsWithoutExposeAnnotation()
+            .create();
 
     private Location currentLocation;
     private double latitude = 48.147899;
@@ -70,19 +75,14 @@ public class POIFragment extends Fragment {
         @Override
         public void success(List<POI> pois, Response response) {
             Log.v(LOG_TAG, "get poi OK");
-            Log.v(LOG_TAG, pois.toString());
+            Log.v(LOG_TAG, gson.toJson(pois));
             Log.v(LOG_TAG, String.valueOf(response.getStatus()));
 
-//            for (POI poi : pois) {
-//                Log.v(LOG_TAG, poi.getId());
-////                MetaDataLocal metaDataLocal = MetaDataConverter.
-////                        metaDataToMetaDataLocal(poi.getMetadata());
-////                metaDataLocal.save();
-////                poi.setMetaDataLocal(metaDataLocal);
-////
-////                poi.save();
-//                getDataItemFroPoi(poi.getId());
-//            }
+            for (POI poi : pois) {
+                Log.v(LOG_TAG, poi.getId());
+
+                getDataItemFroPoi(poi.getId());
+            }
         }
 
         @Override
@@ -101,38 +101,32 @@ public class POIFragment extends Fragment {
         public void success(List<DataItem> dataList, Response response) {
             //adapter =  new CustomListAdapter(getActivity(), dataList);
             Log.v(LOG_TAG, "get poi members OK");
+            Log.v(LOG_TAG, gson.toJson(dataList));
 
-            ActiveAndroid.beginTransaction();
-            try {
-                // here get the string of Metadata Json
-                for (DataItem item : dataList) {
-                    //convertMetaData(item);
-                    MetaDataLocal metaDataLocal = MetaDataConverter.
-                            metaDataToMetaDataLocal(item.getMetadata());
+            // here get the string of Metadata Json
+            for (DataItem item : dataList) {
+                //convertMetaData(item);
+                MetaDataLocal metaDataLocal = MetaDataConverter.
+                        metaDataToMetaDataLocal(item.getMetadata());
 
-                    metaDataLocal.save();
-                    item.setMetaDataLocal(metaDataLocal);
-                    item.save();
+                item.setMetaDataLocal(metaDataLocal);
+//                metaDataLocal.save();
+//                item.save();
 
-                    latitude = item.getMetaDataLocal().getLatitude();
-                    longitude = item.getMetaDataLocal().getLongitude();
+                latitude = item.getMetaDataLocal().getLatitude();
+                longitude = item.getMetaDataLocal().getLongitude();
 
-                    // create marker
-                    MarkerOptions marker = new MarkerOptions().position(
-                            new LatLng(latitude, longitude)).
-                            title(item.getMetaDataLocal().getTitle());
+                // create marker
+                MarkerOptions marker = new MarkerOptions().position(
+                        new LatLng(latitude, longitude)).
+                        title(item.getMetaDataLocal().getTitle());
+                Log.v(LOG_TAG, item.getMetaDataLocal().getTitle());
 
-                    // Changing marker icon
-                    marker.icon(BitmapDescriptorFactory
-                            .defaultMarker(BitmapDescriptorFactory.HUE_ROSE));
-                    googleMap.addMarker(marker);
-                }
-
-                ActiveAndroid.setTransactionSuccessful();
-            } finally{
-                ActiveAndroid.endTransaction();
+                // Changing marker icon
+                marker.icon(BitmapDescriptorFactory
+                        .defaultMarker(BitmapDescriptorFactory.HUE_ROSE));
+                googleMap.addMarker(marker);
             }
-
 
             showToast("got new POI members");
 
@@ -163,7 +157,7 @@ public class POIFragment extends Fragment {
         setHasOptionsMenu(true);
         //TODO
         //updateDataItem(String AlbumId);
-        updatePoi(queryKeyword);
+        //updatePoi(queryKeyword);
         Log.v(LOG_TAG, "start onCreate~~~");
 
     }
@@ -219,6 +213,8 @@ public class POIFragment extends Fragment {
 
             //TODO
             //updateDataItem(String AlbumId);
+            updatePoi(queryKeyword);
+
             pDialog = new ProgressDialog(getActivity());
             pDialog.setMessage("Loading...");
             pDialog.show();
@@ -255,22 +251,25 @@ public class POIFragment extends Fragment {
         }
 
         // create marker
-        MarkerOptions marker = new MarkerOptions().position(
-                new LatLng(latitude, longitude)).title("This is a POI");
+        //MarkerOptions marker = new MarkerOptions().position(
+        //        new LatLng(latitude, longitude)).title("This is a POI");
 
         // Changing marker icon
-        marker.icon(BitmapDescriptorFactory
-                .defaultMarker(BitmapDescriptorFactory.HUE_ROSE));
+        //marker.icon(BitmapDescriptorFactory
+        //        .defaultMarker(BitmapDescriptorFactory.HUE_ROSE));
 
         //marker.draggable();
         //googleMap.setOnMarkerClickListener();
 
         // adding marker
-        googleMap.addMarker(marker);
+        //googleMap.addMarker(marker);
+
         cameraPosition = new CameraPosition.Builder()
                 .target(new LatLng(latitude, longitude)).zoom(12).build();
         googleMap.animateCamera(CameraUpdateFactory
                 .newCameraPosition(cameraPosition));
+        updatePoi(queryKeyword);
+
         return rootView;
 
     }
