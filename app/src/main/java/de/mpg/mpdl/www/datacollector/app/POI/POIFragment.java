@@ -28,7 +28,6 @@ import com.squareup.otto.Subscribe;
 
 import java.util.List;
 
-import de.mpg.mpdl.www.datacollector.app.AsyncTask.GetAddressByCoordinatesTask;
 import de.mpg.mpdl.www.datacollector.app.Event.LocationChangedEvent;
 import de.mpg.mpdl.www.datacollector.app.Model.DataItem;
 import de.mpg.mpdl.www.datacollector.app.Model.MetaDataLocal;
@@ -115,22 +114,50 @@ public class POIFragment extends Fragment {
 //                item.save();
 
                 //TODO
-                //zumme in and show markers
-                //or click then zoome in and show
+                //1: zoom in and show data markers
+                //2: or click the POI marker then zoom in and show data markers
 
                 //click marker show pictures
                 latitude = item.getMetaDataLocal().getLatitude();
                 longitude = item.getMetaDataLocal().getLongitude();
 
                 // create marker
-                MarkerOptions marker = new MarkerOptions().position(
+                final MarkerOptions marker = new MarkerOptions().position(
                         new LatLng(latitude, longitude)).
                         title(item.getMetaDataLocal().getTitle());
                 Log.v(LOG_TAG, item.getMetaDataLocal().getTitle());
 
-                // Changing marker icon
-                marker.icon(BitmapDescriptorFactory
-                        .defaultMarker(BitmapDescriptorFactory.HUE_ROSE));
+
+
+//                 Picasso.with(getActivity())
+//                        .load(item.getThumbnailUrl())
+//                        .resizeDimen(10,10)
+//                        .centerCrop()
+//                        .into(new Target(){
+//                    @Override
+//                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+//                        marker.icon(BitmapDescriptorFactory.fromBitmap(bitmap));
+//                        //mainLayout.setBackground(new BitmapDrawable(getActivity().getResources(), bitmap));
+//                    }
+//
+//                    @Override
+//                    public void onBitmapFailed(final Drawable errorDrawable) {
+//                        Log.d("TAG", "FAILED");
+//                        // Changing marker icon
+//                        marker.icon(BitmapDescriptorFactory
+//                                .defaultMarker(BitmapDescriptorFactory.HUE_ROSE));
+//                    }
+//
+//                    @Override
+//                    public void onPrepareLoad(final Drawable placeHolderDrawable) {
+//                        Log.d("TAG", "Prepare Load");
+//                    }
+//                });
+
+
+
+                marker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE));
+
                 googleMap.addMarker(marker);
             }
 
@@ -250,6 +277,10 @@ public class POIFragment extends Fragment {
         }
 
         googleMap = mMapView.getMap();
+        googleMap.getUiSettings().setZoomControlsEnabled(true);
+        googleMap.getUiSettings().setMyLocationButtonEnabled(true);
+
+        //googleMap.setBuildingsEnabled(true);
 
         if(currentLocation != null){
             // latitude and longitude
@@ -296,10 +327,6 @@ public class POIFragment extends Fragment {
 
     }
 
-    public void getAddressByCoordinates(double latitude, double longitude){
-        GetAddressByCoordinatesTask fetchTask = new GetAddressByCoordinatesTask();
-        fetchTask.execute(latitude, longitude);
-    }
 
 
     private void updatePoi(String query){
@@ -321,6 +348,35 @@ public class POIFragment extends Fragment {
     public void showToast(String message) {
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
+
+
+    private void moveCamera(GoogleMap map, LatLng target){
+        LatLng SYDNEY = new LatLng(-33.88,151.21);
+        LatLng MOUNTAIN_VIEW = new LatLng(37.4, -122.1);
+
+        target = SYDNEY;
+        // Move the camera instantly to Sydney with a zoom of 15.
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(target, 15));
+
+        // Zoom in, animating the camera.
+        map.animateCamera(CameraUpdateFactory.zoomIn());
+
+        // Zoom out to zoom level 10, animating with a duration of 2 seconds.
+        map.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
+
+
+        target = MOUNTAIN_VIEW;
+        // Construct a CameraPosition focusing on Mountain View and animate the camera to that position.
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(target)      // Sets the center of the map to Mountain View
+                .zoom(17)                   // Sets the zoom
+                .bearing(90)                // Sets the orientation of the camera to east
+                .tilt(30)                   // Sets the tilt of the camera to 30 degrees
+                .build();                   // Creates a CameraPosition from the builder
+        map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+    }
+
+
 
 }
 

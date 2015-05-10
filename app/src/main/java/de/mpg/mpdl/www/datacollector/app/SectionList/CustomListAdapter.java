@@ -55,7 +55,7 @@ public class CustomListAdapter extends BaseAdapter {
 
         ImageView imageView = (ImageView) convertView.findViewById(R.id.list_item_cell_thumbnail);
         TextView title = (TextView) convertView.findViewById(R.id.list_item_cell_title);
-        TextView fileName = (TextView) convertView.findViewById(R.id.list_item_cell_filename);
+        TextView fileName = (TextView) convertView.findViewById(R.id.list_item_user);
         TextView date = (TextView) convertView.findViewById(R.id.list_item_cell_date);
 
         // getting item data for the row

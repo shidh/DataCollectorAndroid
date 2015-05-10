@@ -1,7 +1,6 @@
 package de.mpg.mpdl.www.datacollector.app.Retrofit;
 
 import android.util.Base64;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -72,11 +71,11 @@ public class ServiceGenerator {
                 }
             });
             // set log level
-            builder.setLogLevel(RestAdapter.LogLevel.FULL).setLog(new RestAdapter.Log() {
-                public void log(String msg) {
-                    Log.i("retrofit", msg);
-                }
-            });
+//            builder.setLogLevel(RestAdapter.LogLevel.FULL).setLog(new RestAdapter.Log() {
+//                public void log(String msg) {
+//                    Log.i("retrofit", msg);
+//                }
+//            });
         }
 
 
