@@ -2,19 +2,27 @@ package de.mpg.mpdl.www.datacollector.app.SectionList;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.ShareActionProvider;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.view.WindowManager;
+import android.widget.ImageView;
 
+import com.activeandroid.query.Select;
+import com.squareup.picasso.Picasso;
+
+import de.mpg.mpdl.www.datacollector.app.Model.DataItem;
 import de.mpg.mpdl.www.datacollector.app.R;
 import de.mpg.mpdl.www.datacollector.app.SettingsActivity;
 
@@ -65,7 +73,7 @@ public class DetailActivity extends Activity {
         private static final String LOG_TAG = DetailFragment.class.getSimpleName();
 
         private static final String FORECAST_SHARE_HASHTAG = " #DataCollectorApp";
-        private String mForecastStr;
+        private String itemName;
 
         public DetailFragment() {
             setHasOptionsMenu(true);
@@ -97,7 +105,7 @@ public class DetailActivity extends Activity {
             shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
             shareIntent.setType("text/plain");
             shareIntent.putExtra(Intent.EXTRA_TEXT,
-                    mForecastStr + FORECAST_SHARE_HASHTAG);
+                    itemName + FORECAST_SHARE_HASHTAG);
             return shareIntent;
         }
 
@@ -109,9 +117,39 @@ public class DetailActivity extends Activity {
             // The detail Activity called via intent.  Inspect the intent for forecast data.
             Intent intent = getActivity().getIntent();
             if (intent != null && intent.hasExtra(Intent.EXTRA_TEXT)) {
-                mForecastStr = intent.getStringExtra(Intent.EXTRA_TEXT);
-                TextView textView = (TextView) rootView.findViewById(R.id.detail_text);
-                textView.setText(mForecastStr);
+                itemName = intent.getStringExtra(Intent.EXTRA_TEXT);
+                ImageView imageView = (ImageView) rootView.findViewById(R.id.detail_image);
+
+                //TextView title = (TextView) rootView.findViewById(R.id.detail_title);
+                //TextView accuracy = (TextView) rootView.findViewById(R.id.detail_title);
+                //TextView user = (TextView) rootView.findViewById(R.id.detail_author);
+
+                WindowManager wm = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
+                Display display = wm.getDefaultDisplay();
+
+                Point size = new Point();
+                display.getSize(size);
+
+                Log.v(size.x / 2 + " ", size.y / 2 + "");
+
+                DataItem item = new Select().
+                                from(DataItem.class).
+                                where("filename = ?", itemName).executeSingle();
+
+                Log.v(LOG_TAG, item.getWebResolutionUrlUrl());
+                Log.v(LOG_TAG, item.getMetaDataLocal().getAddress());
+                Log.v(LOG_TAG, String.valueOf(item.getMetaDataLocal().getAccuracy()));
+                //Log.v(LOG_TAG, String.valueOf(item.getMetaDataLocal().getTags().get(0)));
+                //title.setText(item.getMetaDataLocal().getAddress());
+
+                Picasso.with(getActivity())
+                        .load(item.getFileUrl())
+                        .resize(size.x, size.y-150)
+                        .centerCrop()
+                        .into(imageView);
+                //accuracy.setText(item.getMetaDataLocal().getAccuracy()+"");
+                //user.setText(item.getMetaDataLocal().getCreator());
+
             }
 
             return rootView;

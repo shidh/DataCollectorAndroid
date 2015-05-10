@@ -83,13 +83,10 @@ public class ListSectionFragment extends Fragment {
 
                         metaDataLocal.save();
                         item.setMetaDataLocal(metaDataLocal);
-                        Log.v(LOG_TAG, String.valueOf(item.getThumbnailUrl()));
-
                         Log.v(LOG_TAG, String.valueOf(item.getFilename()));
                         Log.v(LOG_TAG, String.valueOf(item.getMetaDataLocal().getTitle()));
-                        Log.v(LOG_TAG, String.valueOf(item.getMetaDataLocal().getAccuracy()));
                         dataListLocal.add(item);
-                        //item.save();
+                        item.save();
                     }
                 }
                 ActiveAndroid.setTransactionSuccessful();
@@ -229,12 +226,9 @@ public class ListSectionFragment extends Fragment {
                 toast.show();
 
                 Intent showDetailIntent = new Intent(getActivity(), DetailActivity.class);
-                //showDetailIntent.putExtra(Intent.EXTRA_SUBJECT, dataItem);
-                //showDetailIntent.setData();
-                //startService(showDetailIntent);
+                showDetailIntent.putExtra(Intent.EXTRA_TEXT, dataItem.getFilename());
 
-                showDetailIntent.addFlags(
-                        Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+                showDetailIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
                 startActivity(showDetailIntent);
             }
         });

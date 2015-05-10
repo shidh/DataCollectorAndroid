@@ -1,7 +1,5 @@
 package de.mpg.mpdl.www.datacollector.app.Retrofit;
 
-import android.util.Log;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -34,7 +32,7 @@ public class MetaDataConverter {
         List<String> tags = new ArrayList<String>();
         // here get the string of Metadata Json
         String json = gson.toJson(metaDataList);
-        Log.v(LOG_TAG, json);
+        //Log.v(LOG_TAG, json);
 
         try {
             JSONArray jsonArray = new JSONArray(json);
@@ -75,7 +73,7 @@ public class MetaDataConverter {
         } catch (JSONException e) {
             e.printStackTrace();
         } finally {
-            Log.v(LOG_TAG, gson.toJson(metaDataLocal));
+            //Log.v(LOG_TAG, gson.toJson(metaDataLocal));
             return metaDataLocal;
         }
     }
@@ -84,7 +82,7 @@ public class MetaDataConverter {
     public static List<MetaData> metaDataLocalToMetaDataList(MetaDataLocal metaDataLocal) {
         List<MetaData> metaDataList = new ArrayList<MetaData>();
 
-        Log.v(LOG_TAG + metaDataLocal, gson.toJson(metaDataLocal));
+        //Log.v(LOG_TAG + metaDataLocal, gson.toJson(metaDataLocal));
 
 
         //for title
@@ -185,7 +183,7 @@ public class MetaDataConverter {
             mTag.setLabels(labels6);
             metaDataList.add(mTag);
         }
-        Log.v(LOG_TAG, gson.toJson(metaDataList));
+        //Log.v(LOG_TAG, gson.toJson(metaDataList));
         return metaDataList;
     }
 }

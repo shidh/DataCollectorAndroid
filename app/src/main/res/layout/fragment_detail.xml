@@ -1,13 +1,44 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     tools:context="app.SectionList.DetailActivity$DetailFragment">
 
-    <TextView android:text="@string/hello_world" android:layout_width="wrap_content"
+    <ImageView
+        android:id="@+id/detail_image"
+        android:layout_alignParentLeft="true"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+    <!--
+    <TextView android:text="@string/hello_world"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/detail_text"/>
+        android:id="@+id/detail_title"/>
+
+    <TextView android:text="@string/hello_world"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/detail_author"/>
+
+    <TextView android:text="@string/hello_world"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/detail_location"/>
+
+    <TextView android:text="@string/hello_world"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/detail_accuracy"/>
+
+
+    <TextView android:text="@string/hello_world"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/detail_tags"/>
+    -->
 
 </RelativeLayout>
