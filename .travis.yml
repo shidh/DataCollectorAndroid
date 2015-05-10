@@ -1,5 +1,4 @@
 language: java
-gradle check
 
 jdk:
   - oraclejdk8
