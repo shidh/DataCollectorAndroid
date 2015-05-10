@@ -143,7 +143,7 @@ public class DetailActivity extends Activity {
                 //title.setText(item.getMetaDataLocal().getAddress());
 
                 Picasso.with(getActivity())
-                        .load(item.getFileUrl())
+                        .load(item.getWebResolutionUrlUrl())
                         .resize(size.x, size.y-150)
                         .centerCrop()
                         .into(imageView);
