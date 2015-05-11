@@ -2,11 +2,13 @@ package de.mpg.mpdl.www.datacollector.app.Retrofit;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,9 +42,12 @@ public class MetaDataConverter {
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject meta = jsonArray.getJSONObject(i);
                 //String type = meta.getString("typeUri").split("#")[1];
-                String label = meta.getString("labels").split("\"")[3];
-                //String statementUri = meta.getString("statementUri");
+                //String label = meta.getString("labels").split("\"")[3];
+                Type collectionType = new TypeToken<List<LabelsImeji>>(){}.getType();
+                List<LabelsImeji> labels = gson.fromJson(meta.getString("labels"), collectionType);
+                //Log.v(LOG_TAG, labels.get(0).getValue());
 
+                String label = labels.get(0).getValue();
                 if (label.equals("title")) {
                     JSONObject value = (JSONObject) meta.get("value");
                     metaDataLocal.setTitle(value.getString("text"));

@@ -105,28 +105,28 @@ public class POIFragment extends Fragment {
 
             // here get the string of Metadata Json
             for (DataItem item : dataList) {
-                //convertMetaData(item);
-                MetaDataLocal metaDataLocal = MetaDataConverter.
-                        metaDataToMetaDataLocal(item.getMetadata());
+                if(item != null) {
+                    //convertMetaData(item);
+                    MetaDataLocal metaDataLocal = MetaDataConverter.
+                            metaDataToMetaDataLocal(item.getMetadata());
 
-                item.setMetaDataLocal(metaDataLocal);
-//                metaDataLocal.save();
-//                item.save();
+                    item.setMetaDataLocal(metaDataLocal);
+                    //metaDataLocal.save();
+                    //item.save();
 
-                //TODO
-                //1: zoom in and show data markers
-                //2: or click the POI marker then zoom in and show data markers
+                    //TODO
+                    //1: zoom in and show data markers
+                    //2: or click the POI marker then zoom in and show data markers
 
-                //click marker show pictures
-                latitude = item.getMetaDataLocal().getLatitude();
-                longitude = item.getMetaDataLocal().getLongitude();
+                    //click marker show pictures
+                    latitude = item.getMetaDataLocal().getLatitude();
+                    longitude = item.getMetaDataLocal().getLongitude();
 
-                // create marker
-                final MarkerOptions marker = new MarkerOptions().position(
-                        new LatLng(latitude, longitude)).
-                        title(item.getMetaDataLocal().getTitle());
-                Log.v(LOG_TAG, item.getMetaDataLocal().getTitle());
-
+                    // create marker
+                    MarkerOptions marker = new MarkerOptions().position(
+                            new LatLng(latitude, longitude)).
+                            title(item.getMetaDataLocal().getTitle());
+                    Log.v(LOG_TAG, item.getMetaDataLocal().getTitle());
 
 
 //                 Picasso.with(getActivity())
@@ -153,15 +153,15 @@ public class POIFragment extends Fragment {
 //                        Log.d("TAG", "Prepare Load");
 //                    }
 //                });
+                    marker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE));
+
+                    googleMap.addMarker(marker);
+                }
 
 
-
-                marker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE));
-
-                googleMap.addMarker(marker);
             }
 
-            showToast("got new POI members");
+            //showToast("got new POI members");
 
         }
 

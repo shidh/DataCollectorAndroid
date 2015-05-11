@@ -86,6 +86,13 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
 
             new Delete().from(DataItem.class).where("filename = ?", dataItem.getFilename()).execute();
 
+            for (DataItem item: dataList){
+                if(item.getFilename().equals(dataItem.getFilename())){
+                    dataList.remove(item);
+                }
+            }
+            adapter.notifyDataSetChanged();
+
             //begin to upload only when all the dataItem are uploaded
             if(new Select()
                     .from(DataItem.class)

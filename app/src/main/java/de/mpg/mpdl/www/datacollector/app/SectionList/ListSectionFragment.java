@@ -19,6 +19,8 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.activeandroid.ActiveAndroid;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.squareup.okhttp.OkHttpClient;
 
 import java.io.BufferedReader;
@@ -62,6 +64,11 @@ public class ListSectionFragment extends Fragment {
     private final String LOG_TAG = ListSectionFragment.class.getSimpleName();
     private String collectionID = "DCQVKA8esikfRTWi";
 
+    private static Gson gson = new GsonBuilder()
+            .serializeNulls()
+            .excludeFieldsWithoutExposeAnnotation()
+            .create();
+
     Callback<List<DataItem>> callback = new Callback<List<DataItem>>() {
         @Override
         public void success(List<DataItem> dataList, Response response) {
@@ -80,7 +87,7 @@ public class ListSectionFragment extends Fragment {
 
                         MetaDataLocal metaDataLocal = MetaDataConverter.
                                 metaDataToMetaDataLocal(item.getMetadata());
-
+                        Log.v(LOG_TAG, gson.toJson(metaDataLocal));
                         metaDataLocal.save();
                         item.setMetaDataLocal(metaDataLocal);
                         Log.v(LOG_TAG, String.valueOf(item.getFilename()));
