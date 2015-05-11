@@ -1,6 +1,8 @@
 DataCollectorAndroid
 =========================
 
+[![Build Status](https://travis-ci.org/shidh/DataCollectorAndroid.svg?branch=master)](https://travis-ci.org/shidh/DataCollectorAndroid)
+
 ## Third Party Libraries
 
 
