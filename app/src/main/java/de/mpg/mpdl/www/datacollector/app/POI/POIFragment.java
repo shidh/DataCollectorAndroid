@@ -2,6 +2,8 @@ package de.mpg.mpdl.www.datacollector.app.POI;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -25,6 +27,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.squareup.otto.Subscribe;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.util.List;
 
@@ -67,6 +71,7 @@ public class POIFragment extends Fragment {
     private Location currentLocation;
     private double latitude = 48.147899;
     private double longitude = 11.57648;
+    private String title = "";
     CameraPosition cameraPosition;
 
     Callback<List<POI>> callbackAlbum = new Callback<List<POI>>() {
@@ -121,41 +126,47 @@ public class POIFragment extends Fragment {
                     //click marker show pictures
                     latitude = item.getMetaDataLocal().getLatitude();
                     longitude = item.getMetaDataLocal().getLongitude();
-
-                    // create marker
-                    MarkerOptions marker = new MarkerOptions().position(
-                            new LatLng(latitude, longitude)).
-                            title(item.getMetaDataLocal().getTitle());
-                    Log.v(LOG_TAG, item.getMetaDataLocal().getTitle());
+                    title = item.getMetaDataLocal().getTitle();
 
 
-//                 Picasso.with(getActivity())
-//                        .load(item.getThumbnailUrl())
-//                        .resizeDimen(10,10)
-//                        .centerCrop()
-//                        .into(new Target(){
-//                    @Override
-//                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-//                        marker.icon(BitmapDescriptorFactory.fromBitmap(bitmap));
-//                        //mainLayout.setBackground(new BitmapDrawable(getActivity().getResources(), bitmap));
-//                    }
-//
-//                    @Override
-//                    public void onBitmapFailed(final Drawable errorDrawable) {
-//                        Log.d("TAG", "FAILED");
-//                        // Changing marker icon
-//                        marker.icon(BitmapDescriptorFactory
-//                                .defaultMarker(BitmapDescriptorFactory.HUE_ROSE));
-//                    }
-//
-//                    @Override
-//                    public void onPrepareLoad(final Drawable placeHolderDrawable) {
-//                        Log.d("TAG", "Prepare Load");
-//                    }
-//                });
-                    marker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE));
 
-                    googleMap.addMarker(marker);
+                 Picasso.with(getActivity())
+                        .load(item.getThumbnailUrl())
+                        .resize(50,50)
+                        .centerCrop()
+                        .into(new Target(){
+                    @Override
+                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                        // create marker
+                        MarkerOptions marker = new MarkerOptions().position(
+                                new LatLng(latitude, longitude)).title(title);
+                        Log.v(LOG_TAG, title);
+                        marker.icon(BitmapDescriptorFactory.fromBitmap(bitmap));
+                        //mainLayout.setBackground(new BitmapDrawable(getActivity().getResources(), bitmap));
+                        googleMap.addMarker(marker);
+
+                    }
+
+                    @Override
+                    public void onBitmapFailed(final Drawable errorDrawable) {
+                        Log.d("TAG", "FAILED");
+                        // create marker
+                        MarkerOptions marker = new MarkerOptions().position(
+                                new LatLng(latitude, longitude)).title(title);
+                        // Changing marker icon
+                        marker.icon(BitmapDescriptorFactory
+                                .defaultMarker(BitmapDescriptorFactory.HUE_ROSE));
+                        googleMap.addMarker(marker);
+
+                    }
+
+                    @Override
+                    public void onPrepareLoad(final Drawable placeHolderDrawable) {
+                        Log.d("TAG", "Prepare Load");
+                    }
+                });
+                    //marker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE));
+
                 }
 
 
