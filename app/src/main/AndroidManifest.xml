@@ -82,6 +82,11 @@
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyCnSRHQQCyDrFYuUHD9XbRTc8Jf6A4KMFE" />
 
+        <activity
+            android:name=".LoginActivity"
+            android:label="@string/title_activity_login"
+            android:windowSoftInputMode="adjustResize|stateVisible" >
+        </activity>
     </application>
 
 </manifest>
