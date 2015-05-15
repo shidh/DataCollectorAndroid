@@ -345,19 +345,19 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
             User user = new User();
             List<Organization> orgs = new ArrayList<Organization>();
             Organization org = new Organization();
-            org.setName("TUM");
-            org.setDescription("OpenGridMap");
+            org.setName("MPDL");
+            org.setDescription("MPDL");
             org.setCity("Munich");
             org.setCountry("Germany");
             orgs.add(org);
 
-            user.setFamilyName("Shi");
-            user.setGivenName("Allen");
+            user.setFamilyName("Data Collector");
+            user.setGivenName("App");
             user.setOrganizations(orgs);
             contributors.add(user);
 
             POI poi = new POI();
-            poi.setTitle("DataCollector");
+            poi.setTitle(DeviceStatus.queryKeyword);
             poi.setDescription("just test");
             poi.setContributors(contributors);
             return poi;

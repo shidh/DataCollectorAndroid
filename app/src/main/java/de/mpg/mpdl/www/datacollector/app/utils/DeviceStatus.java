@@ -12,12 +12,21 @@ import android.widget.Toast;
  */
 public class DeviceStatus {
 
-    public static final String username = "shi@mpdl.mpg.de";
-    public static final String password = "allen";
-    public static final String collectionID = "DCQVKA8esikfRTWi";
+    public static final String username = "collector@mpdl.mpg.de";
+    public static final String password = "collector1305";
+    public static final String collectionID = "abstSICD0jGVf7B";
     public static final String queryKeyword = "DataCollector";
-    public static final String BASE_URL = "https://dev-faces.mpdl.mpg.de/imeji/rest/";
-    public static final String BASE_StatementUri = "http://dev-faces.mpdl.mpg.de/imeji/statement/";
+    public static final String BASE_URL = "https://spot.mpdl.mpg.de/rest/";
+    public static final String BASE_StatementUri = "http://spot.mpdl.mpg.de/statement/";
+
+
+    public static final String Metadata_Title_Id = "3IcFfanvCZrK4EV";
+    public static final String Metadata_Author_Id = "qw5CdYt51GYe2xxm";
+    public static final String Metadata_Location_Id = "XV3woO_9ppqMU00_";
+    public static final String Metadata_Accuracy_Id = "G0Z_PeyEz_1TjEGI";
+    public static final String Metadata_Device_Id = "huplxW3OJMDPHJDX";
+    public static final String Metadata_Tags_Id = "l34M9BSqMvZx5kbR";
+
     // Checks whether the device currently has a network connection
     public static boolean isNetworkEnabled(Activity activity) {
         ConnectivityManager connMgr = (ConnectivityManager)  activity.getSystemService(Context.CONNECTIVITY_SERVICE);

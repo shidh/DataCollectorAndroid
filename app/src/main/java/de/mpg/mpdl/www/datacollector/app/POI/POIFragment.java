@@ -81,11 +81,12 @@ public class POIFragment extends Fragment {
             Log.v(LOG_TAG, "get poi OK");
             Log.v(LOG_TAG, gson.toJson(pois));
             Log.v(LOG_TAG, String.valueOf(response.getStatus()));
+            if(pois != null){
+                for (POI poi : pois) {
+                    Log.v(LOG_TAG, poi.getId());
 
-            for (POI poi : pois) {
-                Log.v(LOG_TAG, poi.getId());
-
-                getDataItemFroPoi(poi.getId());
+                    getDataItemFroPoi(poi.getId());
+                }
             }
         }
 
