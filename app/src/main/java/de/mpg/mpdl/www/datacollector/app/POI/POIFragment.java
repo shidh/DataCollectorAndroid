@@ -40,6 +40,7 @@ import de.mpg.mpdl.www.datacollector.app.R;
 import de.mpg.mpdl.www.datacollector.app.Retrofit.MetaDataConverter;
 import de.mpg.mpdl.www.datacollector.app.Retrofit.RetrofitClient;
 import de.mpg.mpdl.www.datacollector.app.Retrofit.StringConverter;
+import de.mpg.mpdl.www.datacollector.app.utils.DeviceStatus;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -56,9 +57,9 @@ public class POIFragment extends Fragment {
     private final String LOG_TAG = POIFragment.class.getSimpleName();
     private ProgressDialog pDialog;
 
-    private String username = "shi@mpdl.mpg.de";
-    private String password = "allen";
-    String queryKeyword = "DataCollector";
+    private String username = DeviceStatus.username;
+    private String password = DeviceStatus.password;
+    String queryKeyword = DeviceStatus.queryKeyword;
     MapView mMapView;
     private GoogleMap googleMap;
 
@@ -279,7 +280,6 @@ public class POIFragment extends Fragment {
         mMapView.onCreate(savedInstanceState);
 
         mMapView.onResume();// needed to get the map to display immediately
-
         try {
             MapsInitializer.initialize(getActivity().getApplicationContext());
         } catch (Exception e) {

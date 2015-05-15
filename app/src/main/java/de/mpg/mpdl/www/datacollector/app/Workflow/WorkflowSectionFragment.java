@@ -71,7 +71,7 @@ public class WorkflowSectionFragment extends Fragment {
 
     private final String LOG_TAG = WorkflowSectionFragment.class.getSimpleName();
     public static final String ARG_SECTION_NUMBER = "section_number";
-    private String collectionID = "DCQVKA8esikfRTWi";
+    private String collectionID = DeviceStatus.collectionID;
 
     private TypedFile typedFile;
     private String json;

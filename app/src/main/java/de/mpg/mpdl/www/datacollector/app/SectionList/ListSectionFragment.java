@@ -14,7 +14,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -35,6 +34,7 @@ import de.mpg.mpdl.www.datacollector.app.R;
 import de.mpg.mpdl.www.datacollector.app.Retrofit.ImejiAPI;
 import de.mpg.mpdl.www.datacollector.app.Retrofit.MetaDataConverter;
 import de.mpg.mpdl.www.datacollector.app.Retrofit.RetrofitClient;
+import de.mpg.mpdl.www.datacollector.app.utils.DeviceStatus;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
@@ -56,13 +56,12 @@ public class ListSectionFragment extends Fragment {
 
     public static final String ARG_SECTION_NUMBER = "section_number";
     private ProgressDialog pDialog;
-    public ArrayAdapter<String> mForecastAdapter;
     private List<DataItem> dataList = new ArrayList<DataItem>();
     public CustomListAdapter adapter;
     ListView listView;
     View rootView;
     private final String LOG_TAG = ListSectionFragment.class.getSimpleName();
-    private String collectionID = "DCQVKA8esikfRTWi";
+    private String collectionID = DeviceStatus.collectionID;
 
     private static Gson gson = new GsonBuilder()
             .serializeNulls()
@@ -267,7 +266,7 @@ public class ListSectionFragment extends Fragment {
     public class FetchItemTask extends AsyncTask<String, Void, List<DataItem>> {
 
         private final String LOG_TAG = FetchItemTask.class.getSimpleName();
-        private static final String REST_SERVER = "http://dev-faces.mpdl.mpg.de/imeji/rest/";
+        private static final String REST_SERVER = DeviceStatus.BASE_URL;
 
         @Override
         protected List<DataItem> doInBackground(String... params) {

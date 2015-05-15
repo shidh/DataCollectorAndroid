@@ -18,12 +18,15 @@ import de.mpg.mpdl.www.datacollector.app.Model.ImejiModel.MetaData;
 import de.mpg.mpdl.www.datacollector.app.Model.ImejiModel.NumberImeji;
 import de.mpg.mpdl.www.datacollector.app.Model.ImejiModel.TextImeji;
 import de.mpg.mpdl.www.datacollector.app.Model.MetaDataLocal;
+import de.mpg.mpdl.www.datacollector.app.utils.DeviceStatus;
 
 /**
  * Created by allen on 28/04/15.
  */
 public class MetaDataConverter {
     private static final String LOG_TAG = MetaDataConverter.class.getSimpleName();
+
+    public static final String BASE_StatementUri = DeviceStatus.BASE_StatementUri;
     private static Gson gson = new GsonBuilder()
             .serializeNulls()
             .excludeFieldsWithoutExposeAnnotation()
@@ -98,7 +101,7 @@ public class MetaDataConverter {
         labels1.add(new LabelsImeji("en", "title"));
         m1.setLabels(labels1);
         m1.setTypeUri("http://imeji.org/terms/metadata#text");
-        m1.setStatementUri("http://dev-faces.mpdl.mpg.de/imeji/statement/iNUP1SRHR9OSZGy");
+        m1.setStatementUri(BASE_StatementUri+"iNUP1SRHR9OSZGy");
         //m1.setValue(titleValue);
         metaDataList.add(m1);
 
@@ -107,7 +110,7 @@ public class MetaDataConverter {
         //GenericValue<String> creatorValue = new GenericValue<String>(metaDataLocal.getCreator());
         //m2.setValue(creatorValue);
         m2.setValue(new TextImeji(metaDataLocal.getCreator()));
-        m2.setStatementUri("http://dev-faces.mpdl.mpg.de/imeji/statement/_HTF9UJTnH4SvZRr");
+        m2.setStatementUri(BASE_StatementUri+"_HTF9UJTnH4SvZRr");
         m2.setTypeUri("http://imeji.org/terms/metadata#text");
 
         List<LabelsImeji> labels2 = new ArrayList<LabelsImeji>();
@@ -122,7 +125,7 @@ public class MetaDataConverter {
         //GenericValue<GeoLocationImeji> geoValue = new GenericValue<GeoLocationImeji>(geo);
         m3.setValue(geo);
         //m.setValue(geo);
-        m3.setStatementUri("http://dev-faces.mpdl.mpg.de/imeji/statement/vxKbKv5mNxKjueid");
+        m3.setStatementUri(BASE_StatementUri+"vxKbKv5mNxKjueid");
         m3.setTypeUri("http://imeji.org/terms/metadata#geolocation");
         List<LabelsImeji> labels3 = new ArrayList<LabelsImeji>();
         labels3.add(new LabelsImeji("en", "location"));
@@ -135,7 +138,7 @@ public class MetaDataConverter {
         //GenericValue<Double> accuracyValue = new GenericValue<Double>(metaDataLocal.getAccuracy());
         //m4.setValue(accuracyValue);
         m4.setValue(new NumberImeji(metaDataLocal.getAccuracy()));
-        m4.setStatementUri("http://dev-faces.mpdl.mpg.de/imeji/statement/DCAGIb3A1pcu1Nmj");
+        m4.setStatementUri(BASE_StatementUri+"DCAGIb3A1pcu1Nmj");
         m4.setTypeUri("http://imeji.org/terms/metadata#number");
         List<LabelsImeji> labels4 = new ArrayList<LabelsImeji>();
         labels4.add(new LabelsImeji("en", "accuracy"));
@@ -147,7 +150,7 @@ public class MetaDataConverter {
         //GenericValue<String> deviceValue = new GenericValue<String>(metaDataLocal.getDeviceID());
         //m5.setValue(deviceValue);
         m5.setValue(new TextImeji(metaDataLocal.getDeviceID()));
-        m5.setStatementUri("http://dev-faces.mpdl.mpg.de/imeji/statement/ntXvuGrRf_705f_");
+        m5.setStatementUri(BASE_StatementUri+"ntXvuGrRf_705f_");
         m5.setTypeUri("http://imeji.org/terms/metadata#text");
 
         List<LabelsImeji> labels5 = new ArrayList<LabelsImeji>();
@@ -166,7 +169,7 @@ public class MetaDataConverter {
                 //mTag.setValue(tagValue);
 
                 mTag.setValue(new TextImeji(tag));
-                mTag.setStatementUri("http://dev-faces.mpdl.mpg.de/imeji/statement/VwC_f_NcbS8vQhjV");
+                mTag.setStatementUri(BASE_StatementUri+"VwC_f_NcbS8vQhjV");
                 mTag.setTypeUri("http://imeji.org/terms/metadata#text");
 
                 List<LabelsImeji> labels6 = new ArrayList<LabelsImeji>();
@@ -180,7 +183,7 @@ public class MetaDataConverter {
             //mTag.setValue(tagValue);
 
             mTag.setValue(new TextImeji("test"));
-            mTag.setStatementUri("http://dev-faces.mpdl.mpg.de/imeji/statement/VwC_f_NcbS8vQhjV");
+            mTag.setStatementUri(BASE_StatementUri+"VwC_f_NcbS8vQhjV");
             mTag.setTypeUri("http://imeji.org/terms/metadata#text");
 
             List<LabelsImeji> labels6 = new ArrayList<LabelsImeji>();

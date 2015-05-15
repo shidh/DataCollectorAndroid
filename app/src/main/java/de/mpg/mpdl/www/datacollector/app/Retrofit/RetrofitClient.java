@@ -5,6 +5,7 @@ import java.util.List;
 import de.mpg.mpdl.www.datacollector.app.Model.DataItem;
 import de.mpg.mpdl.www.datacollector.app.Model.ImejiModel.ItemImeji;
 import de.mpg.mpdl.www.datacollector.app.Model.POI;
+import de.mpg.mpdl.www.datacollector.app.utils.DeviceStatus;
 import retrofit.Callback;
 import retrofit.mime.TypedFile;
 import retrofit.mime.TypedString;
@@ -14,7 +15,7 @@ import retrofit.mime.TypedString;
  */
 public class RetrofitClient {
     private final String LOG_TAG = RetrofitClient.class.getSimpleName();
-    private static final String REST_SERVER = "https://dev-faces.mpdl.mpg.de/imeji/rest/";
+    private static final String REST_SERVER = DeviceStatus.BASE_URL;
 
     public static void getItems(Callback<List<DataItem>> callback) {
         // Create a very simple REST adapter which points the GitHub API

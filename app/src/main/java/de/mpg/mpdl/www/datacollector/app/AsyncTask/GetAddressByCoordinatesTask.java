@@ -33,6 +33,7 @@ import de.mpg.mpdl.www.datacollector.app.Event.OttoSingleton;
 public class GetAddressByCoordinatesTask extends AsyncTask<Double, Void, String> {
 
     private final String LOG_TAG = GetAddressByCoordinatesTask.class.getSimpleName();
+    private final String GOOGLE_API = "https://maps.googleapis.com/maps/api/geocode/json?";
 
     @Override
     protected String doInBackground(Double... params) {
@@ -52,8 +53,8 @@ public class GetAddressByCoordinatesTask extends AsyncTask<Double, Void, String>
 
         try {
             // Construct the URL for the GoogleMap query
-            final String GOOGLEAPI_BASE_URL =
-                    "https://maps.googleapis.com/maps/api/geocode/json?";
+            final String GOOGLEAPI_BASE_URL = GOOGLE_API;
+
             final String QUERY_PARAM = "latlng";
 
             //latlng=48.147899,11.57648

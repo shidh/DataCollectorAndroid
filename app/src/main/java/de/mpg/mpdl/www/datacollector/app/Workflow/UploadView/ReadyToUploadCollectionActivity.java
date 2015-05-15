@@ -54,7 +54,9 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
     public GridImageAdapter adapter;
     ListView listView;
     private MenuItem upload;
-    private String collectionID = "DCQVKA8esikfRTWi";
+    private String collectionID = DeviceStatus.collectionID;
+    private String username = DeviceStatus.username;
+    private String password = DeviceStatus.password;
 
 
     private static Gson gson = new GsonBuilder()
@@ -69,8 +71,6 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
     List<DataItem> itemList = new ArrayList<DataItem>();
     DataItem item;
 
-    private String username = "shi@mpdl.mpg.de";
-    private String password = "allen";
 
 
     // callback for Item uploading
