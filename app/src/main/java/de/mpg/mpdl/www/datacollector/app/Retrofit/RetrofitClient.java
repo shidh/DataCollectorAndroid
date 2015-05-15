@@ -17,11 +17,11 @@ public class RetrofitClient {
     private final String LOG_TAG = RetrofitClient.class.getSimpleName();
     private static final String REST_SERVER = DeviceStatus.BASE_URL;
 
-    public static void getItems(Callback<List<DataItem>> callback) {
+    public static void getItems(Callback<List<DataItem>> callback, String username, String password) {
         // Create a very simple REST adapter which points the GitHub API
         // endpoint.
 
-        ImejiAPI imejiAPI = ServiceGenerator.createService(ImejiAPI.class, REST_SERVER);
+        ImejiAPI imejiAPI = ServiceGenerator.createService(ImejiAPI.class, REST_SERVER, username, password);
 
         // Fetch and print a list of the items to this library.
         imejiAPI.getItems(callback);

@@ -62,6 +62,8 @@ public class ListSectionFragment extends Fragment {
     View rootView;
     private final String LOG_TAG = ListSectionFragment.class.getSimpleName();
     private String collectionID = DeviceStatus.collectionID;
+    private String username = DeviceStatus.username;
+    private String password = DeviceStatus.password;
 
     private static Gson gson = new GsonBuilder()
             .serializeNulls()
@@ -247,7 +249,7 @@ public class ListSectionFragment extends Fragment {
 
     private void updateDataItem(){
         // Showing progress dialog before making http request
-        RetrofitClient.getItems(callback);
+        RetrofitClient.getItems(callback, username, password);
         //pDialog = new ProgressDialog(getActivity());
         //pDialog.setMessage("Loading...");
         //pDialog.show();
