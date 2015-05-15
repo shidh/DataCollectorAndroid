@@ -83,7 +83,7 @@
             android:value="AIzaSyCnSRHQQCyDrFYuUHD9XbRTc8Jf6A4KMFE" />
 
         <activity
-            android:name=".LoginActivity"
+            android:name=".Authentication.LoginActivity"
             android:label="@string/title_activity_login"
             android:windowSoftInputMode="adjustResize|stateVisible" >
         </activity>
