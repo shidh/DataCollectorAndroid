@@ -58,7 +58,6 @@ public class POIFragment extends Fragment {
 
     private String username = "shi@mpdl.mpg.de";
     private String password = "allen";
-    String poiId = "XNdKJWI70TliDG4g";
     String queryKeyword = "DataCollector";
     MapView mMapView;
     private GoogleMap googleMap;

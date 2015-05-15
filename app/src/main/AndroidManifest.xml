@@ -8,8 +8,19 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-feature android:name="android.hardware.camera"
+
+    <uses-feature
+        android:name="android.hardware.camera"
         android:required="true" />
+
+    <!--
+     To retrieve OAuth 2.0 tokens or invalidate tokens to disconnect a user. This disconnect
+     option is required to comply with the Google+ Sign-In developer policies
+    -->
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" /> <!-- To retrieve the account name (email) as part of sign-in: -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" /> <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <uses-permission android:name="android.permission.READ_PROFILE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
 
     <application
         android:name="com.activeandroid.app.Application"
@@ -20,8 +31,12 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-        <meta-data android:name="AA_DB_NAME" android:value="DataCollector.db" />
-        <meta-data android:name="AA_DB_VERSION" android:value="12" />
+        <meta-data
+            android:name="AA_DB_NAME"
+            android:value="DataCollector.db" />
+        <meta-data
+            android:name="AA_DB_VERSION"
+            android:value="12" />
 
         <activity
             android:name=".MainActivity"
@@ -32,11 +47,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".Workflow.CollectionActivity"
             android:label="@string/demo_collection" />
-
         <activity
             android:name=".SectionList.DetailActivity"
             android:label="@string/title_activity_detail"
@@ -46,7 +59,6 @@
                 android:label="ItemDetail"
                 android:value=".MainActivity" />
         </activity>
-
         <activity
             android:name=".Workflow.UploadView.ReadyToUploadCollectionActivity"
             android:label="@string/ready_collection"
@@ -56,7 +68,6 @@
                 android:label="ItemReady"
                 android:value=".MainActivity" />
         </activity>
-
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"
@@ -66,9 +77,11 @@
                 android:label="Settings"
                 android:value=".MainActivity" />
         </activity>
+
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyCnSRHQQCyDrFYuUHD9XbRTc8Jf6A4KMFE"/>
+            android:value="AIzaSyCnSRHQQCyDrFYuUHD9XbRTc8Jf6A4KMFE" />
+
     </application>
 
 </manifest>
