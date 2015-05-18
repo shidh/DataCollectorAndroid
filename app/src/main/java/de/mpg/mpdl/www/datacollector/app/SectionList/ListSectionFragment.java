@@ -41,10 +41,11 @@ import retrofit.RetrofitError;
 import retrofit.client.OkClient;
 import retrofit.client.Response;
 
+//import com.baoyz.swipemenulistview.SwipeMenu;
+//import com.baoyz.swipemenulistview.SwipeMenuCreator;
+//import com.baoyz.swipemenulistview.SwipeMenuItem;
+//import com.baoyz.swipemenulistview.SwipeMenuListView;
 
-//import de.mpg.mpdl.www.datacollector.app.SectionList.DetailActivity;
-
-//import de.mpg.mpdl.www.datacollector.app.SectionList.DetailActivity;
 
 /**
  * Created by allen on 02/04/15.
@@ -58,6 +59,7 @@ public class ListSectionFragment extends Fragment {
     private ProgressDialog pDialog;
     private List<DataItem> dataList = new ArrayList<DataItem>();
     public CustomListAdapter adapter;
+    //SwipeMenuListView listView;
     ListView listView;
     View rootView;
     private final String LOG_TAG = ListSectionFragment.class.getSimpleName();
@@ -121,6 +123,43 @@ public class ListSectionFragment extends Fragment {
             showToast("update data failed");
         }
     };
+
+
+
+//    SwipeMenuCreator creator = new SwipeMenuCreator() {
+//
+//        @Override
+//        public void create(SwipeMenu menu) {
+//            // create "open" item
+//            SwipeMenuItem openItem = new SwipeMenuItem(getActivity());
+//            // set item background
+//            openItem.setBackground(new ColorDrawable(Color.rgb(0xC9, 0xC9,
+//                    0xCE)));
+//            // set item width
+//            openItem.setWidth(90);
+//            // set item title
+//            openItem.setTitle("Open");
+//            // set item title fontsize
+//            openItem.setTitleSize(18);
+//            // set item title font color
+//            openItem.setTitleColor(Color.WHITE);
+//            // add to menu
+//            menu.addMenuItem(openItem);
+//
+//            // create "delete" item
+//            SwipeMenuItem deleteItem = new SwipeMenuItem(getActivity());
+//            // set item background
+//            deleteItem.setBackground(new ColorDrawable(Color.rgb(0xF9,
+//                    0x3F, 0x25)));
+//            // set item width
+//            deleteItem.setWidth(90);
+//            // set a icon
+//            deleteItem.setIcon(R.drawable.ic_launcher);
+//            // add to menu
+//            menu.addMenuItem(deleteItem);
+//        }
+//    };
+
 
     public ListSectionFragment() {
     }
@@ -219,9 +258,16 @@ public class ListSectionFragment extends Fragment {
 
         adapter =  new CustomListAdapter(getActivity(), dataList);
 
+        //TODO try to change the cell view
         rootView = inflater.inflate(R.layout.fragment_section_list, container, false);
+        //rootView = inflater.inflate(R.layout.fragment_section_list_swipe, container, false);
+
         listView = (ListView) rootView.findViewById(R.id.item_list);
-        //listView.setAdapter(adapter);
+        //listView = (SwipeMenuListView) rootView.findViewById(R.id.listView);
+        listView.setAdapter(adapter);
+
+        // set creator
+        //listView.setMenuCreator(creator);
 
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
@@ -319,4 +365,8 @@ public class ListSectionFragment extends Fragment {
     public void showToast(String message) {
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
+
+
+
+
 }
