@@ -35,6 +35,7 @@ import de.mpg.mpdl.www.datacollector.app.R;
 import de.mpg.mpdl.www.datacollector.app.Retrofit.ImejiAPI;
 import de.mpg.mpdl.www.datacollector.app.Retrofit.MetaDataConverter;
 import de.mpg.mpdl.www.datacollector.app.Retrofit.RetrofitClient;
+import de.mpg.mpdl.www.datacollector.app.Workflow.UploadView.ReadyToUploadCollectionActivity;
 import de.mpg.mpdl.www.datacollector.app.utils.DeviceStatus;
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -272,7 +273,15 @@ public class ListSectionFragment extends Fragment {
 
         // set creator
         //listView.setMenuCreator(creator);
-
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //WorkflowSectionFragment newFragment = new WorkflowSectionFragment();
+                //newFragment.show(getActivity().getSupportFragmentManager(), "showWorkflow");
+                Intent intent = new Intent(getActivity(), ReadyToUploadCollectionActivity.class);
+                startActivity(intent);
+            }
+        });
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override

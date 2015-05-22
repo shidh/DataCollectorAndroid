@@ -24,5 +24,9 @@
         android:src="@drawable/ic_add_white_24dp"
         fab:fab_colorNormal="@color/primary"
         fab:fab_colorPressed="@color/accent_pressed"
-        fab:fab_colorRipple="@color/ripple" />
+        fab:fab_colorRipple="@color/ripple"
+        />
+
+    <!--fab:fab_type="mini"-->
+
 </FrameLayout>
