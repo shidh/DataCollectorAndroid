@@ -2,6 +2,7 @@
 .idea/libraries
 .DS_Store
 
+import-summary.txt
 .idea/
 # Built application files
 *.apk

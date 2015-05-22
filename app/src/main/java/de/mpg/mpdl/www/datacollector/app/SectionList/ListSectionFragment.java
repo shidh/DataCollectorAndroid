@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.activeandroid.ActiveAndroid;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.melnykov.fab.FloatingActionButton;
 import com.squareup.okhttp.OkHttpClient;
 
 import java.io.BufferedReader;
@@ -265,6 +266,9 @@ public class ListSectionFragment extends Fragment {
         listView = (ListView) rootView.findViewById(R.id.item_list);
         //listView = (SwipeMenuListView) rootView.findViewById(R.id.listView);
         listView.setAdapter(adapter);
+
+        FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
+        fab.attachToListView(listView);
 
         // set creator
         //listView.setMenuCreator(creator);
