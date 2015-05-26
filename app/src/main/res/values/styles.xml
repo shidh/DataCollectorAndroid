@@ -5,6 +5,15 @@
     -->
     <style name="DarkActionBar" parent="android:Theme.Holo.Light.DarkActionBar"></style>
     <style name="LightBar" parent="android:Theme.Holo.Light"/>
+    <style name="Light" parent="Theme.AppCompat.Light.DarkActionBar"/>
 
+    <style name="LightBarAppCompat" parent="MaterialDrawerTheme.ActionBar.TranslucentStatus"/>
+
+    <style name="LightBarAppCompat1" parent="MaterialDrawerTheme.Light.ActionBar"/>
+    <style name="LightBarAppCompat2" parent="MaterialDrawerTheme.Light.ActionBar.TranslucentStatus"/>
+    <style name="LightBarAppCompat3" parent="MaterialDrawerTheme.Light.DarkToolbar"/>
+    <style name="LightBarAppCompat4" parent="MaterialDrawerTheme.Light.DarkToolbar.TranslucentStatus"/>
+    <style name="LightBarAppCompat5" parent="MaterialDrawerTheme.Light.DarkToolbar.ActionBar"/>
+    <style name="LightBarAppCompat6" parent="MaterialDrawerTheme.Light.DarkToolbar.ActionBar.TranslucentStatus"/>
 
 </resources>
