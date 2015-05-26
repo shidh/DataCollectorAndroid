@@ -37,6 +37,10 @@
     <string name="problem_no_net">No network connection available.</string>
     <string name="problem_create_file">There is one problem when creating photo.</string>
 
+
+    <string name="Upload">Upload</string>
+    <string name="Error">Error</string>
+    <string name="Complete">Complete</string>
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 

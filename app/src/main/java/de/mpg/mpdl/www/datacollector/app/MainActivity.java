@@ -79,7 +79,7 @@ public class MainActivity extends FragmentActivity implements
     private LocationRequest mLocationRequest;
 
     // boolean flag to toggle periodic location updates
-    private boolean mRequestingLocationUpdates = false;
+    private boolean mRequestingLocationUpdates = true;
 
 
     // Location updates intervals in sec
@@ -663,7 +663,6 @@ public class MainActivity extends FragmentActivity implements
 
         LocationServices.FusedLocationApi.requestLocationUpdates(
                 mGoogleApiClient, mLocationRequest, this);
-
     }
 
     /**

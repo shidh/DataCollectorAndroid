@@ -283,6 +283,7 @@ public class WorkflowSectionFragment extends Fragment {
                     }
                 });
 
+
         return rootView;
     }
 

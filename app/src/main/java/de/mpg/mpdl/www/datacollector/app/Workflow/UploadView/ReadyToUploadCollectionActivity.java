@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.activeandroid.query.Delete;
 import com.activeandroid.query.Select;
+import com.dd.CircularProgressButton;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.squareup.otto.Produce;
@@ -58,7 +59,7 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
     private String username = DeviceStatus.username;
     private String password = DeviceStatus.password;
 
-
+    private CircularProgressButton processButton;
     private static Gson gson = new GsonBuilder()
             .serializeNulls()
             .excludeFieldsWithoutExposeAnnotation()
@@ -105,6 +106,7 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
                 OttoSingleton.getInstance().post(
                         new UploadEvent(response.getStatus()));
             }
+            processButton.setProgress(100); // set progress to 100 or -1 to indicate complete or error state
         }
 
         @Override
@@ -118,6 +120,8 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
             }
             //Log.v(LOG_TAG, String.valueOf(error.getResponse().getStatus()));
             Log.v(LOG_TAG, String.valueOf(error));
+            processButton.setProgress(-1); // set progress to 0 to switch back to normal state
+
         }
     };
 
@@ -196,27 +200,6 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
             DeviceStatus.showToast(this, "Go back to get some data");
         }
 
-
-//        adapter =  new CustomListAdapter(this, dataList);
-//        listView = (ListView) findViewById(R.id.item_list);
-//
-//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-//            @Override
-//            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-//                DataItem dataItem = (DataItem) adapter.getItem(position);
-//                //Context context = getActivity();
-//                showToast(dataItem.getCollectionId());
-//
-//                Intent showDetailIntent = new Intent(ReadyToUploadCollectionActivity.this,
-//                        DetailActivity.class);
-//                //showDetailIntent.putExtra(Intent.EXTRA_SUBJECT, dataItem);
-//                //showDetailIntent.setData();
-//                //startService(showDetailIntent);
-//                ReadyToUploadCollectionActivity.this.startActivity(showDetailIntent);
-//            }
-//        });
-//      listView.setAdapter(adapter);
-
         adapter = new GridImageAdapter(this, dataList);
         GridView gridview = (GridView) findViewById(R.id.grid_view);
         registerForContextMenu(gridview);
@@ -243,6 +226,19 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
 //                return false;
 //            }
 //        });
+        processButton = (CircularProgressButton) findViewById(R.id.btnWithText);
+        processButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if(dataList!=null && dataList.size()>0) {
+                            upload(dataList);
+                            processButton.setIndeterminateProgressMode(true); // turn on indeterminate progress
+                            processButton.setProgress(50); // set progress > 0 & < 100 to display indeterminate progress
+                        }else{
+                            showToast("Nothing to upload :)");
+                        }
+                    }
+                });
     }
 
     @Override
@@ -315,30 +311,26 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
 
         @Override
         public boolean onCreateOptionsMenu(Menu menu) {
-            getMenuInflater().inflate(R.menu.menu_ready_to_update, menu);
-            upload = menu.findItem(R.id.upload);
+//            getMenuInflater().inflate(R.menu.menu_ready_to_update, menu);
+//            upload = menu.findItem(R.id.upload);
             return true;
         }
 
 
         @Override
         public boolean onOptionsItemSelected(MenuItem item) {
-            // Handle action bar item clicks here. The action bar will
-            // automatically handle clicks on the Home/Up button, so long
-            // as you specify a parent activity in AndroidManifest.xml.
             int id = item.getItemId();
 
-            if (id == R.id.upload) {
-                //Intent showSettingIntent = new Intent(this, SettingsActivity.class);
-                //startActivity(showSettingIntent);
-
-                //createNewPOI();
-                upload(dataList);
-                return true;
-            }
+//            if (id == R.id.upload) {
+//                //createNewPOI();
+//                upload(dataList);
+//                return true;
+//            }
 
             return super.onOptionsItemSelected(item);
         }
+
+
 
         private POI createNewPOI() {
             List<User> contributors = new ArrayList<User>();

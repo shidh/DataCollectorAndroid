@@ -19,7 +19,7 @@
         android:layout_height="45dp"
         android:layout_alignParentLeft="true"
         android:text="@string/btn_get_location"
-        android:src="@drawable/marker" />
+        android:src="@drawable/marker_green" />
 
     <RatingBar
         android:id="@+id/ratingBar"
