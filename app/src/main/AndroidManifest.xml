@@ -36,7 +36,7 @@
             android:value="DataCollector.db" />
         <meta-data
             android:name="AA_DB_VERSION"
-            android:value="12" />
+            android:value="1" />
 
         <activity
             android:name=".MainActivity"

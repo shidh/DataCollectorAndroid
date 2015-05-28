@@ -261,8 +261,43 @@ public class WorkflowSectionFragment extends Fragment {
                             //meta.setAddress(getAddressByCoordinates(currentLocation.getLatitude(),
                             //        currentLocation.getLongitude()));
 
-                            AskMetadataFragment newFragment = new AskMetadataFragment();
-                            newFragment.show(getActivity().getSupportFragmentManager(), "askMetadata");
+                            //remove the tags fragment
+                            //AskMetadataFragment newFragment = new AskMetadataFragment();
+                            //newFragment.show(getActivity().getSupportFragmentManager(), "askMetadata");
+
+                            meta.setTags(null);
+                            //meta.setTitle(meta.getTags().get(0)+"@"+meta.getAddress());
+                            meta.setTitle(meta.getAddress());
+                            meta.setCreator(user.getCompleteName());
+
+                            //add a dataItem to the list on the top of view
+                            item.setCollectionId(collectionID);
+                            item.setLocalPath(photoFilePath);
+                            item.setMetaDataLocal(meta);
+                            item.setLocal(1);
+                            item.setCreatedBy(user);
+                            item.setFilename(fileName);
+
+                            meta.save();
+                            item.save();
+
+                            Log.v(LOG_TAG, item.getFilename());
+                            itemList.add(item);
+
+                            DataItem dataItem = new Select()
+                                    .from(DataItem.class)
+                                    .where("isLocal = ?", 1)
+                                    .executeSingle();
+                            meta.save();
+
+                            Log.v(LOG_TAG+"when save", gson.toJson(dataItem));
+
+                            //change the icon of the view
+                            poi_list.setIcon(getResources().getDrawable(R.drawable.action_uploadlist_blue));
+                            //imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_launcher));
+
+                            reSetUpView();
+
                         } else{
                             //TODO
                             //make a dialog to ask user open gps or save photo without geo information
@@ -436,7 +471,7 @@ public class WorkflowSectionFragment extends Fragment {
     }
 
 
-    @Subscribe
+    //@Subscribe
     public void onGetMetadataFromUser(MetadataIsReadyEvent event) {
 
         meta.setTags(event.tags);

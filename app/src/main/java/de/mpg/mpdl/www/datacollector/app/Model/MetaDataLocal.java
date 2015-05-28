@@ -39,7 +39,7 @@ public class MetaDataLocal extends Model{
     private String deviceID;
 
     @Expose
-    @Column(name = "tags")
+    //@Column(name = "tags")
     private List<String> tags;
 
     @Expose
