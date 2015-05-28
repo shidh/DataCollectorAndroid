@@ -1,7 +1,5 @@
 package de.mpg.mpdl.www.datacollector.app.Workflow;
 
-import android.animation.ObjectAnimator;
-import android.animation.PropertyValuesHolder;
 import android.app.Activity;
 import android.content.Intent;
 import android.location.Location;
@@ -18,7 +16,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -27,8 +24,6 @@ import android.widget.Toast;
 import com.activeandroid.query.Select;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
-import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
 import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Picasso;
@@ -65,7 +60,7 @@ import retrofit.mime.TypedFile;
 /**
  * A fragment that launches other parts of the demo application.
  */
-public class WorkflowSectionFragment extends Fragment {
+public class WorkflowSectionFragment extends Fragment{
 
     // Attributes for starting the intent and used by onActivityResult
     private static final int INTENT_ENABLE_GPS = 1000;
@@ -105,8 +100,11 @@ public class WorkflowSectionFragment extends Fragment {
     private ImageView btnStartLocationUpdates;
     private User user;
     private MenuItem poi_list;
+    private FloatingActionButton bottomCenterButton;
 
     private OnLocationUpdatedListener mCallback;
+
+
 
 
     // The container Activity must implement this interface so the frag can deliver messages
@@ -148,6 +146,10 @@ public class WorkflowSectionFragment extends Fragment {
 
     public TextView getLblLocation() {
         return lblLocation;
+    }
+
+    public FloatingActionButton getBottomCenterButton(){
+        return bottomCenterButton;
     }
 
     public ImageView getBtnStartLocationUpdates() {
@@ -207,206 +209,27 @@ public class WorkflowSectionFragment extends Fragment {
         btnStartLocationUpdates = (ImageView) rootView.findViewById(R.id.btnLocationUpdates);
 
 
+/**
 
-        // Set up the large red button on the center right side
-        // With custom button and content sizes and margins
-        int redActionButtonSize = getResources().getDimensionPixelSize(R.dimen.red_action_button_size);
-        int redActionButtonMargin = getResources().getDimensionPixelOffset(R.dimen.action_button_margin);
-        int redActionButtonContentSize = getResources().getDimensionPixelSize(R.dimen.red_action_button_content_size);
-        int redActionButtonContentMargin = getResources().getDimensionPixelSize(R.dimen.red_action_button_content_margin);
-        int redActionMenuRadius = getResources().getDimensionPixelSize(R.dimen.red_action_menu_radius);
-        int blueSubActionButtonSize = getResources().getDimensionPixelSize(R.dimen.blue_sub_action_button_size);
-        int blueSubActionButtonContentMargin = getResources().getDimensionPixelSize(R.dimen.blue_sub_action_button_content_margin);
-
-        final ImageView fabIconNew = new ImageView(getActivity());
-        fabIconNew.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_new));
-
-        FloatingActionButton.LayoutParams starParams = new FloatingActionButton.
-                LayoutParams(redActionButtonSize, redActionButtonSize);
-        starParams.setMargins(redActionButtonMargin,
-                redActionButtonMargin,
-                redActionButtonMargin,
-                redActionButtonMargin);
-        fabIconNew.setLayoutParams(starParams);
-
-        FloatingActionButton.LayoutParams fabIconStarParams = new FloatingActionButton.
-                LayoutParams(redActionButtonContentSize, redActionButtonContentSize);
-        fabIconStarParams.setMargins(redActionButtonContentMargin,
-                redActionButtonContentMargin,
-                redActionButtonContentMargin,
-                redActionButtonContentMargin);
-
-        final FloatingActionButton bottomCenterButton = new FloatingActionButton.Builder(getActivity())
-                .setContentView(fabIconNew, fabIconStarParams)
-                .setBackgroundDrawable(R.drawable.button_action_red_selector)
-                .setPosition(FloatingActionButton.POSITION_BOTTOM_CENTER)
-                .setLayoutParams(starParams)
-                .build();
-
-        // Set up customized SubActionButtons for the right center menu
-        SubActionButton.Builder lCSubBuilder = new SubActionButton.Builder(getActivity());
-        lCSubBuilder.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_action_blue_selector));
-
-        FrameLayout.LayoutParams blueContentParams = new FrameLayout.
-                LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
-        blueContentParams.setMargins(blueSubActionButtonContentMargin,
-                blueSubActionButtonContentMargin,
-                blueSubActionButtonContentMargin,
-                blueSubActionButtonContentMargin);
-        lCSubBuilder.setLayoutParams(blueContentParams);
-        // Set custom layout params
-        FrameLayout.LayoutParams blueParams = new FrameLayout.
-                LayoutParams(blueSubActionButtonSize, blueSubActionButtonSize);
-        lCSubBuilder.setLayoutParams(blueParams);
-
-        ImageView lcIcon1 = new ImageView(getActivity());
-        ImageView lcIcon2 = new ImageView(getActivity());
-        ImageView lcIcon3 = new ImageView(getActivity());
-        ImageView lcIcon4 = new ImageView(getActivity());
-        ImageView lcIcon5 = new ImageView(getActivity());
-        ImageView lcIcon6 = new ImageView(getActivity());
-
-        lcIcon1.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_camera));
-        lcIcon2.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_picture));
-        lcIcon3.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_video));
-        lcIcon4.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_location_found));
-        lcIcon5.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_headphones));
-        lcIcon6.setImageDrawable(getResources().getDrawable(R.drawable.save));
-
-        SubActionButton subActionButton1 = lCSubBuilder.setContentView(lcIcon1, blueContentParams).build();
-        SubActionButton subActionButton6 = lCSubBuilder.setContentView(lcIcon6, blueContentParams).build();
-
-        SubActionButton subActionButton2 = lCSubBuilder.setContentView(lcIcon2, blueContentParams).build();
-        SubActionButton subActionButton3 = lCSubBuilder.setContentView(lcIcon3, blueContentParams).build();
-        SubActionButton subActionButton4 = lCSubBuilder.setContentView(lcIcon4, blueContentParams).build();
-        SubActionButton subActionButton5 = lCSubBuilder.setContentView(lcIcon5, blueContentParams).build();
-
-
-        // Build another menu with custom options
-        final FloatingActionMenu bottomCenterMenu = new FloatingActionMenu.Builder(getActivity())
-                .addSubActionView(subActionButton1)
-                .addSubActionView(subActionButton2)
-                .addSubActionView(subActionButton3)
-                .addSubActionView(subActionButton4)
-                .addSubActionView(subActionButton5)
-                .addSubActionView(subActionButton6)
-                .setRadius(redActionMenuRadius)
-                .setStartAngle(-180)
-                .setEndAngle(0)
-                .attachTo(bottomCenterButton)
-                .build();
 
         subActionButton1.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         Log.v(LOG_TAG, "hi");
-                        rootView.findViewById(R.id.save).setVisibility(View.VISIBLE);
+                        //rootView.findViewById(R.id.save).setVisibility(View.VISIBLE);
                         takePhoto();
                     }
                 });
 
-        subActionButton6.setOnClickListener(
+
+
+ subActionButton2.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if(currentLocation != null){
-                            meta.setAccuracy(currentLocation.getAccuracy());
-                            meta.setLatitude(currentLocation.getLatitude());
-                            meta.setLongitude(currentLocation.getLongitude());
-                            //meta.setAddress(getAddressByCoordinates(currentLocation.getLatitude(),
-                            //        currentLocation.getLongitude()));
-
-                            //remove the tags fragment
-                            //AskMetadataFragment newFragment = new AskMetadataFragment();
-                            //newFragment.show(getActivity().getSupportFragmentManager(), "askMetadata");
-
-                            meta.setTags(null);
-                            //meta.setTitle(meta.getTags().get(0)+"@"+meta.getAddress());
-                            meta.setTitle(meta.getAddress());
-                            meta.setCreator(user.getCompleteName());
-
-                            //add a dataItem to the list on the top of view
-                            item.setCollectionId(collectionID);
-                            item.setLocalPath(photoFilePath);
-                            item.setMetaDataLocal(meta);
-                            item.setLocal(1);
-                            item.setCreatedBy(user);
-                            item.setFilename(fileName);
-
-                            meta.save();
-                            item.save();
-
-                            Log.v(LOG_TAG, item.getFilename());
-                            itemList.add(item);
-
-                            DataItem dataItem = new Select()
-                                    .from(DataItem.class)
-                                    .where("isLocal = ?", 1)
-                                    .executeSingle();
-                            meta.save();
-
-                            Log.v(LOG_TAG+"when save", gson.toJson(dataItem));
-
-                            //change the icon of the view
-                            poi_list.setIcon(getResources().getDrawable(R.drawable.action_uploadlist_blue));
-                            //imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_launcher));
-
-                            reSetUpView();
-
-                        } else{
-                            //TODO
-                            //make a dialog to ask user open gps or save photo without geo information
-                            showToast("Please open the GPS by clicking the marker on top left");
-                        }
-                    }
-                });
-        // Listen menu open and close events to animate the button content view
-        bottomCenterMenu.setStateChangeListener(new FloatingActionMenu.MenuStateChangeListener() {
-            @Override
-            public void onMenuOpened(FloatingActionMenu menu) {
-                // Rotate the icon of rightLowerButton 45 degrees clockwise
-                fabIconNew.setRotation(0);
-                PropertyValuesHolder pvhR = PropertyValuesHolder.ofFloat(View.ROTATION, 45);
-                ObjectAnimator animation = ObjectAnimator.ofPropertyValuesHolder(fabIconNew, pvhR);
-                animation.start();
-            }
-
-            @Override
-            public void onMenuClosed(FloatingActionMenu menu) {
-                // Rotate the icon of rightLowerButton 45 degrees counter-clockwise
-                fabIconNew.setRotation(45);
-                PropertyValuesHolder pvhR = PropertyValuesHolder.ofFloat(View.ROTATION, 0);
-                ObjectAnimator animation = ObjectAnimator.ofPropertyValuesHolder(fabIconNew, pvhR);
-                animation.start();
-            }
-        });
-
-
-
-        // Taking a Photo activity.
-        rootView.findViewById(R.id.takePhoto)
-                .setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        rootView.findViewById(R.id.save).setVisibility(View.VISIBLE);
-                        takePhoto();
-                    }
-                });
-
-
-        // Open Photo Lib by navigating to external activities.
-        rootView.findViewById(R.id.gallery_activity)
-                .setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        // Create an intent that asks the user to pick a photo, but using
-                        // FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET, ensures that relaunching
-                        // the application from the device home screen does not return
-                        // to the external activity.
-
                         Intent gallery = new Intent(Intent.ACTION_PICK,
-                                        android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+                                android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI);
                         gallery.setType("image/*");
                         gallery.setAction(Intent.ACTION_GET_CONTENT);
                         //gallery.addFlags(
@@ -415,26 +238,14 @@ public class WorkflowSectionFragment extends Fragment {
                     }
                 });
 
-        // Save the data in the local storage.
-        rootView.findViewById(R.id.save)
-                .setOnClickListener(new View.OnClickListener() {
+        subActionButton6.setOnClickListener(
+                new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-
-                        //Intent intent = new Intent(getActivity(), CollectionActivity.class);
-                        //startActivity(intent);
-
-
-                        //MetadataFragment frag=new MetadataFragment();
-                        //mCallback.replaceFragment(frag);
-
-//                       Fragment frag = getActivity().getSupportFragmentManager().
-//                                findFragmentByTag("android:switcher:"
-//                                + R.id.pager + ":" + getActivity().mViewPager.getCurrentItem());
-
-
-                        //upload();
-                        if(currentLocation != null){
+                        if (meta != null && item != null) {
+                            if (currentLocation != null) {
+                                showToast("GPS is off");
+                            }
                             meta.setAccuracy(currentLocation.getAccuracy());
                             meta.setLatitude(currentLocation.getLatitude());
                             meta.setLongitude(currentLocation.getLongitude());
@@ -461,7 +272,6 @@ public class WorkflowSectionFragment extends Fragment {
                             meta.save();
                             item.save();
 
-                            Log.v(LOG_TAG, item.getFilename());
                             itemList.add(item);
 
                             DataItem dataItem = new Select()
@@ -470,7 +280,7 @@ public class WorkflowSectionFragment extends Fragment {
                                     .executeSingle();
                             meta.save();
 
-                            Log.v(LOG_TAG+"when save", gson.toJson(dataItem));
+                            Log.v(LOG_TAG + "when save", gson.toJson(dataItem));
 
                             //change the icon of the view
                             poi_list.setIcon(getResources().getDrawable(R.drawable.action_uploadlist_blue));
@@ -478,16 +288,101 @@ public class WorkflowSectionFragment extends Fragment {
 
                             reSetUpView();
 
-                        } else{
-                            //TODO
-                            //make a dialog to ask user open gps or save photo without geo information
-                            showToast("Please open the GPS by clicking the marker on top left");
+                        } else {
+                            showToast("Please press + button start to work");
                         }
                     }
                 });
 
+ *
+ */
+
+//        // Taking a Photo activity.
+//        rootView.findViewById(R.id.takePhoto)
+//                .setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        rootView.findViewById(R.id.save).setVisibility(View.VISIBLE);
+//                        takePhoto();
+//                    }
+//                });
+
+
+        // Open Photo Lib by navigating to external activities.
+//        rootView.findViewById(R.id.gallery_activity)
+//                .setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        Intent gallery = new Intent(Intent.ACTION_PICK,
+//                                        android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+//                        gallery.setType("image/*");
+//                        gallery.setAction(Intent.ACTION_GET_CONTENT);
+//                        //gallery.addFlags(
+//                        //        Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+//                        startActivityForResult(gallery, INTENT_PICK_PHOTO);
+//                    }
+//                });
+
+        // Save the data in the local storage.
+//        rootView.findViewById(R.id.save)
+//                .setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        //upload();
+//                        if(currentLocation != null){
+//                            meta.setAccuracy(currentLocation.getAccuracy());
+//                            meta.setLatitude(currentLocation.getLatitude());
+//                            meta.setLongitude(currentLocation.getLongitude());
+//                            //meta.setAddress(getAddressByCoordinates(currentLocation.getLatitude(),
+//                            //        currentLocation.getLongitude()));
+//
+//                            //remove the tags fragment
+//                            //AskMetadataFragment newFragment = new AskMetadataFragment();
+//                            //newFragment.show(getActivity().getSupportFragmentManager(), "askMetadata");
+//
+//                            meta.setTags(null);
+//                            //meta.setTitle(meta.getTags().get(0)+"@"+meta.getAddress());
+//                            meta.setTitle(meta.getAddress());
+//                            meta.setCreator(user.getCompleteName());
+//
+//                            //add a dataItem to the list on the top of view
+//                            item.setCollectionId(collectionID);
+//                            item.setLocalPath(photoFilePath);
+//                            item.setMetaDataLocal(meta);
+//                            item.setLocal(1);
+//                            item.setCreatedBy(user);
+//                            item.setFilename(fileName);
+//
+//                            meta.save();
+//                            item.save();
+//
+//                            Log.v(LOG_TAG, item.getFilename());
+//                            itemList.add(item);
+//
+//                            DataItem dataItem = new Select()
+//                                    .from(DataItem.class)
+//                                    .where("isLocal = ?", 1)
+//                                    .executeSingle();
+//                            meta.save();
+//
+//                            Log.v(LOG_TAG+"when save", gson.toJson(dataItem));
+//
+//                            //change the icon of the view
+//                            poi_list.setIcon(getResources().getDrawable(R.drawable.action_uploadlist_blue));
+//                            //imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_launcher));
+//
+//                            reSetUpView();
+//
+//                        } else{
+//                            //TODO
+//                            //make a dialog to ask user open gps or save photo without geo information
+//                            showToast("Please open the GPS by clicking the marker on top left");
+//                        }
+//                    }
+//                });
+
         //Don't show the save button before user taken a photo
-        rootView.findViewById(R.id.save).setVisibility(View.GONE);
+//        rootView.findViewById(R.id.save).setVisibility(View.GONE);
 
 
         rootView.findViewById(R.id.btnLocationUpdates)
@@ -515,6 +410,8 @@ public class WorkflowSectionFragment extends Fragment {
         super.onResume();
         OttoSingleton.getInstance().register(this);
         Log.d(LOG_TAG, "onResume");
+        //bottomCenterButton.setVisibility(View.VISIBLE);
+
     }
 
 //    @Override
@@ -541,6 +438,8 @@ public class WorkflowSectionFragment extends Fragment {
         super.onPause();
         OttoSingleton.getInstance().unregister(this);
         Log.d(LOG_TAG, "onPasue");
+        //bottomCenterButton.setVisibility(View.INVISIBLE);
+
 
     }
 
@@ -641,7 +540,7 @@ public class WorkflowSectionFragment extends Fragment {
                         .load(imageUri)
                         .resize(imageView.getWidth(), imageView.getHeight())
                         .into(imageView);
-                rootView.findViewById(R.id.save).setVisibility(View.VISIBLE);
+                //rootView.findViewById(R.id.save).setVisibility(View.VISIBLE);
 
             } else if (resultCode == getActivity().RESULT_CANCELED) {
                 // User cancelled the photo picking
@@ -801,7 +700,7 @@ public class WorkflowSectionFragment extends Fragment {
 
     private void reSetUpView(){
         imageView.setVisibility(View.INVISIBLE);
-        rootView.findViewById(R.id.save).setVisibility(View.INVISIBLE);
+        //rootView.findViewById(R.id.save).setVisibility(View.INVISIBLE);
         item = new DataItem();
         meta = new MetaDataLocal();
     }

@@ -1,5 +1,7 @@
 package de.mpg.mpdl.www.datacollector.app;
 
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
 import android.app.ActionBar;
 import android.app.Dialog;
 import android.app.FragmentTransaction;
@@ -17,6 +19,8 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -28,6 +32,9 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
+import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
+import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 import com.squareup.otto.Produce;
 import com.squareup.picasso.Picasso;
 
@@ -93,11 +100,15 @@ public class MainActivity extends FragmentActivity implements
     private TextView lblLocation;
     private RatingBar ratingView;
     private ImageView btnStartLocationUpdates;
+    private FloatingActionButton bottomCenterButton;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //ActiveAndroid.initialize(this);
+
 
         int code = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
         if(code != ConnectionResult.SUCCESS) {
@@ -177,8 +188,125 @@ public class MainActivity extends FragmentActivity implements
 //                togglePeriodicLocationUpdates();
 //            }
 //        });
-//
+        int redActionButtonSize = getResources().getDimensionPixelSize(R.dimen.red_action_button_size);
+        int redActionButtonMargin = getResources().getDimensionPixelOffset(R.dimen.action_button_margin);
+        int redActionButtonContentSize = getResources().getDimensionPixelSize(R.dimen.red_action_button_content_size);
+        int redActionButtonContentMargin = getResources().getDimensionPixelSize(R.dimen.red_action_button_content_margin);
+        int redActionMenuRadius = getResources().getDimensionPixelSize(R.dimen.red_action_menu_radius);
+        int blueSubActionButtonSize = getResources().getDimensionPixelSize(R.dimen.blue_sub_action_button_size);
+        int blueSubActionButtonContentMargin = getResources().getDimensionPixelSize(R.dimen.blue_sub_action_button_content_margin);
+
+        final ImageView fabIconNew = new ImageView(this);
+        fabIconNew.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_new));
+
+        FloatingActionButton.LayoutParams starParams = new FloatingActionButton.
+                LayoutParams(redActionButtonSize, redActionButtonSize);
+        starParams.setMargins(redActionButtonMargin,
+                redActionButtonMargin,
+                redActionButtonMargin,
+                redActionButtonMargin);
+        fabIconNew.setLayoutParams(starParams);
+
+
+        FloatingActionButton.LayoutParams fabIconStarParams = new FloatingActionButton.
+                LayoutParams(redActionButtonContentSize, redActionButtonContentSize);
+        fabIconStarParams.setMargins(redActionButtonContentMargin,
+                redActionButtonContentMargin,
+                redActionButtonContentMargin,
+                redActionButtonContentMargin);
+
+        bottomCenterButton = new FloatingActionButton.Builder(this)
+                .setContentView(fabIconNew, fabIconStarParams)
+                .setBackgroundDrawable(R.drawable.button_action_red_selector)
+                .setPosition(FloatingActionButton.POSITION_BOTTOM_CENTER)
+                .setLayoutParams(starParams)
+                .build();
+
+        // Set up customized SubActionButtons for the right center menu
+        SubActionButton.Builder lCSubBuilder = new SubActionButton.Builder(this);
+        lCSubBuilder.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_action_blue_selector));
+
+        FrameLayout.LayoutParams blueContentParams = new FrameLayout.
+                LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
+        blueContentParams.setMargins(blueSubActionButtonContentMargin,
+                blueSubActionButtonContentMargin,
+                blueSubActionButtonContentMargin,
+                blueSubActionButtonContentMargin);
+        lCSubBuilder.setLayoutParams(blueContentParams);
+        // Set custom layout params
+        FrameLayout.LayoutParams blueParams = new FrameLayout.
+                LayoutParams(blueSubActionButtonSize, blueSubActionButtonSize);
+        lCSubBuilder.setLayoutParams(blueParams);
+
+        ImageView lcIcon1 = new ImageView(this);
+        ImageView lcIcon2 = new ImageView(this);
+        ImageView lcIcon3 = new ImageView(this);
+        ImageView lcIcon4 = new ImageView(this);
+        ImageView lcIcon5 = new ImageView(this);
+        ImageView lcIcon6 = new ImageView(this);
+
+        lcIcon1.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_camera));
+        lcIcon2.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_picture));
+        lcIcon3.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_video));
+        lcIcon4.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_location_found));
+        lcIcon5.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_headphones));
+        lcIcon6.setImageDrawable(getResources().getDrawable(R.drawable.save));
+
+        SubActionButton subActionButton1 = lCSubBuilder.setContentView(lcIcon1, blueContentParams).build();
+        SubActionButton subActionButton6 = lCSubBuilder.setContentView(lcIcon6, blueContentParams).build();
+
+        SubActionButton subActionButton2 = lCSubBuilder.setContentView(lcIcon2, blueContentParams).build();
+        SubActionButton subActionButton3 = lCSubBuilder.setContentView(lcIcon3, blueContentParams).build();
+        SubActionButton subActionButton4 = lCSubBuilder.setContentView(lcIcon4, blueContentParams).build();
+        SubActionButton subActionButton5 = lCSubBuilder.setContentView(lcIcon5, blueContentParams).build();
+
+
+        // Build another menu with custom options
+        final FloatingActionMenu bottomCenterMenu = new FloatingActionMenu.Builder(this)
+                .addSubActionView(subActionButton1)
+                .addSubActionView(subActionButton2)
+                .addSubActionView(subActionButton3)
+                .addSubActionView(subActionButton4)
+                .addSubActionView(subActionButton5)
+                .addSubActionView(subActionButton6)
+                .setRadius(redActionMenuRadius)
+                .setStartAngle(-180)
+                .setEndAngle(0)
+                .attachTo(bottomCenterButton)
+                .build();
+
+
+
+        subActionButton1.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        //onClickedListener.onCameraClicked();
+                    }
+                });
+        // Listen menu open and close events to animate the button content view
+        bottomCenterMenu.setStateChangeListener(new FloatingActionMenu.MenuStateChangeListener() {
+            @Override
+            public void onMenuOpened(FloatingActionMenu menu) {
+                // Rotate the icon of rightLowerButton 45 degrees clockwise
+                fabIconNew.setRotation(0);
+                PropertyValuesHolder pvhR = PropertyValuesHolder.ofFloat(View.ROTATION, 45);
+                ObjectAnimator animation = ObjectAnimator.ofPropertyValuesHolder(fabIconNew, pvhR);
+                animation.start();
+            }
+
+            @Override
+            public void onMenuClosed(FloatingActionMenu menu) {
+                // Rotate the icon of rightLowerButton 45 degrees counter-clockwise
+                fabIconNew.setRotation(45);
+                PropertyValuesHolder pvhR = PropertyValuesHolder.ofFloat(View.ROTATION, 0);
+                ObjectAnimator animation = ObjectAnimator.ofPropertyValuesHolder(fabIconNew, pvhR);
+                animation.start();
+            }
+        });
     }
+
+
 
 
     @Override
@@ -302,10 +430,34 @@ public class MainActivity extends FragmentActivity implements
         // When the given tab is selected, switch to the corresponding page in
         // the ViewPager.
         mViewPager.setCurrentItem(tab.getPosition());
+//        if(tab.getPosition()!= 0){
+//            Fragment frag = getSupportFragmentManager().findFragmentByTag("android:switcher:"
+//                    + R.id.pager + ":" + 0);
+//
+//            workflow = (WorkflowSectionFragment) frag;
+//            bottomCenterButton = workflow.getBottomCenterButton();
+//            bottomCenterButton.setVisibility(View.GONE);
+//            }
+        if(tab.getPosition()!= 0){
+            bottomCenterButton.setVisibility(View.INVISIBLE);
+        }
+
     }
 
     @Override
     public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+//        if(tab.getPosition()!= 0){
+//            Fragment frag = getSupportFragmentManager().findFragmentByTag("android:switcher:"
+//                    + R.id.pager + ":" + 0);
+//
+//            workflow = (WorkflowSectionFragment) frag;
+//            bottomCenterButton = workflow.getBottomCenterButton();
+//            bottomCenterButton.setVisibility(View.VISIBLE);
+//        }
+        if(tab.getPosition() != 0){
+            bottomCenterButton.setVisibility(View.VISIBLE);
+        }
+
     }
 
     @Override
@@ -361,29 +513,32 @@ public class MainActivity extends FragmentActivity implements
 
             Fragment fragment;
             Bundle args = new Bundle();
+            Log.v(LOG_TAG ,position+"");
+
             switch (position) {
                 case 0:
-                    // The first section of the app is the most interesting -- it offers
-                    // a launchpad into the other demonstrations in this example application.
+                    // The first section of the app
                     fragment =  new WorkflowSectionFragment();
-                    args.putInt(WorkflowSectionFragment.ARG_SECTION_NUMBER, position + 1);
+                    args.putInt(WorkflowSectionFragment.ARG_SECTION_NUMBER, position );
                     fragment.setArguments(args);
                     return fragment;
+
                 case 1:
                     fragment =  new ListSectionFragment();
-                    args.putInt(ListSectionFragment.ARG_SECTION_NUMBER, position + 1);
+                    args.putInt(ListSectionFragment.ARG_SECTION_NUMBER, position );
                     fragment.setArguments(args);
                     return fragment;
+
                 case 2:
                     // The other sections of the app are dummy placeholders.
                     fragment = new POIFragment();
-                    args.putInt(POIFragment.ARG_SECTION_NUMBER, position + 1);
+                    args.putInt(POIFragment.ARG_SECTION_NUMBER, position );
                     fragment.setArguments(args);
                     return fragment;
                 default:
                     // getItem is called to instantiate the fragment for the given page.
                     // Return a PlaceholderFragment (defined as a static inner class below).
-                    return new ListSectionFragment();
+                    return new WorkflowSectionFragment();
              }
         }
 
@@ -500,7 +655,7 @@ public class MainActivity extends FragmentActivity implements
             // based on the current position, cast the page to the correct fragment
             if (mViewPager.getCurrentItem() == 0 && frag != null) {
                 workflow = (WorkflowSectionFragment) frag;
-                        lblLocation = workflow.getLblLocation();
+                lblLocation = workflow.getLblLocation();
 
                 // Call a method in the LaunchpadSectionFragment to update its content
                 double accuracyImprecise = new BigDecimal(accuracy ).
@@ -528,6 +683,7 @@ public class MainActivity extends FragmentActivity implements
                     ratingView.setRating((float) 1);
                 }
                 Log.v(LOG_TAG,"Location view is updated");
+
             } else{
                 Log.v(LOG_TAG,"workflow LaunchpadSectionFragment is null");
             }

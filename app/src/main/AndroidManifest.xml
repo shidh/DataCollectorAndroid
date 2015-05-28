@@ -48,9 +48,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Workflow.CollectionActivity"
-            android:label="@string/demo_collection" />
-        <activity
             android:name=".SectionList.DetailActivity"
             android:label="@string/title_activity_detail"
             android:parentActivityName=".MainActivity" >

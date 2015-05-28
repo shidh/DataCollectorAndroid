@@ -181,7 +181,6 @@ public class ListSectionFragment extends Fragment {
         setHasOptionsMenu(true);
         updateDataItem();
         Log.v(LOG_TAG, "start onCreate~~~");
-
     }
 
     @Override
@@ -256,6 +255,7 @@ public class ListSectionFragment extends Fragment {
 //                R.id.list_item_forecast_textview, // The ID of the textview to populate.
 //                //R.id.thumbnail,
 //                new ArrayList());
+
 
 
         adapter =  new CustomListAdapter(getActivity(), dataList);
