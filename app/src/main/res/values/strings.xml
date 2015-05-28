@@ -41,6 +41,10 @@
     <string name="Upload">Upload</string>
     <string name="Error">Error</string>
     <string name="Complete">Complete</string>
+
+    <string name="dummy_email">shidenghui@gmail.com</string>
+    <string name="dummy_password">123456789</string>
+    <string name="Sign_in">Sign in</string>
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
