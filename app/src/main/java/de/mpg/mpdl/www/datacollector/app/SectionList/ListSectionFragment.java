@@ -18,6 +18,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.activeandroid.ActiveAndroid;
+import com.activeandroid.query.Select;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.melnykov.fab.FloatingActionButton;
@@ -60,7 +61,8 @@ public class ListSectionFragment extends Fragment {
     public static final String ARG_SECTION_NUMBER = "section_number";
     private ProgressDialog pDialog;
     private List<DataItem> dataList = new ArrayList<DataItem>();
-    public CustomListAdapter adapter;
+    //public CustomListAdapter adapter;
+    public  CustomSwipeAdapter adapter;
     //SwipeMenuListView listView;
     ListView listView;
     View rootView;
@@ -78,9 +80,7 @@ public class ListSectionFragment extends Fragment {
         @Override
         public void success(List<DataItem> dataList, Response response) {
             //load all data from imeji
-            adapter =  new CustomListAdapter(getActivity(), dataList);
-            listView.setAdapter(adapter);
-
+            //adapter =  new CustomListAdapter(getActivity(), dataList);
             List<DataItem> dataListLocal = new ArrayList<DataItem>();
 
             ActiveAndroid.beginTransaction();
@@ -105,8 +105,11 @@ public class ListSectionFragment extends Fragment {
             } finally{
                 ActiveAndroid.endTransaction();
                 //load local data only
-                adapter =  new CustomListAdapter(getActivity(), dataListLocal);
+                //adapter =  new CustomListAdapter(getActivity(), dataListLocal);
+
+                adapter =  new CustomSwipeAdapter(getActivity(), dataListLocal);
                 listView.setAdapter(adapter);
+
             }
 
             if(pDialog != null) {
@@ -128,39 +131,25 @@ public class ListSectionFragment extends Fragment {
 
 
 
-//    SwipeMenuCreator creator = new SwipeMenuCreator() {
-//
-//        @Override
-//        public void create(SwipeMenu menu) {
-//            // create "open" item
-//            SwipeMenuItem openItem = new SwipeMenuItem(getActivity());
-//            // set item background
-//            openItem.setBackground(new ColorDrawable(Color.rgb(0xC9, 0xC9,
-//                    0xCE)));
-//            // set item width
-//            openItem.setWidth(90);
-//            // set item title
-//            openItem.setTitle("Open");
-//            // set item title fontsize
-//            openItem.setTitleSize(18);
-//            // set item title font color
-//            openItem.setTitleColor(Color.WHITE);
-//            // add to menu
-//            menu.addMenuItem(openItem);
-//
-//            // create "delete" item
-//            SwipeMenuItem deleteItem = new SwipeMenuItem(getActivity());
-//            // set item background
-//            deleteItem.setBackground(new ColorDrawable(Color.rgb(0xF9,
-//                    0x3F, 0x25)));
-//            // set item width
-//            deleteItem.setWidth(90);
-//            // set a icon
-//            deleteItem.setIcon(R.drawable.ic_launcher);
-//            // add to menu
-//            menu.addMenuItem(deleteItem);
-//        }
-//    };
+
+    Callback<Response> callbackDel = new Callback<Response>() {
+        @Override
+        public void success(Response response, Response response2) {
+            List<DataItem> dataListLocal = new ArrayList<DataItem>();
+            //dataList.remove();
+            adapter =  new CustomSwipeAdapter(getActivity(), dataList);
+            listView.setAdapter(adapter);
+
+
+            Log.v(LOG_TAG, "remove item" + response + "OK");
+        }
+
+        @Override
+        public void failure(RetrofitError error) {
+            Log.v(LOG_TAG, "delete item failed");
+            Log.v(LOG_TAG, error.toString());
+        }
+    };
 
 
     public ListSectionFragment() {
@@ -179,7 +168,7 @@ public class ListSectionFragment extends Fragment {
         super.onCreate(savedInstanceState);
         // Add this line in order for this fragment to handle menu events.
         setHasOptionsMenu(true);
-        updateDataItem();
+        //updateDataItem();
         Log.v(LOG_TAG, "start onCreate~~~");
     }
 
@@ -257,13 +246,19 @@ public class ListSectionFragment extends Fragment {
 //                new ArrayList());
 
 
+        dataList = new Select()
+                .from(DataItem.class)
+                .where("isLocal != ?", 1)
+                .execute();
 
-        adapter =  new CustomListAdapter(getActivity(), dataList);
+        //adapter =  new CustomListAdapter(getActivity(), dataList);
+        adapter =  new CustomSwipeAdapter(getActivity(), dataList);
+
 
         //TODO try to change the cell view
         rootView = inflater.inflate(R.layout.fragment_section_list, container, false);
         //rootView = inflater.inflate(R.layout.fragment_section_list_swipe, container, false);
-
+        //delete = (Button) rootView.findViewById(R.id.delete);
         listView = (ListView) rootView.findViewById(R.id.item_list);
         //listView = (SwipeMenuListView) rootView.findViewById(R.id.listView);
         listView.setAdapter(adapter);
@@ -283,7 +278,7 @@ public class ListSectionFragment extends Fragment {
             }
         });
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 DataItem dataItem = (DataItem) adapter.getItem(position);
@@ -300,6 +295,13 @@ public class ListSectionFragment extends Fragment {
             }
         });
 
+//        delete.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                //deleteDataItem();
+//                showToast("delete from"+ LOG_TAG);
+//            }
+//        });
         //listView.setOnScrollListener();
         return rootView;
     }
@@ -313,6 +315,12 @@ public class ListSectionFragment extends Fragment {
         //pDialog.setMessage("Loading...");
         //pDialog.show();
     }
+
+    private void deleteDataItem(String itemId){
+        // Showing progress dialog before making http request
+        RetrofitClient.deleteItem(itemId, callbackDel, username, password);
+    }
+
 
 
 
@@ -369,11 +377,6 @@ public class ListSectionFragment extends Fragment {
         }
 
     }
-
-
-    //TODO
-    // Edit and delete the list
-
 
     public void showToast(String message) {
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();

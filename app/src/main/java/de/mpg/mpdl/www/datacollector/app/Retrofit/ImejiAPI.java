@@ -10,6 +10,7 @@ import de.mpg.mpdl.www.datacollector.app.utils.DeviceStatus;
 import retrofit.Callback;
 import retrofit.client.Response;
 import retrofit.http.Body;
+import retrofit.http.DELETE;
 import retrofit.http.GET;
 import retrofit.http.Multipart;
 import retrofit.http.POST;
@@ -67,6 +68,10 @@ public interface ImejiAPI {
                   @Part("json") String json,
                   Callback<ItemImeji> callback);
 
+    //https://dev-faces.mpdl.mpg.de:443/imeji/rest/items/W7e2SSZHwN4dkIAK
+    @DELETE("/items/{id}")
+    void deleteItemById(@Path("id") String itemId,
+                               Callback<Response> callback);
 
 
     /*

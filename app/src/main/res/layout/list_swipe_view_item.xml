@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<com.daimajia.swipe.SwipeLayout
+    xmlns:swipe="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/swipe"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    swipe:leftEdgeSwipeOffset="0dp"
+    swipe:rightEdgeSwipeOffset="0dp">
+
+    <!-- Bottom View Start-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="#FF5534"
+        android:gravity="center"
+        android:tag="Bottom3"
+        android:weightSum="10">
+
+        <ImageView
+            android:id="@+id/trash"
+            android:layout_width="27dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:src="@drawable/trash" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="5"
+            android:text="Delete Item?"
+            android:textColor="#fff"
+            android:textSize="17sp" />
+
+        <Button
+            android:id="@+id/delete"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="4"
+            android:background="@drawable/white"
+            android:text="Yes,Delete"
+            android:textColor="#FF5534" />
+    </LinearLayout>
+    <!-- Bottom View end-->
+
+
+    <!-- Surface View Start -->
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="5dip" >
+
+        <!--  ListView thumbnail
+        <com.android.volley.toolbox.NetworkImageView
+                android:id="@+id/thumbnail"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentLeft="true"
+                android:layout_marginRight="8dp" />
+        -->
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/list_item_cell_thumbnail_swipe"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginRight="5dip"/>
+
+        <TextView
+            android:id="@+id/list_item_cell_title_swipe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/list_item_cell_thumbnail_swipe"
+            android:layout_toRightOf="@+id/list_item_cell_thumbnail_swipe"
+            android:textColor="#040404"
+            android:layout_marginRight="25dip"
+            android:text="Title"
+            android:typeface="sans"
+            android:textSize="10dip"
+            android:textStyle="bold"/>
+
+        <!-- creator name-->
+        <TextView
+            android:id="@+id/list_item_user_swipe"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/list_item_cell_title_swipe"
+            android:textColor="#343434"
+            android:textSize="10dip"
+            android:text="Some Cool Guy"
+            android:layout_marginTop="1dip"
+            android:layout_toRightOf="@+id/list_item_cell_thumbnail_swipe"
+            />
+
+        <!-- time -->
+        <TextView
+            android:id="@+id/list_item_cell_date_swipe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@id/list_item_user_swipe"
+            android:gravity="right"
+            android:text="5:45"
+            android:layout_marginRight="35dip"
+            android:textSize="10dip"
+            android:textColor="#10bcc9"
+            android:textStyle="bold"/>
+
+        <!-- more details -->
+        <ImageView android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/noun_arrow"
+            android:id="@+id/arrow_swipe"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"/>
+
+    </RelativeLayout>
+    <!-- Surface View End -->
+
+</com.daimajia.swipe.SwipeLayout>
