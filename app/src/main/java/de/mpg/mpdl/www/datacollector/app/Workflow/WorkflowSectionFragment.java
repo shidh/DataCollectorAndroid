@@ -41,6 +41,7 @@ import de.mpg.mpdl.www.datacollector.app.Event.GetAddressEvent;
 import de.mpg.mpdl.www.datacollector.app.Event.LocationChangedEvent;
 import de.mpg.mpdl.www.datacollector.app.Event.MetadataIsReadyEvent;
 import de.mpg.mpdl.www.datacollector.app.Event.OttoSingleton;
+import de.mpg.mpdl.www.datacollector.app.MainActivity;
 import de.mpg.mpdl.www.datacollector.app.Model.DataItem;
 import de.mpg.mpdl.www.datacollector.app.Model.MetaDataLocal;
 import de.mpg.mpdl.www.datacollector.app.Model.User;
@@ -113,6 +114,8 @@ public class WorkflowSectionFragment extends Fragment{
         public void onLocationViewClicked(ImageView btnStartLocationUpdates);
 
         public void replaceFragment(MetadataFragment fragment);
+
+
     }
 
     Callback<DataItem> callback = new Callback<DataItem>() {
@@ -208,11 +211,7 @@ public class WorkflowSectionFragment extends Fragment{
         lblLocation = (TextView) rootView.findViewById(R.id.accuracy);
         btnStartLocationUpdates = (ImageView) rootView.findViewById(R.id.btnLocationUpdates);
 
-
-/**
-
-
-        subActionButton1.setOnClickListener(
+        ((MainActivity)getActivity()).subActionButton1.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -224,7 +223,7 @@ public class WorkflowSectionFragment extends Fragment{
 
 
 
- subActionButton2.setOnClickListener(
+        ((MainActivity)getActivity()).subActionButton2.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -238,7 +237,7 @@ public class WorkflowSectionFragment extends Fragment{
                     }
                 });
 
-        subActionButton6.setOnClickListener(
+        ((MainActivity)getActivity()).subActionButton6.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -294,8 +293,6 @@ public class WorkflowSectionFragment extends Fragment{
                     }
                 });
 
- *
- */
 
 //        // Taking a Photo activity.
 //        rootView.findViewById(R.id.takePhoto)

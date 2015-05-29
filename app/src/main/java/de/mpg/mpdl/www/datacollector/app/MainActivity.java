@@ -99,10 +99,13 @@ public class MainActivity extends FragmentActivity implements
 
     private TextView lblLocation;
     private RatingBar ratingView;
-    private ImageView btnStartLocationUpdates;
-    private FloatingActionButton bottomCenterButton;
-
-
+    public FloatingActionButton bottomCenterButton;
+    public SubActionButton subActionButton1;
+    public SubActionButton subActionButton2;
+    public SubActionButton subActionButton3;
+    public SubActionButton subActionButton4;
+    public SubActionButton subActionButton5;
+    public SubActionButton subActionButton6;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -252,14 +255,13 @@ public class MainActivity extends FragmentActivity implements
         lcIcon5.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_headphones));
         lcIcon6.setImageDrawable(getResources().getDrawable(R.drawable.save));
 
-        SubActionButton subActionButton1 = lCSubBuilder.setContentView(lcIcon1, blueContentParams).build();
-        SubActionButton subActionButton6 = lCSubBuilder.setContentView(lcIcon6, blueContentParams).build();
+        subActionButton1 = lCSubBuilder.setContentView(lcIcon1, blueContentParams).build();
+        subActionButton6 = lCSubBuilder.setContentView(lcIcon6, blueContentParams).build();
 
-        SubActionButton subActionButton2 = lCSubBuilder.setContentView(lcIcon2, blueContentParams).build();
-        SubActionButton subActionButton3 = lCSubBuilder.setContentView(lcIcon3, blueContentParams).build();
-        SubActionButton subActionButton4 = lCSubBuilder.setContentView(lcIcon4, blueContentParams).build();
-        SubActionButton subActionButton5 = lCSubBuilder.setContentView(lcIcon5, blueContentParams).build();
-
+        subActionButton2 = lCSubBuilder.setContentView(lcIcon2, blueContentParams).build();
+        subActionButton3 = lCSubBuilder.setContentView(lcIcon3, blueContentParams).build();
+        subActionButton4 = lCSubBuilder.setContentView(lcIcon4, blueContentParams).build();
+        subActionButton5 = lCSubBuilder.setContentView(lcIcon5, blueContentParams).build();
 
         // Build another menu with custom options
         final FloatingActionMenu bottomCenterMenu = new FloatingActionMenu.Builder(this)
@@ -276,14 +278,6 @@ public class MainActivity extends FragmentActivity implements
                 .build();
 
 
-
-        subActionButton1.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        //onClickedListener.onCameraClicked();
-                    }
-                });
         // Listen menu open and close events to animate the button content view
         bottomCenterMenu.setStateChangeListener(new FloatingActionMenu.MenuStateChangeListener() {
             @Override
@@ -305,6 +299,10 @@ public class MainActivity extends FragmentActivity implements
             }
         });
     }
+
+
+
+
 
 
 
@@ -440,6 +438,12 @@ public class MainActivity extends FragmentActivity implements
 //            }
         if(tab.getPosition()!= 0){
             bottomCenterButton.setVisibility(View.INVISIBLE);
+            subActionButton1.setVisibility(View.INVISIBLE);
+            subActionButton2.setVisibility(View.INVISIBLE);
+            subActionButton3.setVisibility(View.INVISIBLE);
+            subActionButton4.setVisibility(View.INVISIBLE);
+            subActionButton5.setVisibility(View.INVISIBLE);
+            subActionButton6.setVisibility(View.INVISIBLE);
         }
 
     }
@@ -456,6 +460,12 @@ public class MainActivity extends FragmentActivity implements
 //        }
         if(tab.getPosition() != 0){
             bottomCenterButton.setVisibility(View.VISIBLE);
+            subActionButton1.setVisibility(View.VISIBLE);
+            subActionButton2.setVisibility(View.VISIBLE);
+            subActionButton3.setVisibility(View.VISIBLE);
+            subActionButton4.setVisibility(View.VISIBLE);
+            subActionButton5.setVisibility(View.VISIBLE);
+            subActionButton6.setVisibility(View.VISIBLE);
         }
 
     }
