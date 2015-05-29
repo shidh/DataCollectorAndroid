@@ -417,9 +417,10 @@ public class MainActivity extends FragmentActivity implements
             startActivity(showSettingIntent);
 
             return true;
-        } else if (id == R.id.action_map){
-            openPreferredLocationInMap();
         }
+//          else if (id == R.id.action_map){
+//            openPreferredLocationInMap();
+//        }
         return super.onOptionsItemSelected(item);
     }
 
