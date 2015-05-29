@@ -19,3 +19,11 @@ DataCollectorAndroid
     compile 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
     //compile 'com.github.chrisbanes.photoview:library:1.2.4'
 
+## TODOs
+    1: Pull to refresh
+    2: Change the datamodel, delete the specific metadata requirements
+    3: Add a drawer View and put login view/ settings link into it
+    4: Add Collection View
+    5: Add swipe delete effect
+    6: rippleeffect?
+    
