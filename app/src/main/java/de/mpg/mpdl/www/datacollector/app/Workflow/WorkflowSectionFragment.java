@@ -2,6 +2,7 @@ package de.mpg.mpdl.www.datacollector.app.Workflow;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -237,6 +238,7 @@ public class WorkflowSectionFragment extends Fragment{
                     }
                 });
 
+        //onSave()
         ((MainActivity)getActivity()).subActionButton6.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
@@ -461,7 +463,9 @@ public class WorkflowSectionFragment extends Fragment{
                         .load(imageUri)
                         .resize(imageView.getWidth(), imageView.getHeight())
                         .into(imageView);
-                //rootView.findViewById(R.id.save).setVisibility(View.VISIBLE);
+                photoFilePath = getRealPathFromURI(imageUri);
+                // example /storage/emulated/0/DCIM/Camera/IMG_20150408_170256.jpg
+                fileName = photoFilePath.split("\\/")[photoFilePath.split("\\/").length-1];
 
             } else if (resultCode == getActivity().RESULT_CANCELED) {
                 // User cancelled the photo picking
@@ -567,6 +571,20 @@ public class WorkflowSectionFragment extends Fragment{
             Toast.makeText(getActivity(), R.string.problem_create_file,
                     Toast.LENGTH_LONG).show();
         }
+    }
+
+    private String getRealPathFromURI(Uri contentURI) {
+        String result;
+        Cursor cursor = getActivity().getContentResolver().query(contentURI, null, null, null, null);
+        if (cursor == null) { // Source is Dropbox or other similar local file path
+            result = contentURI.getPath();
+        } else {
+            cursor.moveToFirst();
+            int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+            result = cursor.getString(idx);
+            cursor.close();
+        }
+        return result;
     }
 
     private void addImageToGallery(String filePath) {

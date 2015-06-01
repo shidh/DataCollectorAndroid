@@ -86,7 +86,7 @@ public class GridImageAdapter extends BaseAdapter {
         }
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
-
+        Log.v("localPath: ",m.getLocalPath());
         File imgFile = new File(m.getLocalPath());
 //        Picasso.with(mContext)
 //                .load(imgFile)
