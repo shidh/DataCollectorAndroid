@@ -45,7 +45,7 @@ public class CustomSwipeAdapter extends BaseSwipeAdapter {
         swipeLayout.addSwipeListener(new SimpleSwipeListener() {
             @Override
             public void onOpen(SwipeLayout layout) {
-                YoYo.with(Techniques.Tada).duration(500).delay(100).playOn(layout.findViewById(R.id.trash));
+                YoYo.with(Techniques.Tada).duration(500).delay(100).playOn(layout.findViewById(R.id.delete));
             }
         });
         swipeLayout.setOnDoubleClickListener(new SwipeLayout.DoubleClickListener() {
@@ -54,12 +54,28 @@ public class CustomSwipeAdapter extends BaseSwipeAdapter {
                 Toast.makeText(activity, "DoubleClick", Toast.LENGTH_SHORT).show();
             }
         });
+
+        //bottom view of the cell
         v.findViewById(R.id.delete).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(activity, "click delete", Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity, "delete clicked", Toast.LENGTH_SHORT).show();
                 //TODO
                 //do something to delete the dataItems based on position and refresh the listview
+            }
+        });
+
+        v.findViewById(R.id.star).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(activity, "star clicked", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        v.findViewById(R.id.magnifier).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(activity, "search clicked", Toast.LENGTH_SHORT).show();
             }
         });
         return v;

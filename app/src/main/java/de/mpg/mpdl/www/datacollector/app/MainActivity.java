@@ -100,12 +100,14 @@ public class MainActivity extends FragmentActivity implements
     private TextView lblLocation;
     private RatingBar ratingView;
     public FloatingActionButton bottomCenterButton;
-    public SubActionButton subActionButton1;
-    public SubActionButton subActionButton2;
-    public SubActionButton subActionButton3;
-    public SubActionButton subActionButton4;
-    public SubActionButton subActionButton5;
-    public SubActionButton subActionButton6;
+    public SubActionButton subActionButtonCamera;
+    public SubActionButton subActionButtonPic;
+    public SubActionButton subActionButtonAudio;
+    public SubActionButton subActionButtonVideo;
+    public SubActionButton subActionButtonText;
+    public SubActionButton subActionButtonGPS;
+    public SubActionButton subActionButtonSave;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -241,36 +243,39 @@ public class MainActivity extends FragmentActivity implements
                 LayoutParams(blueSubActionButtonSize, blueSubActionButtonSize);
         lCSubBuilder.setLayoutParams(blueParams);
 
-        ImageView lcIcon1 = new ImageView(this);
-        ImageView lcIcon2 = new ImageView(this);
-        ImageView lcIcon3 = new ImageView(this);
-        ImageView lcIcon4 = new ImageView(this);
-        ImageView lcIcon5 = new ImageView(this);
-        ImageView lcIcon6 = new ImageView(this);
+        ImageView lcIconCamera = new ImageView(this);
+        ImageView lcIconPic = new ImageView(this);
+        ImageView lcIconVideo = new ImageView(this);
+        ImageView lcIconGPS = new ImageView(this);
+        ImageView lcIconAudio = new ImageView(this);
+        ImageView lcIconSave = new ImageView(this);
+        ImageView lcIconText = new ImageView(this);
 
-        lcIcon1.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_camera));
-        lcIcon2.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_picture));
-        lcIcon3.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_video));
-        lcIcon4.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_location_found));
-        lcIcon5.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_headphones));
-        lcIcon6.setImageDrawable(getResources().getDrawable(R.drawable.save));
+        lcIconCamera.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_camera));
+        lcIconPic.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_picture));
+        lcIconVideo.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_video));
+        lcIconGPS.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_location_found));
+        lcIconAudio.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_headphones));
+        lcIconSave.setImageDrawable(getResources().getDrawable(R.drawable.save));
+        lcIconText.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_chat));
 
-        subActionButton1 = lCSubBuilder.setContentView(lcIcon1, blueContentParams).build();
-        subActionButton6 = lCSubBuilder.setContentView(lcIcon6, blueContentParams).build();
-
-        subActionButton2 = lCSubBuilder.setContentView(lcIcon2, blueContentParams).build();
-        subActionButton3 = lCSubBuilder.setContentView(lcIcon3, blueContentParams).build();
-        subActionButton4 = lCSubBuilder.setContentView(lcIcon4, blueContentParams).build();
-        subActionButton5 = lCSubBuilder.setContentView(lcIcon5, blueContentParams).build();
+        subActionButtonCamera = lCSubBuilder.setContentView(lcIconCamera, blueContentParams).build();
+        subActionButtonPic = lCSubBuilder.setContentView(lcIconPic, blueContentParams).build();
+        subActionButtonAudio = lCSubBuilder.setContentView(lcIconAudio, blueContentParams).build();
+        subActionButtonVideo = lCSubBuilder.setContentView(lcIconVideo, blueContentParams).build();
+        subActionButtonText = lCSubBuilder.setContentView(lcIconText, blueContentParams).build();
+        subActionButtonGPS = lCSubBuilder.setContentView(lcIconGPS, blueContentParams).build();
+        subActionButtonSave = lCSubBuilder.setContentView(lcIconSave, blueContentParams).build();
 
         // Build another menu with custom options
         final FloatingActionMenu bottomCenterMenu = new FloatingActionMenu.Builder(this)
-                .addSubActionView(subActionButton1)
-                .addSubActionView(subActionButton2)
-                .addSubActionView(subActionButton3)
-                .addSubActionView(subActionButton4)
-                .addSubActionView(subActionButton5)
-                .addSubActionView(subActionButton6)
+                .addSubActionView(subActionButtonCamera)
+                .addSubActionView(subActionButtonPic)
+                .addSubActionView(subActionButtonAudio)
+                //.addSubActionView(subActionButtonGPS)
+                .addSubActionView(subActionButtonVideo)
+                .addSubActionView(subActionButtonText)
+                .addSubActionView(subActionButtonSave)
                 .setRadius(redActionMenuRadius)
                 .setStartAngle(-180)
                 .setEndAngle(0)
@@ -439,12 +444,14 @@ public class MainActivity extends FragmentActivity implements
 //            }
         if(tab.getPosition()!= 0){
             bottomCenterButton.setVisibility(View.INVISIBLE);
-            subActionButton1.setVisibility(View.INVISIBLE);
-            subActionButton2.setVisibility(View.INVISIBLE);
-            subActionButton3.setVisibility(View.INVISIBLE);
-            subActionButton4.setVisibility(View.INVISIBLE);
-            subActionButton5.setVisibility(View.INVISIBLE);
-            subActionButton6.setVisibility(View.INVISIBLE);
+            subActionButtonCamera.setVisibility(View.INVISIBLE);
+            subActionButtonPic.setVisibility(View.INVISIBLE);
+            subActionButtonAudio.setVisibility(View.INVISIBLE);
+            subActionButtonVideo.setVisibility(View.INVISIBLE);
+            subActionButtonText.setVisibility(View.INVISIBLE);
+            subActionButtonGPS.setVisibility(View.INVISIBLE);
+            subActionButtonSave.setVisibility(View.INVISIBLE);
+
         }
 
     }
@@ -461,12 +468,14 @@ public class MainActivity extends FragmentActivity implements
 //        }
         if(tab.getPosition() != 0){
             bottomCenterButton.setVisibility(View.VISIBLE);
-            subActionButton1.setVisibility(View.VISIBLE);
-            subActionButton2.setVisibility(View.VISIBLE);
-            subActionButton3.setVisibility(View.VISIBLE);
-            subActionButton4.setVisibility(View.VISIBLE);
-            subActionButton5.setVisibility(View.VISIBLE);
-            subActionButton6.setVisibility(View.VISIBLE);
+            subActionButtonCamera.setVisibility(View.VISIBLE);
+            subActionButtonPic.setVisibility(View.VISIBLE);
+            subActionButtonAudio.setVisibility(View.VISIBLE);
+            subActionButtonVideo.setVisibility(View.VISIBLE);
+            subActionButtonText.setVisibility(View.VISIBLE);
+            subActionButtonGPS.setVisibility(View.VISIBLE);
+            subActionButtonSave.setVisibility(View.VISIBLE);
+
         }
 
     }

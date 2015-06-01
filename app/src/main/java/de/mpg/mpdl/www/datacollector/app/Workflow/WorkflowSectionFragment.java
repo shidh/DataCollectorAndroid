@@ -71,6 +71,8 @@ public class WorkflowSectionFragment extends Fragment{
     private static final int INTENT_RECOVER_FROM_PLAY_SERVICES_ERROR = 1004;
     private static final int INTENT_TAKE_PHOTO = 1005;
     private static final int INTENT_PICK_PHOTO = 1006;
+    private static final int INTENT_PICK_VIDEO = 1007;
+    private static final int INTENT_PICK_AUDIO = 1007;
 
     private final String LOG_TAG = WorkflowSectionFragment.class.getSimpleName();
     public static final String ARG_SECTION_NUMBER = "section_number";
@@ -212,7 +214,7 @@ public class WorkflowSectionFragment extends Fragment{
         lblLocation = (TextView) rootView.findViewById(R.id.accuracy);
         btnStartLocationUpdates = (ImageView) rootView.findViewById(R.id.btnLocationUpdates);
 
-        ((MainActivity)getActivity()).subActionButton1.setOnClickListener(
+        ((MainActivity)getActivity()).subActionButtonCamera.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -224,7 +226,7 @@ public class WorkflowSectionFragment extends Fragment{
 
 
 
-        ((MainActivity)getActivity()).subActionButton2.setOnClickListener(
+        ((MainActivity)getActivity()).subActionButtonPic.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -238,8 +240,38 @@ public class WorkflowSectionFragment extends Fragment{
                     }
                 });
 
+        //TODO place a thumbnail for video
+        ((MainActivity)getActivity()).subActionButtonVideo.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent gallery = new Intent(Intent.ACTION_PICK,
+                                MediaStore.Video.Media.INTERNAL_CONTENT_URI);
+                        gallery.setType("video/*");
+                        gallery.setAction(Intent.ACTION_GET_CONTENT);
+                        //gallery.addFlags(
+                        //        Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+                        startActivityForResult(gallery, INTENT_PICK_VIDEO);
+                    }
+                });
+
+        //TODO place a sound wave thumbnail for audio
+        ((MainActivity)getActivity()).subActionButtonAudio.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent gallery = new Intent(Intent.ACTION_PICK,
+                                MediaStore.Audio.Media.INTERNAL_CONTENT_URI);
+                        gallery.setType("audio/*");
+                        gallery.setAction(Intent.ACTION_GET_CONTENT);
+                        //gallery.addFlags(
+                        //        Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+                        startActivityForResult(gallery, INTENT_PICK_AUDIO);
+                    }
+                });
+
         //onSave()
-        ((MainActivity)getActivity()).subActionButton6.setOnClickListener(
+        ((MainActivity)getActivity()).subActionButtonSave.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -464,6 +496,34 @@ public class WorkflowSectionFragment extends Fragment{
                         .resize(imageView.getWidth(), imageView.getHeight())
                         .into(imageView);
                 photoFilePath = getRealPathFromURI(imageUri);
+                // example /storage/emulated/0/DCIM/Camera/IMG_20150408_170256.jpg
+                fileName = photoFilePath.split("\\/")[photoFilePath.split("\\/").length-1];
+
+            } else if (resultCode == getActivity().RESULT_CANCELED) {
+                // User cancelled the photo picking
+            }
+        } else if (requestCode == INTENT_PICK_VIDEO){
+            if (resultCode == getActivity().RESULT_OK) {
+                Uri videoUri = data.getData();
+                Picasso.with(getActivity())
+                        .load(videoUri)
+                        .resize(imageView.getWidth(), imageView.getHeight())
+                        .into(imageView);
+                photoFilePath = getRealPathFromURI(videoUri);
+                // example /storage/emulated/0/DCIM/Camera/IMG_20150408_170256.jpg
+                fileName = photoFilePath.split("\\/")[photoFilePath.split("\\/").length-1];
+
+            } else if (resultCode == getActivity().RESULT_CANCELED) {
+                // User cancelled the photo picking
+            }
+        } else if (requestCode == INTENT_PICK_AUDIO){
+            if (resultCode == getActivity().RESULT_OK) {
+                Uri audioUri = data.getData();
+                Picasso.with(getActivity())
+                        .load(audioUri)
+                        .resize(imageView.getWidth(), imageView.getHeight())
+                        .into(imageView);
+                photoFilePath = getRealPathFromURI(audioUri);
                 // example /storage/emulated/0/DCIM/Camera/IMG_20150408_170256.jpg
                 fileName = photoFilePath.split("\\/")[photoFilePath.split("\\/").length-1];
 
