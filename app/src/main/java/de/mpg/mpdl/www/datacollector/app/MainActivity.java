@@ -255,8 +255,8 @@ public class MainActivity extends FragmentActivity implements
         lcIconPic.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_picture));
         lcIconVideo.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_video));
         lcIconGPS.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_location_found));
-        lcIconAudio.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_headphones));
-        lcIconSave.setImageDrawable(getResources().getDrawable(R.drawable.save));
+        lcIconAudio.setImageDrawable(getResources().getDrawable(R.drawable.mic_white));
+        lcIconSave.setImageDrawable(getResources().getDrawable(R.drawable.save_white));
         lcIconText.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_chat));
 
         subActionButtonCamera = lCSubBuilder.setContentView(lcIconCamera, blueContentParams).build();
