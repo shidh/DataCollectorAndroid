@@ -1,9 +1,13 @@
 package de.mpg.mpdl.www.datacollector.app.SectionList;
 
 import android.app.Activity;
-import android.os.Bundle;
 import android.app.Fragment;
+import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -13,7 +17,6 @@ import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import de.mpg.mpdl.www.datacollector.app.R;
-
 import de.mpg.mpdl.www.datacollector.app.SectionList.dummy.DummyContent;
 
 /**
@@ -35,6 +38,11 @@ public class CollectionListFragment extends Fragment implements AbsListView.OnIt
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    public  CustomSwipeAdapter adapter;
+    private final String LOG_TAG = ItemListFragment.class.getSimpleName();
+
+
 
     private OnFragmentInteractionListener mListener;
 
@@ -69,6 +77,8 @@ public class CollectionListFragment extends Fragment implements AbsListView.OnIt
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+        Log.v(LOG_TAG, "start onCreate~~~");
 
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
@@ -95,9 +105,42 @@ public class CollectionListFragment extends Fragment implements AbsListView.OnIt
         return view;
     }
 
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.v(LOG_TAG, "start onStart~~~");
+
+
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        Log.v(LOG_TAG, "start onResume~~~");
+
+
+    }
+    @Override
+    public void onPause(){
+        super.onPause();
+        Log.v(LOG_TAG, "start onPause~~~");
+    }
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.v(LOG_TAG, "start onDestroy~~~");
+    }
+
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+        Log.v(LOG_TAG, "onAttach");
+
         try {
             mListener = (OnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
@@ -111,6 +154,30 @@ public class CollectionListFragment extends Fragment implements AbsListView.OnIt
         super.onDetach();
         mListener = null;
     }
+
+
+
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_section_list, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        if (id == R.id.action_refresh) {
+            //TODO updateCollection();
+            // /updateDataItem();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
