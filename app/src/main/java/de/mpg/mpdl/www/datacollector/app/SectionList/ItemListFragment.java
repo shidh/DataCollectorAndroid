@@ -44,16 +44,11 @@ import retrofit.RetrofitError;
 import retrofit.client.OkClient;
 import retrofit.client.Response;
 
-//import com.baoyz.swipemenulistview.SwipeMenu;
-//import com.baoyz.swipemenulistview.SwipeMenuCreator;
-//import com.baoyz.swipemenulistview.SwipeMenuItem;
-//import com.baoyz.swipemenulistview.SwipeMenuListView;
-
 
 /**
  * Created by allen on 02/04/15.
  */
-public class ListSectionFragment extends Fragment {
+public class ItemListFragment extends Fragment {
     /**
      * Encapsulates fetching the forecast and displaying it as a {@link android.widget.ListView} layout.
      */
@@ -66,7 +61,7 @@ public class ListSectionFragment extends Fragment {
     //SwipeMenuListView listView;
     ListView listView;
     View rootView;
-    private final String LOG_TAG = ListSectionFragment.class.getSimpleName();
+    private final String LOG_TAG = ItemListFragment.class.getSimpleName();
     private String collectionID = DeviceStatus.collectionID;
     private String username = DeviceStatus.username;
     private String password = DeviceStatus.password;
@@ -152,7 +147,7 @@ public class ListSectionFragment extends Fragment {
     };
 
 
-    public ListSectionFragment() {
+    public ItemListFragment() {
     }
 
 
