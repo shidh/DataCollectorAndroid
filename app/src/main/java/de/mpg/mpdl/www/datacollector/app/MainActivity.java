@@ -628,8 +628,8 @@ public class MainActivity extends FragmentActivity implements
     public void onLocationChanged(Location location) {
         // Assign the new location
         mLastLocation = location;
-        showToast("Location data updated!");
-
+        //showToast("Location data updated!");
+        Log.i(LOG_TAG,"Location data updated!");
         // Displaying the new location on UI
         displayLocation();
         LocationChangedEvent event = new LocationChangedEvent(location);

@@ -12,10 +12,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.activeandroid.query.Select;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import de.mpg.mpdl.www.datacollector.app.Model.DataItem;
+import de.mpg.mpdl.www.datacollector.app.Model.ImejiCollection;
 import de.mpg.mpdl.www.datacollector.app.R;
 import de.mpg.mpdl.www.datacollector.app.SectionList.dummy.DummyContent;
 
@@ -30,16 +37,7 @@ import de.mpg.mpdl.www.datacollector.app.SectionList.dummy.DummyContent;
  */
 public class CollectionListFragment extends Fragment implements AbsListView.OnItemClickListener {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public  CustomSwipeAdapter adapter;
+    private List<ImejiCollection> dataList = new ArrayList<ImejiCollection>();
     private final String LOG_TAG = ItemListFragment.class.getSimpleName();
 
 
@@ -50,19 +48,18 @@ public class CollectionListFragment extends Fragment implements AbsListView.OnIt
      * The fragment's ListView/GridView.
      */
     private AbsListView mListView;
+    View rootView;
 
     /**
      * The Adapter which will be used to populate the ListView/GridView with
      * Views.
      */
-    private ListAdapter mAdapter;
+    private CollectionSwipeAdapter adapter;
 
     // TODO: Rename and change types of parameters
-    public static CollectionListFragment newInstance(String param1, String param2) {
+    public static CollectionListFragment newInstance() {
         CollectionListFragment fragment = new CollectionListFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -79,30 +76,30 @@ public class CollectionListFragment extends Fragment implements AbsListView.OnIt
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         Log.v(LOG_TAG, "start onCreate~~~");
-
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-
-        // TODO: Change Adapter to display your content
-        mAdapter = new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
-                android.R.layout.simple_list_item_1, android.R.id.text1, DummyContent.ITEMS);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_collection, container, false);
 
-        // Set the adapter
-        mListView = (AbsListView) view.findViewById(android.R.id.list);
-        ((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
+        dataList = new Select()
+                .from(ImejiCollection.class)
+                .execute();
+        adapter = new CollectionSwipeAdapter(getActivity(), dataList);
+
+        //TODO try to change the cell view
+        rootView = inflater.inflate(R.layout.fragment_collection, container, false);
+        //rootView = inflater.inflate(R.layout.fragment_section_list_swipe, container, false);
+        //delete = (Button) rootView.findViewById(R.id.delete);
+        mListView = (ListView) rootView.findViewById(android.R.id.list);
+        //listView = (SwipeMenuListView) rootView.findViewById(R.id.listView);
+        mListView.setAdapter(adapter);
+
 
         // Set OnItemClickListener so we can be notified on item clicks
         mListView.setOnItemClickListener(this);
 
-        return view;
+        return rootView;
     }
 
 
@@ -185,6 +182,20 @@ public class CollectionListFragment extends Fragment implements AbsListView.OnIt
             // Notify the active callbacks interface (the activity, if the
             // fragment is attached to one) that an item has been selected.
             mListener.onFragmentInteraction(DummyContent.ITEMS.get(position).id);
+
+
+            DataItem dataItem = (DataItem) adapter.getItem(position);
+            //Context context = getActivity();
+            int duration = Toast.LENGTH_SHORT;
+            Toast toast = Toast.makeText(getActivity(), dataItem.getCollectionId(), duration);
+            toast.show();
+
+//            Intent showDetailIntent = new Intent(getActivity(), DetailActivity.class);
+//            showDetailIntent.putExtra(Intent.EXTRA_TEXT, dataItem.getFilename());
+//
+//            showDetailIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+//            startActivity(showDetailIntent);
+
         }
     }
 
