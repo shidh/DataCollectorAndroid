@@ -87,6 +87,7 @@ public class CollectionListFragment extends Fragment{
 //                    collectionListLocal.add(collectionLocal);
 //
 //                }
+                collectionListLocal.clear();
                 for(CollectionLocal collection : dataList){
                     Log.v(LOG_TAG, "collection title: " + String.valueOf(collection.getTitle()));
 
@@ -111,8 +112,6 @@ public class CollectionListFragment extends Fragment{
             }
 
             Log.v(LOG_TAG, "get list OK");
-
-            showToast("got new data");
 
         }
 
@@ -235,7 +234,7 @@ public class CollectionListFragment extends Fragment{
     @Override
     public void onStart() {
         super.onStart();
-        //updateCollection();
+        updateCollection();
         Log.v(LOG_TAG, "start onStart~~~");
 
 
