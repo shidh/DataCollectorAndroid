@@ -59,8 +59,8 @@ public class ItemListFragment extends Fragment {
     //public CustomListAdapter adapter;
     public  CustomSwipeAdapter adapter;
     //SwipeMenuListView listView;
-    ListView listView;
-    View rootView;
+    private ListView listView;
+    private View rootView;
     private final String LOG_TAG = ItemListFragment.class.getSimpleName();
     private String collectionID = DeviceStatus.collectionID;
     private String username = DeviceStatus.username;

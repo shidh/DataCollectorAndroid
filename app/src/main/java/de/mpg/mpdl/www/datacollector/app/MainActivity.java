@@ -44,6 +44,7 @@ import java.util.Locale;
 import de.mpg.mpdl.www.datacollector.app.Event.LocationChangedEvent;
 import de.mpg.mpdl.www.datacollector.app.Event.OttoSingleton;
 import de.mpg.mpdl.www.datacollector.app.POI.POIFragment;
+import de.mpg.mpdl.www.datacollector.app.SectionList.CollectionListFragment;
 import de.mpg.mpdl.www.datacollector.app.SectionList.ItemListFragment;
 import de.mpg.mpdl.www.datacollector.app.Workflow.MetadataFragment;
 import de.mpg.mpdl.www.datacollector.app.Workflow.WorkflowSectionFragment;
@@ -555,6 +556,13 @@ public class MainActivity extends FragmentActivity implements
                     args.putInt(POIFragment.ARG_SECTION_NUMBER, position );
                     fragment.setArguments(args);
                     return fragment;
+                case 3:
+                    // The other sections of the app are dummy placeholders.
+                    fragment = new CollectionListFragment();
+                    args.putInt(POIFragment.ARG_SECTION_NUMBER, position );
+                    fragment.setArguments(args);
+                    return fragment;
+
                 default:
                     // getItem is called to instantiate the fragment for the given page.
                     // Return a PlaceholderFragment (defined as a static inner class below).
@@ -566,7 +574,7 @@ public class MainActivity extends FragmentActivity implements
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 3;
+            return 4;
         }
 
         @Override
@@ -579,6 +587,8 @@ public class MainActivity extends FragmentActivity implements
                     return getString(R.string.title_section2);
                 case 2:
                     return getString(R.string.title_section3).toUpperCase(l);
+                case 3:
+                    return "Collection";
             }
             return null;
         }

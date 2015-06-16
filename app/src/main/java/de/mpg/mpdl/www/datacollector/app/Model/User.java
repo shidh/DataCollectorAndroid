@@ -42,7 +42,7 @@ public class User extends Model{
     private List<Organization> organizations;
 
     //@Column(name = "collections")
-    private ImejiCollection collections;
+    private CollectionLocal collections;
 
     //@Column(name = "items")
     private ArrayList<DataItem> items;
@@ -104,11 +104,11 @@ public class User extends Model{
         this.organizations = organizations;
     }
 
-    public ImejiCollection getCollections() {
+    public CollectionLocal getCollections() {
         return collections;
     }
 
-    public void setCollections(ImejiCollection collections) {
+    public void setCollections(CollectionLocal collections) {
         this.collections = collections;
     }
 

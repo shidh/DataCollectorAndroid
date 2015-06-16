@@ -2,6 +2,7 @@ package de.mpg.mpdl.www.datacollector.app.Retrofit;
 
 import java.util.List;
 
+import de.mpg.mpdl.www.datacollector.app.Model.CollectionLocal;
 import de.mpg.mpdl.www.datacollector.app.Model.DataItem;
 import de.mpg.mpdl.www.datacollector.app.Model.ImejiModel.ItemImeji;
 import de.mpg.mpdl.www.datacollector.app.Model.POI;
@@ -72,6 +73,20 @@ public interface ImejiAPI {
     @DELETE("/items/{id}")
     void deleteItemById(@Path("id") String itemId,
                                Callback<Response> callback);
+
+
+
+    /*
+     *  For collections
+    */
+    //get all collections
+    @GET("/collections")
+    void getCollections(Callback<List<CollectionLocal>> callback);
+
+    //get all items by collection id
+    @GET("/collections/{id}/items")
+    void getCollectionItems(@Path("id") String collectionId, Callback<List<DataItem>> callback);
+
 
 
     /*
