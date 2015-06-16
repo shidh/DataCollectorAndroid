@@ -1,6 +1,7 @@
-package de.mpg.mpdl.www.datacollector.app.SectionList;
+package de.mpg.mpdl.www.datacollector.app.Collection;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -42,7 +43,6 @@ public class CollectionListFragment extends Fragment{
         //implements AbsListView.OnItemClickListener {
     private List<CollectionLocal> collectionListLocal = new ArrayList<CollectionLocal>();
     private CollectionLocal collectionLocal = new CollectionLocal();
-    private List<CollectionLocal> dataList = new ArrayList<CollectionLocal>();
     private final String LOG_TAG = CollectionListFragment.class.getSimpleName();
 
     /**
@@ -139,7 +139,7 @@ public class CollectionListFragment extends Fragment{
 
                         MetaDataLocal metaDataLocal = MetaDataConverter.
                                 metaDataToMetaDataLocal(item.getMetadata());
-                        metaDataLocal.save();
+                        //metaDataLocal.save();
                         item.setMetaDataLocal(metaDataLocal);
                         Log.v(LOG_TAG, "item filename : " + String.valueOf(item.getFilename()));
                         Log.v(LOG_TAG, "item title: " + String.valueOf(item.getMetaDataLocal().getTitle()));
@@ -158,8 +158,7 @@ public class CollectionListFragment extends Fragment{
                 collectionLocal.setItems(dataListLocal);
                 //collectionLocal.save();
 
-                adapter =  new CollectionGridAdaptor(getActivity(), collectionListLocal);
-                mListView.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
 
             }
 
@@ -194,10 +193,10 @@ public class CollectionListFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        dataList = new Select()
+        collectionListLocal = new Select()
                 .from(CollectionLocal.class)
                 .execute();
-        Log.v(LOG_TAG,"size: "+ dataList.size()+"");
+        Log.v(LOG_TAG,"size: "+ collectionListLocal.size()+"");
 
 
         //TODO try to change the cell view
@@ -206,7 +205,7 @@ public class CollectionListFragment extends Fragment{
         //delete = (Button) rootView.findViewById(R.id.delete);
         mListView = (StaggeredGridView) rootView.findViewById(R.id.collection_list);
         //listView = (SwipeMenuListView) rootView.findViewById(R.id.listView);
-        adapter = new CollectionGridAdaptor(getActivity(), dataList);
+        adapter = new CollectionGridAdaptor(getActivity(), collectionListLocal);
         mListView.setAdapter(adapter);
 
 
@@ -221,10 +220,10 @@ public class CollectionListFragment extends Fragment{
                 Toast toast = Toast.makeText(getActivity(), dataCollection.getTitle(), duration);
                 toast.show();
 
-//                Intent showItemsIntent = new Intent(getActivity(), DetailActivity.class);
-//                showItemsIntent.putExtra(Intent.EXTRA_TEXT, dataCollection.id);
-//
-//                startActivity(showItemsIntent);
+                Intent showItemsIntent = new Intent(getActivity(), CollectionDetailActivity.class);
+                showItemsIntent.putExtra(Intent.EXTRA_TEXT, dataCollection.id);
+
+                startActivity(showItemsIntent);
             }
         });
 

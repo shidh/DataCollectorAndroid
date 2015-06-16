@@ -20,6 +20,7 @@
     <string name="ready_collection">ReadyCollection</string>
     <string name="send_data">Save</string>
     <string name="title_activity_detail">DetailActivity</string>
+    <string name="title_collection_activity_detail">CollectionDetailActivity</string>
     <string name="dialog_title">Add Metadata</string>
     <string name="dialog_delete_title">Delete Metadata</string>
 
@@ -49,5 +50,6 @@
     <string name="Sign_in">Sign in</string>
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_activity_collection_detail">activity_collection_detail</string>
 
 </resources>

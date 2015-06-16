@@ -112,7 +112,6 @@ public class ItemListFragment extends Fragment {
             }
             Log.v(LOG_TAG, "get list OK");
 
-            showToast("got new data");
 
         }
 

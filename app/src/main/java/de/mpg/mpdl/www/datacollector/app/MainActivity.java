@@ -44,7 +44,7 @@ import java.util.Locale;
 import de.mpg.mpdl.www.datacollector.app.Event.LocationChangedEvent;
 import de.mpg.mpdl.www.datacollector.app.Event.OttoSingleton;
 import de.mpg.mpdl.www.datacollector.app.POI.POIFragment;
-import de.mpg.mpdl.www.datacollector.app.SectionList.CollectionListFragment;
+import de.mpg.mpdl.www.datacollector.app.Collection.CollectionListFragment;
 import de.mpg.mpdl.www.datacollector.app.SectionList.ItemListFragment;
 import de.mpg.mpdl.www.datacollector.app.Workflow.MetadataFragment;
 import de.mpg.mpdl.www.datacollector.app.Workflow.WorkflowSectionFragment;

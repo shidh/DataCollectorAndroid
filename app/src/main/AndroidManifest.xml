@@ -57,6 +57,16 @@
                 android:value=".MainActivity" />
         </activity>
         <activity
+            android:name=".Collection.CollectionDetailActivity"
+            android:label="@string/title_collection_activity_detail"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:label="CollectionDetail"
+                android:value=".MainActivity" />
+        </activity>
+
+        <activity
             android:name=".Workflow.UploadView.ReadyToUploadCollectionActivity"
             android:label="@string/ready_collection"
             android:parentActivityName=".MainActivity" >

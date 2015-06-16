@@ -1,4 +1,4 @@
-package de.mpg.mpdl.www.datacollector.app.SectionList;
+package de.mpg.mpdl.www.datacollector.app.Collection;
 
 import android.app.Activity;
 import android.content.Context;
