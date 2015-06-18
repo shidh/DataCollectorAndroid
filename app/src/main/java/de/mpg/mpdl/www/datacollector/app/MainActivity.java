@@ -35,16 +35,17 @@ import com.google.android.gms.location.LocationServices;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
 import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
+import com.skd.androidrecording.audio.AudioRecordingThread;
 import com.squareup.otto.Produce;
 import com.squareup.picasso.Picasso;
 
 import java.math.BigDecimal;
 import java.util.Locale;
 
+import de.mpg.mpdl.www.datacollector.app.Collection.CollectionListFragment;
 import de.mpg.mpdl.www.datacollector.app.Event.LocationChangedEvent;
 import de.mpg.mpdl.www.datacollector.app.Event.OttoSingleton;
 import de.mpg.mpdl.www.datacollector.app.POI.POIFragment;
-import de.mpg.mpdl.www.datacollector.app.Collection.CollectionListFragment;
 import de.mpg.mpdl.www.datacollector.app.SectionList.ItemListFragment;
 import de.mpg.mpdl.www.datacollector.app.Workflow.MetadataFragment;
 import de.mpg.mpdl.www.datacollector.app.Workflow.WorkflowSectionFragment;
@@ -97,6 +98,8 @@ public class MainActivity extends FragmentActivity implements
     private static final String DIALOG_ERROR = "dialog_error";
     // Bool to track whether the app is already resolving an error
     private boolean mResolvingError = false;
+
+    private AudioRecordingThread recordingThread;
 
     private TextView lblLocation;
     private RatingBar ratingView;
@@ -649,7 +652,7 @@ public class MainActivity extends FragmentActivity implements
     //the method for LaunchpadSectionFragment.OnLocationUpdatedListener
     @Override
     public void onLocationViewClicked(ImageView btnStartLocationUpdates) {
-        togglePeriodicLocationUpdates(btnStartLocationUpdates );
+        togglePeriodicLocationUpdates(btnStartLocationUpdates);
     }
 
     @Override
@@ -824,6 +827,8 @@ public class MainActivity extends FragmentActivity implements
         LocationServices.FusedLocationApi.removeLocationUpdates(
                 mGoogleApiClient, this);
     }
+
+
 
     /**
      * Shows a toast message.

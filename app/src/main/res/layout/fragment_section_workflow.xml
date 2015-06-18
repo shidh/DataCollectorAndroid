@@ -5,13 +5,6 @@
     android:id="@+id/launchpad"
     tools:context=".MainActivity$LaunchpadSectionFragment"
     android:background="@color/lightbg">
-    <!--<Button android:id="@+id/section_number"
-        android:background="#f8000000"
-        android:layout_width="139dp"
-        android:layout_height="wrap_content"
-        android:text="@string/demo_collection"
-        android:layout_gravity="right|bottom" />
-    -->
 
     <ImageView
         android:id="@+id/btnLocationUpdates"
@@ -65,23 +58,44 @@
         android:text="@string/send_data"
         android:src="@drawable/save"
         android:layout_gravity="right|bottom" />
--->
+
 
     <ScrollView
         android:id="@+id/scrollView"
         android:background="#8cf7f3ff"
         android:layout_below="@id/ratingBar"
         android:layout_alignParentLeft="true"
-        android:layout_above="@+id/takePhoto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center" >
+-->
+        <FrameLayout
+            android:background="#8cf7f3ff"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/ratingBar"
+            >
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/imageView"
-                android:src="@drawable/hand"
+                android:gravity="center"
                 android:layout_gravity="center" />
-    </ScrollView>
+            <Button
+                android:id="@+id/playBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/holo_blue_light"
+                android:layout_gravity="center"
+                android:text="@string/playBtn"/>
+            <com.skd.androidrecording.visualizer.VisualizerView
+                android:id="@+id/visualizerView"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:gravity="center"
+                android:layout_gravity="center">
+            </com.skd.androidrecording.visualizer.VisualizerView>
+
+        </FrameLayout>
 
 </RelativeLayout>

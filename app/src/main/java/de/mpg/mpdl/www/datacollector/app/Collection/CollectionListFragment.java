@@ -1,6 +1,7 @@
 package de.mpg.mpdl.www.datacollector.app.Collection;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -44,6 +45,7 @@ public class CollectionListFragment extends Fragment{
     private List<CollectionLocal> collectionListLocal = new ArrayList<CollectionLocal>();
     private CollectionLocal collectionLocal = new CollectionLocal();
     private final String LOG_TAG = CollectionListFragment.class.getSimpleName();
+    private ProgressDialog pDialog;
 
     /**
      * The fragment's ListView/GridView.
@@ -112,7 +114,9 @@ public class CollectionListFragment extends Fragment{
             }
 
             Log.v(LOG_TAG, "get list OK");
-
+            if(pDialog != null) {
+                pDialog.hide();
+            }
         }
 
         @Override
@@ -257,9 +261,16 @@ public class CollectionListFragment extends Fragment{
     @Override
     public void onDestroy() {
         super.onDestroy();
+        hidePDialog();
         Log.v(LOG_TAG, "start onDestroy~~~");
     }
 
+    private void hidePDialog() {
+        if (pDialog != null) {
+            pDialog.dismiss();
+            pDialog = null;
+        }
+    }
 
     @Override
     public void onAttach(Activity activity) {
@@ -295,6 +306,7 @@ public class CollectionListFragment extends Fragment{
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_refresh) {
+
             updateCollection();
             return true;
         }
@@ -324,10 +336,12 @@ public class CollectionListFragment extends Fragment{
 
         //}
     }
-
-
+    
 
     private void updateCollection(){
+        pDialog = new ProgressDialog(getActivity());
+        pDialog.setMessage("Loading...");
+        pDialog.show();
         RetrofitClient.getCollections(callback, username, password);
     }
 

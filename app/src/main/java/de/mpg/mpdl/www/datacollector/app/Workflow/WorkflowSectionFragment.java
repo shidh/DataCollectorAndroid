@@ -3,6 +3,8 @@ package de.mpg.mpdl.www.datacollector.app.Workflow;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,6 +19,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -26,6 +29,10 @@ import com.activeandroid.query.Select;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
+import com.skd.androidrecording.audio.AudioRecordingHandler;
+import com.skd.androidrecording.audio.AudioRecordingThread;
+import com.skd.androidrecording.visualizer.VisualizerView;
+import com.skd.androidrecording.visualizer.renderer.BarGraphRenderer;
 import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Picasso;
 
@@ -49,6 +56,7 @@ import de.mpg.mpdl.www.datacollector.app.Model.User;
 import de.mpg.mpdl.www.datacollector.app.R;
 import de.mpg.mpdl.www.datacollector.app.Workflow.UploadView.ReadyToUploadCollectionActivity;
 import de.mpg.mpdl.www.datacollector.app.utils.DeviceStatus;
+import de.mpg.mpdl.www.datacollector.app.utils.StorageUtils;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -96,12 +104,20 @@ public class WorkflowSectionFragment extends Fragment{
 
     private String photoFilePath;
     private String fileName;
+    private static String audioFileName = null;
+
     private DeviceStatus status;
     private View rootView;
     private ImageView imageView;
     private RatingBar ratingView;
     private TextView lblLocation;
     private ImageView btnStartLocationUpdates;
+    private VisualizerView visualizerView;
+    private AudioRecordingThread recordingThread;
+    private boolean startRecording = true;
+    private Button recordBtn, playBtn;
+
+
     private User user;
     private MenuItem poi_list;
     private FloatingActionButton bottomCenterButton;
@@ -260,13 +276,16 @@ public class WorkflowSectionFragment extends Fragment{
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent gallery = new Intent(Intent.ACTION_PICK,
-                                MediaStore.Audio.Media.INTERNAL_CONTENT_URI);
-                        gallery.setType("audio/*");
-                        gallery.setAction(Intent.ACTION_GET_CONTENT);
-                        //gallery.addFlags(
-                        //        Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-                        startActivityForResult(gallery, INTENT_PICK_AUDIO);
+//                        Intent gallery = new Intent(Intent.ACTION_PICK,
+//                                MediaStore.Audio.Media.INTERNAL_CONTENT_URI);
+//                        gallery.setType("audio/*");
+//                        gallery.setAction(Intent.ACTION_GET_CONTENT);
+//                        //gallery.addFlags(
+//                        //        Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+//                        startActivityForResult(gallery, INTENT_PICK_AUDIO);
+                        imageView.setVisibility(View.INVISIBLE);
+                        playBtn.setVisibility(View.VISIBLE);
+                        record();
                     }
                 });
 
@@ -328,17 +347,6 @@ public class WorkflowSectionFragment extends Fragment{
                 });
 
 
-//        // Taking a Photo activity.
-//        rootView.findViewById(R.id.takePhoto)
-//                .setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        rootView.findViewById(R.id.save).setVisibility(View.VISIBLE);
-//                        takePhoto();
-//                    }
-//                });
-
-
 
         rootView.findViewById(R.id.btnLocationUpdates)
                 .setOnClickListener(new View.OnClickListener() {
@@ -348,6 +356,17 @@ public class WorkflowSectionFragment extends Fragment{
                     }
                 });
 
+        audioFileName = StorageUtils.getFileName(true);
+        playBtn = (Button) rootView.findViewById(R.id.playBtn);
+        playBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //play();
+            }
+        });
+        playBtn.setVisibility(View.INVISIBLE);
+        visualizerView = (VisualizerView) rootView.findViewById(R.id.visualizerView);
+        setupVisualizer();
 
         return rootView;
     }
@@ -407,7 +426,8 @@ public class WorkflowSectionFragment extends Fragment{
     @Override
     public void onDestroy() {
         super.onDestroy();
-
+        recordStop();
+        releaseVisualizer();
         Log.v(LOG_TAG, "start onDestroy~~~");
     }
 
@@ -703,4 +723,81 @@ public class WorkflowSectionFragment extends Fragment{
         item = new DataItem();
         meta = new MetaDataLocal();
     }
+
+    private void setupVisualizer() {
+        Paint paint = new Paint();
+        paint.setStrokeWidth(5f);                     //set bar width
+        paint.setAntiAlias(true);
+        paint.setColor(Color.argb(200, 227, 69, 53)); //set bar color
+        BarGraphRenderer barGraphRendererBottom = new BarGraphRenderer(2, paint, false);
+        visualizerView.addRenderer(barGraphRendererBottom);
+    }
+
+    private void releaseVisualizer() {
+        visualizerView.release();
+        visualizerView = null;
+    }
+
+    private void record() {
+        if (startRecording) {
+            recordStart();
+        }
+        else {
+            recordStop();
+        }
+    }
+
+    private void recordStart() {
+        startRecording();
+        startRecording = false;
+        //recordBtn.setText(R.string.stopRecordBtn);
+        playBtn.setEnabled(false);
+    }
+
+    private void recordStop() {
+        stopRecording();
+        startRecording = true;
+        //recordBtn.setText(R.string.recordBtn);
+        playBtn.setEnabled(true);
+    }
+
+    private void startRecording() {
+        recordingThread = new AudioRecordingThread(audioFileName, new AudioRecordingHandler() { //pass file name where to store the recorded audio
+            @Override
+            public void onFftDataCapture(final byte[] bytes) {
+                //TODO
+                //start thread on Main Activity?
+                ((MainActivity)getActivity()).runOnUiThread(new Runnable() {
+                    public void run() {
+                        if (visualizerView != null) {
+                            visualizerView.updateVisualizerFFT(bytes); //update VisualizerView with new audio portion
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void onRecordSuccess() {}
+
+            @Override
+            public void onRecordingError() {}
+
+            @Override
+            public void onRecordSaveError() {}
+        });
+        recordingThread.start();
+    }
+
+    private void stopRecording() {
+        if (recordingThread != null) {
+            recordingThread.stopRecording();
+            recordingThread = null;
+        }
+    }
+//    private void play() {
+//        Intent i = new Intent(AudioRecordingActivity.this, AudioPlaybackActivity.class);
+//        i.putExtra(VideoPlaybackActivity.FileNameArg, audioFileName);
+//        startActivityForResult(i, 0);
+//    }
+
 }

@@ -45,6 +45,11 @@
     <string name="Success">Success</string>
     <string name="Loading">Loading..</string>
 
+
+    <string name="recordBtn">Record</string>
+    <string name="stopRecordBtn">Stop</string>
+    <string name="playBtn">Play</string>
+
     <string name="dummy_email">shidenghui@gmail.com</string>
     <string name="dummy_password">123456789</string>
     <string name="Sign_in">Sign in</string>
