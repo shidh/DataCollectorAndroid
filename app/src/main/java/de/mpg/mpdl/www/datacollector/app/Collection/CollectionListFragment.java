@@ -167,8 +167,6 @@ public class CollectionListFragment extends Fragment{
 
             Log.v(LOG_TAG, "get list OK");
 
-            showToast("got new data");
-
         }
 
         @Override

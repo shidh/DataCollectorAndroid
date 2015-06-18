@@ -17,9 +17,9 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -29,8 +29,10 @@ import com.activeandroid.query.Select;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
+import com.skd.androidrecording.audio.AudioPlaybackManager;
 import com.skd.androidrecording.audio.AudioRecordingHandler;
 import com.skd.androidrecording.audio.AudioRecordingThread;
+import com.skd.androidrecording.video.PlaybackHandler;
 import com.skd.androidrecording.visualizer.VisualizerView;
 import com.skd.androidrecording.visualizer.renderer.BarGraphRenderer;
 import com.squareup.otto.Subscribe;
@@ -57,9 +59,6 @@ import de.mpg.mpdl.www.datacollector.app.R;
 import de.mpg.mpdl.www.datacollector.app.Workflow.UploadView.ReadyToUploadCollectionActivity;
 import de.mpg.mpdl.www.datacollector.app.utils.DeviceStatus;
 import de.mpg.mpdl.www.datacollector.app.utils.StorageUtils;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 import retrofit.mime.TypedFile;
 
 /**
@@ -105,7 +104,6 @@ public class WorkflowSectionFragment extends Fragment{
     private String photoFilePath;
     private String fileName;
     private static String audioFileName = null;
-
     private DeviceStatus status;
     private View rootView;
     private ImageView imageView;
@@ -115,7 +113,9 @@ public class WorkflowSectionFragment extends Fragment{
     private VisualizerView visualizerView;
     private AudioRecordingThread recordingThread;
     private boolean startRecording = true;
-    private Button recordBtn, playBtn;
+    private boolean readyToPlay = false;
+
+    //private Button recordBtn, playBtn;
 
 
     private User user;
@@ -124,7 +124,18 @@ public class WorkflowSectionFragment extends Fragment{
 
     private OnLocationUpdatedListener mCallback;
 
+    private AudioPlaybackManager playbackManager;
 
+    private PlaybackHandler playbackHandler = new PlaybackHandler() {
+        @Override
+        public void onPreparePlayback() {
+            ((MainActivity)getActivity()).runOnUiThread(new Runnable() {
+                public void run() {
+                    playbackManager.showMediaController();
+                }
+            });
+        }
+    };
 
 
     // The container Activity must implement this interface so the frag can deliver messages
@@ -136,25 +147,6 @@ public class WorkflowSectionFragment extends Fragment{
 
 
     }
-
-    Callback<DataItem> callback = new Callback<DataItem>() {
-        @Override
-        public void success(DataItem dataItem, Response response) {
-            //adapter =  new CustomListAdapter(getActivity(), dataList);
-            //listView.setAdapter(adapter);
-            showToast( "Upload data Successfully");
-            Log.v(LOG_TAG, dataItem.getCollectionId());
-            Log.v(LOG_TAG, String.valueOf(dataItem.getMetadata()));
-
-        }
-
-        @Override
-        public void failure(RetrofitError error) {
-            showToast( "Upload data Failed");
-            Log.v(LOG_TAG, error.toString());
-
-        }
-    };
 
 
     public RatingBar getRatingView() {
@@ -212,7 +204,6 @@ public class WorkflowSectionFragment extends Fragment{
     }
 
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -229,6 +220,7 @@ public class WorkflowSectionFragment extends Fragment{
         ratingView.setIsIndicator(true);
         lblLocation = (TextView) rootView.findViewById(R.id.accuracy);
         btnStartLocationUpdates = (ImageView) rootView.findViewById(R.id.btnLocationUpdates);
+
 
         ((MainActivity)getActivity()).subActionButtonCamera.setOnClickListener(
                 new View.OnClickListener() {
@@ -284,8 +276,9 @@ public class WorkflowSectionFragment extends Fragment{
 //                        //        Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
 //                        startActivityForResult(gallery, INTENT_PICK_AUDIO);
                         imageView.setVisibility(View.INVISIBLE);
-                        playBtn.setVisibility(View.VISIBLE);
+                        //playBtn.setVisibility(View.VISIBLE);
                         record();
+
                     }
                 });
 
@@ -356,17 +349,25 @@ public class WorkflowSectionFragment extends Fragment{
                     }
                 });
 
-        audioFileName = StorageUtils.getFileName(true);
-        playBtn = (Button) rootView.findViewById(R.id.playBtn);
-        playBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //play();
-            }
-        });
-        playBtn.setVisibility(View.INVISIBLE);
+//        playBtn = (Button) rootView.findViewById(R.id.playBtn);
+//        playBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                //play();
+//            }
+//        });
+//        playBtn.setVisibility(View.INVISIBLE);
         visualizerView = (VisualizerView) rootView.findViewById(R.id.visualizerView);
         setupVisualizer();
+        visualizerView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent evrnt){
+                if(readyToPlay){
+                    playbackManager.showMediaController();
+                }
+                return false;
+            }
+        });
 
         return rootView;
     }
@@ -413,14 +414,18 @@ public class WorkflowSectionFragment extends Fragment{
         OttoSingleton.getInstance().unregister(this);
         Log.d(LOG_TAG, "onPasue");
         //bottomCenterButton.setVisibility(View.INVISIBLE);
-
-
+        if(playbackManager !=null) {
+            playbackManager.pause();
+        }
     }
 
     @Override
     public void onStop() {
         super.onStop();
-
+        if(playbackManager !=null) {
+            playbackManager.dispose();
+            playbackHandler = null;
+        }
     }
 
     @Override
@@ -751,17 +756,25 @@ public class WorkflowSectionFragment extends Fragment{
         startRecording();
         startRecording = false;
         //recordBtn.setText(R.string.stopRecordBtn);
-        playBtn.setEnabled(false);
+        //playBtn.setEnabled(false);
     }
 
     private void recordStop() {
         stopRecording();
         startRecording = true;
         //recordBtn.setText(R.string.recordBtn);
-        playBtn.setEnabled(true);
+        //playBtn.setEnabled(true);
     }
 
     private void startRecording() {
+        if(playbackManager !=null) {
+            //playbackManager.dispose();
+            playbackManager = null;
+            //playbackHandler = null;
+
+        }
+        readyToPlay = false;
+        audioFileName = StorageUtils.getFileName(true);
         recordingThread = new AudioRecordingThread(audioFileName, new AudioRecordingHandler() { //pass file name where to store the recorded audio
             @Override
             public void onFftDataCapture(final byte[] bytes) {
@@ -792,6 +805,10 @@ public class WorkflowSectionFragment extends Fragment{
         if (recordingThread != null) {
             recordingThread.stopRecording();
             recordingThread = null;
+            readyToPlay = true;
+
+            playbackManager = new AudioPlaybackManager(getActivity(), visualizerView, playbackHandler);
+            playbackManager.setupPlayback(audioFileName);
         }
     }
 //    private void play() {
