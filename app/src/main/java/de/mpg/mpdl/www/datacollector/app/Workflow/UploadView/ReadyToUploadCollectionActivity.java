@@ -39,6 +39,7 @@ import de.mpg.mpdl.www.datacollector.app.utils.DeviceStatus;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import retrofit.mime.TypedByteArray;
 import retrofit.mime.TypedFile;
 import retrofit.mime.TypedString;
 
@@ -118,7 +119,8 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
                 OttoSingleton.getInstance().post(
                         new UploadEvent(error.getResponse().getStatus()));
             }
-            //Log.v(LOG_TAG, String.valueOf(error.getResponse().getStatus()));
+            String jsonBody =  new String(((TypedByteArray)error.getResponse().getBody()).getBytes());
+            Log.v(LOG_TAG, jsonBody);
             Log.v(LOG_TAG, String.valueOf(error));
             processButton.setProgress(-1); // set progress to 0 to switch back to normal state
 
@@ -376,7 +378,6 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
 
                 Log.v(LOG_TAG, json);
                 RetrofitClient.uploadItem(typedFile, json, callback, username, password);
-                //TODO  popup a progress bar to show the uploading is running
             }
         }
 

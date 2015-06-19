@@ -68,7 +68,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center" >
--->
+    -->
         <FrameLayout
             android:background="#8cf7f3ff"
             android:layout_width="match_parent"
@@ -82,14 +82,13 @@
             android:gravity="center"
             android:layout_gravity="top">
             </com.skd.androidrecording.visualizer.VisualizerView>
+
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/imageView"
                 android:gravity="center"
                 android:layout_gravity="center" />
-
-
 
         </FrameLayout>
 

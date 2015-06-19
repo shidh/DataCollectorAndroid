@@ -261,13 +261,13 @@ public class MainActivity extends FragmentActivity implements
         lcIconGPS.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_location_found));
         lcIconAudio.setImageDrawable(getResources().getDrawable(R.drawable.mic_white));
         lcIconSave.setImageDrawable(getResources().getDrawable(R.drawable.save_white));
-        lcIconText.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_chat));
+        //lcIconText.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_chat));
 
         subActionButtonCamera = lCSubBuilder.setContentView(lcIconCamera, blueContentParams).build();
         subActionButtonPic = lCSubBuilder.setContentView(lcIconPic, blueContentParams).build();
         subActionButtonAudio = lCSubBuilder.setContentView(lcIconAudio, blueContentParams).build();
         subActionButtonVideo = lCSubBuilder.setContentView(lcIconVideo, blueContentParams).build();
-        subActionButtonText = lCSubBuilder.setContentView(lcIconText, blueContentParams).build();
+        //subActionButtonText = lCSubBuilder.setContentView(lcIconText, blueContentParams).build();
         subActionButtonGPS = lCSubBuilder.setContentView(lcIconGPS, blueContentParams).build();
         subActionButtonSave = lCSubBuilder.setContentView(lcIconSave, blueContentParams).build();
 
@@ -278,7 +278,7 @@ public class MainActivity extends FragmentActivity implements
                 .addSubActionView(subActionButtonAudio)
                 //.addSubActionView(subActionButtonGPS)
                 .addSubActionView(subActionButtonVideo)
-                .addSubActionView(subActionButtonText)
+                //.addSubActionView(subActionButtonText)
                 .addSubActionView(subActionButtonSave)
                 .setRadius(redActionMenuRadius)
                 .setStartAngle(-180)
@@ -452,7 +452,7 @@ public class MainActivity extends FragmentActivity implements
             subActionButtonPic.setVisibility(View.INVISIBLE);
             subActionButtonAudio.setVisibility(View.INVISIBLE);
             subActionButtonVideo.setVisibility(View.INVISIBLE);
-            subActionButtonText.setVisibility(View.INVISIBLE);
+            //subActionButtonText.setVisibility(View.INVISIBLE);
             subActionButtonGPS.setVisibility(View.INVISIBLE);
             subActionButtonSave.setVisibility(View.INVISIBLE);
 
@@ -476,7 +476,7 @@ public class MainActivity extends FragmentActivity implements
             subActionButtonPic.setVisibility(View.VISIBLE);
             subActionButtonAudio.setVisibility(View.VISIBLE);
             subActionButtonVideo.setVisibility(View.VISIBLE);
-            subActionButtonText.setVisibility(View.VISIBLE);
+            //subActionButtonText.setVisibility(View.VISIBLE);
             subActionButtonGPS.setVisibility(View.VISIBLE);
             subActionButtonSave.setVisibility(View.VISIBLE);
 
@@ -815,7 +815,6 @@ public class MainActivity extends FragmentActivity implements
      * Services
      * */
     protected void startLocationUpdates() {
-
         LocationServices.FusedLocationApi.requestLocationUpdates(
                 mGoogleApiClient, mLocationRequest, this);
     }

@@ -101,9 +101,9 @@ public class WorkflowSectionFragment extends Fragment{
      * location information thereafter in order to save the data.
      */
 
-    private String photoFilePath;
+    private String filePath;
     private String fileName;
-    private static String audioFileName = null;
+    //private String audioFileName;
     private DeviceStatus status;
     private View rootView;
     private ImageView imageView;
@@ -211,7 +211,7 @@ public class WorkflowSectionFragment extends Fragment{
 
         if (savedInstanceState != null) {
             // Restore last state for checked position.
-            photoFilePath = savedInstanceState.getString("photoFilePath");
+            filePath = savedInstanceState.getString("photoFilePath");
         }
 
         rootView = inflater.inflate(R.layout.fragment_section_workflow, container, false);
@@ -226,7 +226,6 @@ public class WorkflowSectionFragment extends Fragment{
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Log.v(LOG_TAG, "hi");
                         //rootView.findViewById(R.id.save).setVisibility(View.VISIBLE);
                         takePhoto();
                     }
@@ -308,7 +307,7 @@ public class WorkflowSectionFragment extends Fragment{
 
                             //add a dataItem to the list on the top of view
                             item.setCollectionId(collectionID);
-                            item.setLocalPath(photoFilePath);
+                            item.setLocalPath(filePath);
                             item.setMetaDataLocal(meta);
                             item.setLocal(1);
                             item.setCreatedBy(user);
@@ -422,10 +421,10 @@ public class WorkflowSectionFragment extends Fragment{
     @Override
     public void onStop() {
         super.onStop();
-        if(playbackManager !=null) {
-            playbackManager.dispose();
-            playbackHandler = null;
-        }
+//        if(playbackManager !=null) {
+//            playbackManager.dispose();
+//            playbackHandler = null;
+//        }
     }
 
     @Override
@@ -495,8 +494,8 @@ public class WorkflowSectionFragment extends Fragment{
                 //Bitmap photo = (Bitmap) data.getExtras().get("output");
                 //imageView.setImageBitmap(photo);
 
-                if(photoFilePath != null) {
-                    File imgFile = new File(photoFilePath);
+                if(filePath != null) {
+                    File imgFile = new File(filePath);
                     if (imgFile.exists()) {
                         imageView.setVisibility(View.VISIBLE);
 
@@ -505,7 +504,7 @@ public class WorkflowSectionFragment extends Fragment{
                                 .resize(imageView.getWidth(), imageView.getHeight())
                                 .into(imageView);
                     }
-                    addImageToGallery(photoFilePath);
+                    addImageToGallery(filePath);
                 }
 
             } else if (resultCode == getActivity().RESULT_CANCELED) {
@@ -520,9 +519,9 @@ public class WorkflowSectionFragment extends Fragment{
                         .load(imageUri)
                         .resize(imageView.getWidth(), imageView.getHeight())
                         .into(imageView);
-                photoFilePath = getRealPathFromURI(imageUri);
+                filePath = getRealPathFromURI(imageUri);
                 // example /storage/emulated/0/DCIM/Camera/IMG_20150408_170256.jpg
-                fileName = photoFilePath.split("\\/")[photoFilePath.split("\\/").length-1];
+                fileName = filePath.split("\\/")[filePath.split("\\/").length-1];
 
             } else if (resultCode == getActivity().RESULT_CANCELED) {
                 // User cancelled the photo picking
@@ -534,9 +533,9 @@ public class WorkflowSectionFragment extends Fragment{
                         .load(videoUri)
                         .resize(imageView.getWidth(), imageView.getHeight())
                         .into(imageView);
-                photoFilePath = getRealPathFromURI(videoUri);
+                filePath = getRealPathFromURI(videoUri);
                 // example /storage/emulated/0/DCIM/Camera/IMG_20150408_170256.jpg
-                fileName = photoFilePath.split("\\/")[photoFilePath.split("\\/").length-1];
+                fileName = filePath.split("\\/")[filePath.split("\\/").length-1];
 
             } else if (resultCode == getActivity().RESULT_CANCELED) {
                 // User cancelled the photo picking
@@ -548,9 +547,9 @@ public class WorkflowSectionFragment extends Fragment{
                         .load(audioUri)
                         .resize(imageView.getWidth(), imageView.getHeight())
                         .into(imageView);
-                photoFilePath = getRealPathFromURI(audioUri);
+                filePath = getRealPathFromURI(audioUri);
                 // example /storage/emulated/0/DCIM/Camera/IMG_20150408_170256.jpg
-                fileName = photoFilePath.split("\\/")[photoFilePath.split("\\/").length-1];
+                fileName = filePath.split("\\/")[filePath.split("\\/").length-1];
 
             } else if (resultCode == getActivity().RESULT_CANCELED) {
                 // User cancelled the photo picking
@@ -571,7 +570,7 @@ public class WorkflowSectionFragment extends Fragment{
 
         //add a dataItem to the list on the top of view
         item.setCollectionId(collectionID);
-        item.setLocalPath(photoFilePath);
+        item.setLocalPath(filePath);
         item.setMetaDataLocal(meta);
         item.setLocal(1);
         item.setCreatedBy(user);
@@ -621,10 +620,10 @@ public class WorkflowSectionFragment extends Fragment{
             // Create a file to save the photo
             createPhotoFile();
             // Continue only if the file was successfully created
-            if (photoFilePath != null) {
+            if (filePath != null) {
                 // Set the image file name
                 takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT,
-                        Uri.fromFile(new File(photoFilePath)));
+                        Uri.fromFile(new File(filePath)));
                 startActivityForResult(takePhotoIntent, INTENT_TAKE_PHOTO);
             }
         }
@@ -642,15 +641,15 @@ public class WorkflowSectionFragment extends Fragment{
                     Environment
                             .getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
                     getString(R.string.app_name));
-            photoFilePath = new File(storageDir.getPath(), photoFileName
+            filePath = new File(storageDir.getPath(), photoFileName
                     + ".jpg").getPath();
             fileName = photoFileName + ".jpg";
 
             //Toast.makeText(getActivity(), photoFilePath, Toast.LENGTH_LONG).show();
-            Log.v(LOG_TAG, photoFilePath);
+            Log.v(LOG_TAG, filePath);
             // Create the storage directory if it does not exist
             if (!storageDir.exists() && !storageDir.mkdirs()) {
-                photoFilePath = null;
+                filePath = null;
             }
         } catch (Exception e) {
             Toast.makeText(getActivity(), R.string.problem_create_file,
@@ -774,8 +773,12 @@ public class WorkflowSectionFragment extends Fragment{
 
         }
         readyToPlay = false;
-        audioFileName = StorageUtils.getFileName(true);
-        recordingThread = new AudioRecordingThread(audioFileName, new AudioRecordingHandler() { //pass file name where to store the recorded audio
+        filePath = StorageUtils.getFileName(true);
+        showToast(filePath);
+        fileName = filePath.split("\\/")[filePath.split("\\/").length-1];
+        showToast(fileName);
+
+        recordingThread = new AudioRecordingThread(filePath, new AudioRecordingHandler() { //pass file name where to store the recorded audio
             @Override
             public void onFftDataCapture(final byte[] bytes) {
                 //TODO
@@ -808,7 +811,7 @@ public class WorkflowSectionFragment extends Fragment{
             readyToPlay = true;
 
             playbackManager = new AudioPlaybackManager(getActivity(), visualizerView, playbackHandler);
-            playbackManager.setupPlayback(audioFileName);
+            playbackManager.setupPlayback(filePath);
         }
     }
 //    private void play() {
