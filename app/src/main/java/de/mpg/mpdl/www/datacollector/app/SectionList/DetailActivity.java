@@ -23,6 +23,7 @@ import com.squareup.picasso.Picasso;
 import de.mpg.mpdl.www.datacollector.app.Model.DataItem;
 import de.mpg.mpdl.www.datacollector.app.R;
 import de.mpg.mpdl.www.datacollector.app.SettingsActivity;
+import uk.co.senab.photoview.PhotoViewAttacher;
 
 
 //using import android.app.Fragment;
@@ -71,6 +72,7 @@ public class DetailActivity extends Activity {
         private static final String LOG_TAG = DetailFragment.class.getSimpleName();
 
         private String itemName;
+        private PhotoViewAttacher mAttacher;
 
         public DetailFragment() {
             setHasOptionsMenu(true);
@@ -93,6 +95,12 @@ public class DetailActivity extends Activity {
                 itemName = intent.getStringExtra(Intent.EXTRA_TEXT);
                 ImageView imageView = (ImageView) rootView.findViewById(R.id.detail_image);
 
+                mAttacher = new PhotoViewAttacher(imageView);
+                ////mAttacher.setScaleType(ImageView.ScaleType.FIT_CENTER);
+
+                //mAttacher.setScaleType(ImageView.ScaleType.CENTER);
+                ////mAttacher.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+
                 WindowManager wm = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
                 Display display = wm.getDefaultDisplay();
 
@@ -114,8 +122,11 @@ public class DetailActivity extends Activity {
                 Picasso.with(getActivity())
                         .load(item.getWebResolutionUrlUrl())
                         .resize(size.x, size.y-150)
-                        .centerCrop()
+                        //.centerCrop()
+                        .placeholder(R.drawable.progress_animation)
                         .into(imageView);
+                mAttacher.update();
+
                 //accuracy.setText(item.getMetaDataLocal().getAccuracy()+"");
                 //user.setText(item.getMetaDataLocal().getCreator());
 

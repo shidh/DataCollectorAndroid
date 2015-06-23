@@ -66,6 +66,9 @@ public class ItemListFragment extends Fragment {
     private String username = DeviceStatus.username;
     private String password = DeviceStatus.password;
 
+    private static final int INTENT_PICK_DATA = 1008;
+
+
     private static Gson gson = new GsonBuilder()
             .serializeNulls()
             .excludeFieldsWithoutExposeAnnotation()
@@ -270,6 +273,11 @@ public class ItemListFragment extends Fragment {
                 //newFragment.show(getActivity().getSupportFragmentManager(), "showWorkflow");
                 Intent intent = new Intent(getActivity(), ReadyToUploadCollectionActivity.class);
                 startActivity(intent);
+
+//                Intent pickFile = new Intent(Intent.ACTION_PICK);
+//                pickFile.setAction(Intent.ACTION_GET_CONTENT);
+//                startActivityForResult(pickFile, INTENT_PICK_DATA);
+
             }
         });
 
@@ -376,7 +384,6 @@ public class ItemListFragment extends Fragment {
     public void showToast(String message) {
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
-
 
 
 

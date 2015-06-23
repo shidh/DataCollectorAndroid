@@ -80,6 +80,8 @@ public class WorkflowSectionFragment extends Fragment{
     private static final int INTENT_PICK_PHOTO = 1006;
     private static final int INTENT_PICK_VIDEO = 1007;
     private static final int INTENT_PICK_AUDIO = 1007;
+    private static final int INTENT_PICK_DATA = 1008;
+
 
     private final String LOG_TAG = WorkflowSectionFragment.class.getSimpleName();
     public static final String ARG_SECTION_NUMBER = "section_number";
@@ -129,11 +131,11 @@ public class WorkflowSectionFragment extends Fragment{
     private PlaybackHandler playbackHandler = new PlaybackHandler() {
         @Override
         public void onPreparePlayback() {
-            ((MainActivity)getActivity()).runOnUiThread(new Runnable() {
-                public void run() {
+//            ((MainActivity)getActivity()).runOnUiThread(new Runnable() {
+//                public void run() {
                     playbackManager.showMediaController();
-                }
-            });
+//                }
+//            });
         }
     };
 
@@ -201,6 +203,8 @@ public class WorkflowSectionFragment extends Fragment{
                     + " must implement OnLocationUpdatedListener");
         }
     }
+
+
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -325,7 +329,7 @@ public class WorkflowSectionFragment extends Fragment{
                             item.setCollectionId(collectionID);
                             item.setLocalPath(filePath);
                             item.setMetaDataLocal(meta);
-                            item.setLocal(1);
+                            item.setLocal(true);
                             item.setCreatedBy(user);
                             item.setFilename(fileName);
 
@@ -336,7 +340,7 @@ public class WorkflowSectionFragment extends Fragment{
 
                             DataItem dataItem = new Select()
                                     .from(DataItem.class)
-                                    .where("isLocal = ?", 1)
+                                    .where("isLocal = ?", true)
                                     .executeSingle();
                             meta.save();
 
@@ -347,6 +351,7 @@ public class WorkflowSectionFragment extends Fragment{
                             //imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_launcher));
 
                             reSetUpView();
+                            reSetUpAudioView();
 
                         } else {
                             showToast("Please press + button start to work");
@@ -441,7 +446,7 @@ public class WorkflowSectionFragment extends Fragment{
 //            playbackManager.dispose();
 //            playbackHandler = null;
 //        }
-    }
+     }
 
     @Override
     public void onDestroy() {
@@ -459,7 +464,7 @@ public class WorkflowSectionFragment extends Fragment{
 
         if(new Select()
                 .from(DataItem.class)
-                .where("isLocal = ?", 1)
+                .where("isLocal = ?", true)
                 .execute().size() >0) {
             poi_list.setIcon(getResources().getDrawable(R.drawable.action_uploadlist_blue));
         }
@@ -496,14 +501,6 @@ public class WorkflowSectionFragment extends Fragment{
                 Toast.makeText(getActivity(), R.string.problem_no_net,
                         Toast.LENGTH_SHORT).show();
             }
-        } else if ((requestCode == INTENT_RECOVER_FROM_AUTH_ERROR ||
-                requestCode == INTENT_RECOVER_FROM_PLAY_SERVICES_ERROR)
-                && resultCode == getActivity().RESULT_OK) {
-			/*
-			 * Receiving a result that follows a GoogleAuthException, try auth
-			 * again
-			 */
-            //getUsername();
         } else if (requestCode == INTENT_TAKE_PHOTO) {
             Log.v(LOG_TAG+ " resultCode", String.valueOf(resultCode));
             if (resultCode == getActivity().RESULT_OK) {
@@ -570,6 +567,20 @@ public class WorkflowSectionFragment extends Fragment{
             } else if (resultCode == getActivity().RESULT_CANCELED) {
                 // User cancelled the photo picking
             }
+        }else if (requestCode == INTENT_PICK_DATA){
+            if (resultCode == getActivity().RESULT_OK) {
+                Uri fileUri = data.getData();
+                Picasso.with(getActivity())
+                        .load(fileUri)
+                        .resize(imageView.getWidth(), imageView.getHeight())
+                        .into(imageView);
+                filePath = getRealPathFromURI(fileUri);
+                // example /storage/emulated/0/DCIM/Camera/IMG_20150408_170256.jpg
+                fileName = filePath.split("\\/")[filePath.split("\\/").length-1];
+
+            } else if (resultCode == getActivity().RESULT_CANCELED) {
+                // User cancelled the photo picking
+            }
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -588,7 +599,7 @@ public class WorkflowSectionFragment extends Fragment{
         item.setCollectionId(collectionID);
         item.setLocalPath(filePath);
         item.setMetaDataLocal(meta);
-        item.setLocal(1);
+        item.setLocal(true);
         item.setCreatedBy(user);
         item.setFilename(fileName);
 
@@ -601,7 +612,7 @@ public class WorkflowSectionFragment extends Fragment{
 
         DataItem dataItem = new Select()
                 .from(DataItem.class)
-                .where("isLocal = ?", 1)
+                .where("isLocal = ?", true)
                 .executeSingle();
         if(dataItem.getMetaDataLocal().getTags() == null){
             meta.save();
@@ -740,6 +751,13 @@ public class WorkflowSectionFragment extends Fragment{
     private void reSetUpView(){
         imageView.setVisibility(View.INVISIBLE);
         //rootView.findViewById(R.id.save).setVisibility(View.INVISIBLE);
+        item = new DataItem();
+        meta = new MetaDataLocal();
+    }
+
+    private void reSetUpAudioView(){
+        visualizerView.setVisibility(View.INVISIBLE);
+        playbackManager.hideMediaController();
         item = new DataItem();
         meta = new MetaDataLocal();
     }

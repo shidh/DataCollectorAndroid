@@ -98,7 +98,7 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
             //begin to upload only when all the dataItem are uploaded
             if(new Select()
                     .from(DataItem.class)
-                    .where("isLocal = ?", 1)
+                    .where("isLocal = ?", true)
                     .execute().size()<1){
                 //upload a POI as Album on Imeji
                 RetrofitClient.createPOI(createNewPOI(), callbackPoi, username, password);
@@ -193,7 +193,7 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
 
         dataList = new Select()
                 .from(DataItem.class)
-                .where("isLocal = ?", 1)
+                .where("isLocal = ?", true)
                 .execute();
 
 

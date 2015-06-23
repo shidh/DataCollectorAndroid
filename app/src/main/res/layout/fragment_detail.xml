@@ -6,7 +6,7 @@
     tools:context="app.SectionList.DetailActivity$DetailFragment">
 
     <ImageView
-        android:id="@+id/detail_image"
+    android:id="@+id/detail_image"
         android:layout_alignParentLeft="true"
         android:layout_gravity="center"
         android:gravity="center"
