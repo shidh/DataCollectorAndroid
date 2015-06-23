@@ -162,6 +162,22 @@ public class WorkflowSectionFragment extends Fragment{
         return lblLocation;
     }
 
+    public VisualizerView getVisualizerView() {
+        return visualizerView;
+    }
+
+    public void setVisualizerView(VisualizerView visualizerView) {
+        this.visualizerView = visualizerView;
+    }
+
+    public AudioPlaybackManager getPlaybackManager() {
+        return playbackManager;
+    }
+
+    public void setPlaybackManager(AudioPlaybackManager playbackManager) {
+        this.playbackManager = playbackManager;
+    }
+
     public FloatingActionButton getBottomCenterButton(){
         return bottomCenterButton;
     }
@@ -288,7 +304,7 @@ public class WorkflowSectionFragment extends Fragment{
                     public void onClick(View view) {
                         if (meta != null && item != null) {
                             if (currentLocation != null) {
-                                showToast("GPS is off");
+                                //showToast("GPS is off");
                             }
                             meta.setAccuracy(currentLocation.getAccuracy());
                             meta.setLatitude(currentLocation.getLatitude());
@@ -776,7 +792,7 @@ public class WorkflowSectionFragment extends Fragment{
         filePath = StorageUtils.getFileName(true);
         showToast(filePath);
         fileName = filePath.split("\\/")[filePath.split("\\/").length-1];
-        showToast(fileName);
+        //showToast(fileName);
 
         recordingThread = new AudioRecordingThread(filePath, new AudioRecordingHandler() { //pass file name where to store the recorded audio
             @Override

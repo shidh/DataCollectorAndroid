@@ -718,6 +718,11 @@ public class MainActivity extends FragmentActivity implements
                 Log.v(LOG_TAG,"Location view is updated");
 
             } else{
+//                workflow = (WorkflowSectionFragment) frag;
+//                VisualizerView voiceView = workflow.getVisualizerView();
+//                AudioPlaybackManager audioPlaybackManager = workflow.getPlaybackManager();
+//                voiceView.setVisibility(View.INVISIBLE);
+//                audioPlaybackManager.hideMediaController();
                 Log.v(LOG_TAG,"workflow LaunchpadSectionFragment is null");
             }
         } else {

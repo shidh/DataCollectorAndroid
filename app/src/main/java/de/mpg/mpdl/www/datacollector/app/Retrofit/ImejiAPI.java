@@ -48,6 +48,7 @@ public interface ImejiAPI {
     /*
      *  For items
     */
+
     //get all items
     @GET("/items")
     List<DataItem> getItems();
@@ -64,7 +65,7 @@ public interface ImejiAPI {
     //void postItem(@Body DataItem item, Callback<DataItem> callback);
 
     @Multipart
-    @POST("/items")
+    @POST("/items?syntax=imeji")
     void postItem(@Part("file") TypedFile file,
                   @Part("json") String json,
                   Callback<ItemImeji> callback);

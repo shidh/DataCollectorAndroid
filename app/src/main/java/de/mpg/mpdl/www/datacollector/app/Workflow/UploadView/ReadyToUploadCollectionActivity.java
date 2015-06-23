@@ -89,9 +89,9 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
             new Delete().from(DataItem.class).where("filename = ?", dataItem.getFilename()).execute();
 
             for (DataItem item: dataList){
-                if(item.getFilename().equals(dataItem.getFilename())){
+                //if(item.getFilename().equals(dataItem.getFilename())){
                     dataList.remove(item);
-                }
+                //}
             }
             adapter.notifyDataSetChanged();
 

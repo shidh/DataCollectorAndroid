@@ -79,8 +79,7 @@
             android:id="@+id/visualizerView"
             android:layout_width="match_parent"
             android:layout_height="250dp"
-            android:gravity="center"
-            android:layout_gravity="top">
+            >
             </com.skd.androidrecording.visualizer.VisualizerView>
 
             <ImageView

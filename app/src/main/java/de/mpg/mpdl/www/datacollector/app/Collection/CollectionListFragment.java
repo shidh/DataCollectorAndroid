@@ -246,9 +246,8 @@ public class CollectionListFragment extends Fragment{
     public void onResume(){
         super.onResume();
         Log.v(LOG_TAG, "start onResume~~~");
-
-
     }
+
     @Override
     public void onPause(){
         super.onPause();
