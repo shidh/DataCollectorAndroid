@@ -310,12 +310,18 @@ public class WorkflowSectionFragment extends Fragment{
                             if (currentLocation != null) {
                                 //showToast("GPS is off");
                             }
+
                             meta.setAccuracy(currentLocation.getAccuracy());
                             meta.setLatitude(currentLocation.getLatitude());
                             meta.setLongitude(currentLocation.getLongitude());
-                            //meta.setAddress(getAddressByCoordinates(currentLocation.getLatitude(),
-                            //        currentLocation.getLongitude()));
 
+                            if(currentLocation !=null) {
+                                meta.setAccuracy(currentLocation.getAccuracy());
+                                meta.setLatitude(currentLocation.getLatitude());
+                                meta.setLongitude(currentLocation.getLongitude());
+//                                meta.setAddress(getAddressByCoordinates(currentLocation.getLatitude(),
+//                                        currentLocation.getLongitude()));
+                            }
                             //remove the tags fragment
                             //AskMetadataFragment newFragment = new AskMetadataFragment();
                             //newFragment.show(getActivity().getSupportFragmentManager(), "askMetadata");
@@ -351,7 +357,7 @@ public class WorkflowSectionFragment extends Fragment{
                             //imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_launcher));
 
                             reSetUpView();
-                            reSetUpAudioView();
+                            //reSetUpAudioView();
 
                         } else {
                             showToast("Please press + button start to work");

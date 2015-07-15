@@ -96,10 +96,9 @@ public class DetailActivity extends Activity {
                 ImageView imageView = (ImageView) rootView.findViewById(R.id.detail_image);
 
                 mAttacher = new PhotoViewAttacher(imageView);
-                ////mAttacher.setScaleType(ImageView.ScaleType.FIT_CENTER);
-
+                //mAttacher.setScaleType(ImageView.ScaleType.FIT_CENTER);
                 //mAttacher.setScaleType(ImageView.ScaleType.CENTER);
-                ////mAttacher.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                //mAttacher.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
 
                 WindowManager wm = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
                 Display display = wm.getDefaultDisplay();
@@ -110,8 +109,8 @@ public class DetailActivity extends Activity {
                 Log.v(size.x / 2 + " ", size.y / 2 + "");
 
                 DataItem item = new Select().
-                                from(DataItem.class).
-                                where("filename = ?", itemName).executeSingle();
+                        from(DataItem.class).
+                        where("filename = ?", itemName).executeSingle();
 
                 Log.v(LOG_TAG, item.getWebResolutionUrlUrl());
                 Log.v(LOG_TAG, item.getMetaDataLocal().getAddress());
@@ -121,11 +120,14 @@ public class DetailActivity extends Activity {
 
                 Picasso.with(getActivity())
                         .load(item.getWebResolutionUrlUrl())
-                        .resize(size.x, size.y-150)
-                        //.centerCrop()
-                        .placeholder(R.drawable.progress_animation)
+                        .resize(size.x, size.y - 150)
+                        //.placeholder(R.drawable.progress_animation)
+                        .centerCrop()
                         .into(imageView);
-                mAttacher.update();
+
+
+                //mAttacher.update();
+
 
                 //accuracy.setText(item.getMetaDataLocal().getAccuracy()+"");
                 //user.setText(item.getMetaDataLocal().getCreator());

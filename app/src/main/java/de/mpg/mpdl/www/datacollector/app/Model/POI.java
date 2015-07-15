@@ -57,4 +57,14 @@ public class POI {
     public void setContributors(List<User> contributors) {
         this.contributors = contributors;
     }
+
+    @Override
+    public String toString() {
+        return "POI{" +
+                "id='" + id + '\'' +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", contributors=" + contributors +
+                '}';
+    }
 }

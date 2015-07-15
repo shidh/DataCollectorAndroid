@@ -455,7 +455,6 @@ public class MainActivity extends FragmentActivity implements
             //subActionButtonText.setVisibility(View.INVISIBLE);
             subActionButtonGPS.setVisibility(View.INVISIBLE);
             subActionButtonSave.setVisibility(View.INVISIBLE);
-
         }
 
     }

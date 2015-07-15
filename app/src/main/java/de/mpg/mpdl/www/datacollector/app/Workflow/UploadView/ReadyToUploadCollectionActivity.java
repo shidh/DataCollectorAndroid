@@ -33,13 +33,11 @@ import de.mpg.mpdl.www.datacollector.app.Model.POI;
 import de.mpg.mpdl.www.datacollector.app.Model.User;
 import de.mpg.mpdl.www.datacollector.app.R;
 import de.mpg.mpdl.www.datacollector.app.Retrofit.MetaDataConverter;
-import de.mpg.mpdl.www.datacollector.app.Retrofit.RestError;
 import de.mpg.mpdl.www.datacollector.app.Retrofit.RetrofitClient;
 import de.mpg.mpdl.www.datacollector.app.utils.DeviceStatus;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import retrofit.mime.TypedByteArray;
 import retrofit.mime.TypedFile;
 import retrofit.mime.TypedString;
 
@@ -119,8 +117,8 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
                 OttoSingleton.getInstance().post(
                         new UploadEvent(error.getResponse().getStatus()));
             }
-            String jsonBody =  new String(((TypedByteArray)error.getResponse().getBody()).getBytes());
-            Log.v(LOG_TAG, jsonBody);
+            //String jsonBody =  new String(((TypedByteArray)error.getResponse().getBody()).getBytes());
+            //Log.v(LOG_TAG, jsonBody);
             Log.v(LOG_TAG, String.valueOf(error));
             processButton.setProgress(-1); // set progress to 0 to switch back to normal state
 
@@ -149,16 +147,16 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
             Log.v(LOG_TAG, String.valueOf(error.getResponse().getStatus()));
             Log.v(LOG_TAG, String.valueOf(error));
 
-            RestError restError = (RestError) error.getBodyAs(RestError.class);
-
-            if (restError != null)
-                failure(error);
-            else
-            {
-                //failure(new RetrofitError(error.getMessage()));
-            }
-            Log.v(LOG_TAG, String.valueOf(restError.getCode()));
-            Log.v(LOG_TAG,restError.getStrMessage());
+//            RestError restError = (RestError) error.getBodyAs(RestError.class);
+//
+//            if (restError != null)
+//                failure(error);
+//            else
+//            {
+//                //failure(new RetrofitError(error.getMessage()));
+//            }
+//            Log.v(LOG_TAG, String.valueOf(restError.getCode()));
+//            Log.v(LOG_TAG,restError.getStrMessage());
 
         }
     };
@@ -354,6 +352,7 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
             poi.setTitle("DataCollector");
             poi.setDescription("just test");
             poi.setContributors(contributors);
+            Log.v(LOG_TAG,poi.toString());
             return poi;
         }
 

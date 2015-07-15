@@ -65,15 +65,16 @@ public interface ImejiAPI {
     //void postItem(@Body DataItem item, Callback<DataItem> callback);
 
     @Multipart
-    @POST("/items?syntax=imeji")
+    @POST("/items?syntax=raw")
     void postItem(@Part("file") TypedFile file,
                   @Part("json") String json,
+                  //@Query("syntax") String syntax,
                   Callback<ItemImeji> callback);
 
     //https://dev-faces.mpdl.mpg.de:443/imeji/rest/items/W7e2SSZHwN4dkIAK
     @DELETE("/items/{id}")
     void deleteItemById(@Path("id") String itemId,
-                               Callback<Response> callback);
+                        Callback<Response> callback);
 
 
 

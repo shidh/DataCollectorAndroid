@@ -287,8 +287,8 @@ public class ItemListFragment extends Fragment {
                 DataItem dataItem = (DataItem) adapter.getItem(position);
                 //Context context = getActivity();
                 int duration = Toast.LENGTH_SHORT;
-                Toast toast = Toast.makeText(getActivity(), dataItem.getCollectionId(), duration);
-                toast.show();
+                //Toast toast = Toast.makeText(getActivity(), dataItem.getCollectionId(), duration);
+                //toast.show();
 
                 Intent showDetailIntent = new Intent(getActivity(), DetailActivity.class);
                 showDetailIntent.putExtra(Intent.EXTRA_TEXT, dataItem.getFilename());

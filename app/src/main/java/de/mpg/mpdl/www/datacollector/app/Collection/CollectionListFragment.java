@@ -217,9 +217,9 @@ public class CollectionListFragment extends Fragment{
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 CollectionLocal dataCollection = (CollectionLocal) adapter.getItem(position);
                 //Context context = getActivity();
-                int duration = Toast.LENGTH_SHORT;
-                Toast toast = Toast.makeText(getActivity(), dataCollection.getTitle(), duration);
-                toast.show();
+//                int duration = Toast.LENGTH_SHORT;
+//                Toast toast = Toast.makeText(getActivity(), dataCollection.getTitle(), duration);
+//                toast.show();
 
                 Intent showItemsIntent = new Intent(getActivity(), CollectionDetailActivity.class);
                 showItemsIntent.putExtra(Intent.EXTRA_TEXT, dataCollection.id);
