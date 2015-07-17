@@ -77,7 +77,7 @@ public class GridImageAdapter extends BaseAdapter {
 
 
         // getting item data for the row
-        DataItem m = dataItems.get(position);
+        final DataItem m = dataItems.get(position);
 
         if(size.x > size.y){
             grid.setLayoutParams(new GridView.LayoutParams(size.x/2, size.y*2/3));
@@ -87,14 +87,15 @@ public class GridImageAdapter extends BaseAdapter {
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
         Log.v("localPath: ",m.getLocalPath());
-        File imgFile = new File(m.getLocalPath());
+        final String filePath = m.getLocalPath();
+        File itemFile = new File(filePath);
 //        Picasso.with(mContext)
 //                .load(imgFile)
 //                .resize(imageView.getWidth(),imageView.getHeight())
 //                //.resize(size.x/2-10, size.y/2-10)
 //                .into(imageView);
 
-        if(imgFile.exists()) {
+        if(itemFile.exists()) {
             if(m.getMetaDataLocal() != null) {
                 if (m.getMetaDataLocal().getType().equals("image")) {
                     BitmapFactory.Options options = new BitmapFactory.Options();
@@ -104,10 +105,12 @@ public class GridImageAdapter extends BaseAdapter {
                     options.inSampleSize = calculateInSampleSize(options, 100, 100);
                     options.inJustDecodeBounds = false;
 
-                    myBitmap = BitmapFactory.decodeFile(m.getLocalPath(), options);
+                    myBitmap = BitmapFactory.decodeFile(filePath, options);
                     imageView.setImageBitmap(myBitmap);
                 } else if (m.getMetaDataLocal().getType().equals("audio")) {
-                    imageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.audio));
+                    imageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.play));
+
+
                 }
             }
         }
@@ -118,6 +121,7 @@ public class GridImageAdapter extends BaseAdapter {
         return grid;
 
     }
+
 
     public static int calculateInSampleSize(
             BitmapFactory.Options options, int reqWidth, int reqHeight) {

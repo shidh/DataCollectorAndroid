@@ -1,5 +1,6 @@
 package de.mpg.mpdl.www.datacollector.app.Workflow.UploadView;
 
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -220,8 +221,14 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                showToast(dataList.get((int) id).getFilename()+"\n"
-                            +"Long press to delete.");
+                DataItem item = dataList.get((int) id);
+                showToast(item.getFilename()+"\n" +"Long press to delete.");
+
+                if(item.getMetaDataLocal() != null) {
+                    if(item.getMetaDataLocal().getType().equals("audio")){
+                        audioPlayer(item.getLocalPath());
+                    }
+                }
             }
         });
 
@@ -387,6 +394,20 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
 
                 Log.v(LOG_TAG, json);
                 RetrofitClient.uploadItem(typedFile, json, callback, username, password);
+            }
+        }
+
+
+        public void audioPlayer(String path){
+            //set up MediaPlayer
+            MediaPlayer mp = new MediaPlayer();
+
+            try {
+                mp.setDataSource(path);
+                mp.prepare();
+                mp.start();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
 
