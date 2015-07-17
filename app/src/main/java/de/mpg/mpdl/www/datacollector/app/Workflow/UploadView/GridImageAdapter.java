@@ -94,16 +94,22 @@ public class GridImageAdapter extends BaseAdapter {
 //                //.resize(size.x/2-10, size.y/2-10)
 //                .into(imageView);
 
-        if(imgFile.exists()){
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inJustDecodeBounds = true;
-            Bitmap myBitmap = BitmapFactory.decodeFile(m.getLocalPath(),options );
+        if(imgFile.exists()) {
+            if(m.getMetaDataLocal() != null) {
+                if (m.getMetaDataLocal().getType().equals("image")) {
+                    BitmapFactory.Options options = new BitmapFactory.Options();
+                    options.inJustDecodeBounds = true;
+                    Bitmap myBitmap = BitmapFactory.decodeFile(m.getLocalPath(), options);
 
-            options.inSampleSize = calculateInSampleSize(options, 100, 100);
-            options.inJustDecodeBounds = false;
+                    options.inSampleSize = calculateInSampleSize(options, 100, 100);
+                    options.inJustDecodeBounds = false;
 
-            myBitmap = BitmapFactory.decodeFile(m.getLocalPath(), options );
-            imageView.setImageBitmap(myBitmap);
+                    myBitmap = BitmapFactory.decodeFile(m.getLocalPath(), options);
+                    imageView.setImageBitmap(myBitmap);
+                } else if (m.getMetaDataLocal().getType().equals("audio")) {
+                    imageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.audio));
+                }
+            }
         }
         title.setText(m.getMetaDataLocal().getTitle());
 

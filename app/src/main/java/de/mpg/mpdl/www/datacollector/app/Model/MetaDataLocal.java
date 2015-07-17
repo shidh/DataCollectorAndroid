@@ -38,6 +38,9 @@ public class MetaDataLocal extends Model{
     @Column(name = "deviceID")
     private String deviceID;
 
+    @Column(name = "fileType")
+    private String type;
+
     @Expose
     //@Column(name = "tags")
     private List<String> tags;
@@ -110,7 +113,13 @@ public class MetaDataLocal extends Model{
         this.deviceID = deviceID;
     }
 
+    public String getType() {
+        return type;
+    }
 
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public String getCreator() {
         return creator;

@@ -248,6 +248,7 @@ public class WorkflowSectionFragment extends Fragment{
                     public void onClick(View view) {
                         //rootView.findViewById(R.id.save).setVisibility(View.VISIBLE);
                         takePhoto();
+                        meta.setType("image");
                     }
                 });
 
@@ -264,6 +265,8 @@ public class WorkflowSectionFragment extends Fragment{
                         //gallery.addFlags(
                         //        Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
                         startActivityForResult(gallery, INTENT_PICK_PHOTO);
+                        meta.setType("image");
+
                     }
                 });
 
@@ -297,6 +300,7 @@ public class WorkflowSectionFragment extends Fragment{
                         imageView.setVisibility(View.INVISIBLE);
                         //playBtn.setVisibility(View.VISIBLE);
                         record();
+                        meta.setType("audio");
 
                     }
                 });
@@ -311,10 +315,6 @@ public class WorkflowSectionFragment extends Fragment{
                                 //showToast("GPS is off");
                             }
 
-                            meta.setAccuracy(currentLocation.getAccuracy());
-                            meta.setLatitude(currentLocation.getLatitude());
-                            meta.setLongitude(currentLocation.getLongitude());
-
                             if(currentLocation !=null) {
                                 meta.setAccuracy(currentLocation.getAccuracy());
                                 meta.setLatitude(currentLocation.getLatitude());
@@ -326,9 +326,15 @@ public class WorkflowSectionFragment extends Fragment{
                             //AskMetadataFragment newFragment = new AskMetadataFragment();
                             //newFragment.show(getActivity().getSupportFragmentManager(), "askMetadata");
 
+                            item.setFilename(fileName);
                             meta.setTags(null);
                             //meta.setTitle(meta.getTags().get(0)+"@"+meta.getAddress());
-                            meta.setTitle(meta.getAddress());
+                            if(meta.getAddress() == null) {
+                                meta.setAddress("unknown address");
+                            }
+
+                            meta.setTitle(item.getFilename()+"@"+meta.getAddress());
+
                             meta.setCreator(user.getCompleteName());
 
                             //add a dataItem to the list on the top of view
@@ -337,7 +343,6 @@ public class WorkflowSectionFragment extends Fragment{
                             item.setMetaDataLocal(meta);
                             item.setLocal(true);
                             item.setCreatedBy(user);
-                            item.setFilename(fileName);
 
                             meta.save();
                             item.save();
@@ -524,6 +529,7 @@ public class WorkflowSectionFragment extends Fragment{
                                 .into(imageView);
                     }
                     addImageToGallery(filePath);
+
                 }
 
             } else if (resultCode == getActivity().RESULT_CANCELED) {

@@ -50,14 +50,14 @@ public interface ImejiAPI {
     */
 
     //get all items
-    @GET("/items")
+    @GET("/items?syntax=raw")
     List<DataItem> getItems();
 
-    @GET("/items")
+    @GET("/items?syntax=raw")
     void getItems(Callback<List<DataItem>> callback);
 
     //get one item by itemId
-    @GET("/items/{id}")
+    @GET("/items/{id}?syntax=raw")
     List<DataItem> getItemById(@Path("id") String itemId,
                                Callback<Response> callback);
 
@@ -130,7 +130,7 @@ public interface ImejiAPI {
 
     @PUT("/albums/{id}/members/link")
     void linkItems(@Path("id") String albumId,
-                   @Body TypedString body,
+                   @Body TypedString body, 
                    Callback<List<String>> callback);
 
 

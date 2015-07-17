@@ -86,11 +86,21 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
 
             new Delete().from(DataItem.class).where("filename = ?", dataItem.getFilename()).execute();
 
-            for (DataItem item: dataList){
-                //if(item.getFilename().equals(dataItem.getFilename())){
-                    dataList.remove(item);
-                //}
+            List<DataItem> tempList =  dataList;
+            for(int i = 0; i<dataList.size(); i++){
+                DataItem d = tempList.get(i);
+                dataList.remove(d);
             }
+
+            //You cannot modify, add/remove, a List while iterating through it.
+            //The foreach loop you are using creates an Iterator object in the background.
+            // Use a regular for loop if you'd like to modify the list.
+
+//            for (DataItem item: dataList){
+//                //if(item.getFilename().equals(dataItem.getFilename())){
+//                    dataList.remove(item);
+//                //}
+//            }
             adapter.notifyDataSetChanged();
 
             //begin to upload only when all the dataItem are uploaded
