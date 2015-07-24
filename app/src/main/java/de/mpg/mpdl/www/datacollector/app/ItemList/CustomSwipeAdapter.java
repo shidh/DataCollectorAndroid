@@ -1,4 +1,4 @@
-package de.mpg.mpdl.www.datacollector.app.SectionList;
+package de.mpg.mpdl.www.datacollector.app.ItemList;
 
 import android.app.Activity;
 import android.view.LayoutInflater;

@@ -29,8 +29,6 @@ public class DataItem extends Model {
     @Column(name = "fileUrl")
     private String fileUrl;
 
-
-
     @Expose
     @Column(name = "webResolutionUrlUrl")
     private String webResolutionUrlUrl;

@@ -1,4 +1,4 @@
-package de.mpg.mpdl.www.datacollector.app.SectionList;
+package de.mpg.mpdl.www.datacollector.app.ItemList;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -105,9 +105,9 @@ public class ItemListFragment extends Fragment {
                 //load local data only
                 //adapter =  new CustomListAdapter(getActivity(), dataListLocal);
 
-                adapter =  new CustomSwipeAdapter(getActivity(), dataListLocal);
-                listView.setAdapter(adapter);
-
+                //adapter =  new CustomSwipeAdapter(getActivity(), dataListLocal);
+                //listView.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
             }
 
             if(pDialog != null) {
@@ -165,13 +165,17 @@ public class ItemListFragment extends Fragment {
         super.onCreate(savedInstanceState);
         // Add this line in order for this fragment to handle menu events.
         setHasOptionsMenu(true);
-        //updateDataItem();
+
         Log.v(LOG_TAG, "start onCreate~~~");
     }
 
     @Override
     public void onStart() {
         super.onStart();
+        updateDataItem();
+        pDialog = new ProgressDialog(getActivity());
+        pDialog.setMessage("Loading...");
+        pDialog.show();
         Log.v(LOG_TAG, "start onStart~~~");
 
 
