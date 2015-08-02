@@ -358,7 +358,7 @@ public class WorkflowSectionFragment extends Fragment{
                             Log.v(LOG_TAG + "when save", gson.toJson(dataItem));
 
                             //change the icon of the view
-                            poi_list.setIcon(getResources().getDrawable(R.drawable.action_uploadlist_blue));
+                            poi_list.setIcon(getResources().getDrawable(R.drawable.action_uploadlist_green));
                             //imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_launcher));
 
                             reSetUpView();

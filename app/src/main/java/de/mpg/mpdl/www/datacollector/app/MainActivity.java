@@ -2,20 +2,22 @@ package de.mpg.mpdl.www.datacollector.app;
 
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
-import android.app.ActionBar;
 import android.app.Dialog;
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -42,18 +44,16 @@ import com.squareup.picasso.Picasso;
 import java.math.BigDecimal;
 import java.util.Locale;
 
-import de.mpg.mpdl.www.datacollector.app.Collection.CollectionListFragment;
 import de.mpg.mpdl.www.datacollector.app.Event.LocationChangedEvent;
 import de.mpg.mpdl.www.datacollector.app.Event.OttoSingleton;
-import de.mpg.mpdl.www.datacollector.app.POI.POIFragment;
 import de.mpg.mpdl.www.datacollector.app.ItemList.ItemListFragment;
+import de.mpg.mpdl.www.datacollector.app.POI.POIFragment;
 import de.mpg.mpdl.www.datacollector.app.Workflow.MetadataFragment;
 import de.mpg.mpdl.www.datacollector.app.Workflow.WorkflowSectionFragment;
 
 
 //public class MainActivity extends ActionBarActivity implements ActionBar.TabListener {
-public class MainActivity extends FragmentActivity implements
-        ActionBar.TabListener,
+public class MainActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener,
@@ -63,8 +63,13 @@ public class MainActivity extends FragmentActivity implements
     /**
      * The {@link ViewPager} that will host the section contents.
      */
-    public ViewPager mViewPager;
 
+    //new ui
+    DrawerLayout drawerLayout;
+    ActionBarDrawerToggle drawerToggle;
+    Toolbar toolbar;
+    TabLayout tabLayout;
+    ViewPager viewPager;
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -126,46 +131,46 @@ public class MainActivity extends FragmentActivity implements
         }
 
         setContentView(R.layout.activity_main);
+        initInstances();
 
         // Set up the action bar.
-        final ActionBar actionBar = getActionBar();
+        //final ActionBar actionBar = getActionBar();
         //final ActionBar actionBar = getSupportActionBar();
-        assert actionBar != null;
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        //assert actionBar != null;
+        //actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Specify that the Home/Up button should not be enabled, since there is no hierarchical
         // parent.
-        actionBar.setHomeButtonEnabled(false);
+        //actionBar.setHomeButtonEnabled(false);
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.pager);
-        mViewPager.setAdapter(mSectionsPagerAdapter);
+//        mViewPager = (ViewPager) findViewById(R.id.pager);
+//        mViewPager.setAdapter(mSectionsPagerAdapter);
 
         // When swiping between different sections, select the corresponding
         // tab. We can also use ActionBar.Tab#select() to do this if we have
         // a reference to the Tab.
-        mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-            @Override
-            public void onPageSelected(int position) {
-                actionBar.setSelectedNavigationItem(position);
-            }
-        });
+//        mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+//            @Override
+//            public void onPageSelected(int position) {
+//                actionBar.setSelectedNavigationItem(position);
+//            }
+//        });
 
         // For each of the sections in the app, add a tab to the action bar.
-        for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
-            // Create a tab with text corresponding to the page title defined by
-            // the adapter. Also specify this Activity object, which implements
-            // the TabListener interface, as the callback (listener) for when
-            // this tab is selected.
-            actionBar.addTab(
-                    actionBar.newTab()
-                            .setText(mSectionsPagerAdapter.getPageTitle(i))
-                            .setTabListener(this));
-        }
+//        for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
+//            // Create a tab with text corresponding to the page title defined by
+//            // the adapter. Also specify this Activity object, which implements
+//            // the TabListener interface, as the callback (listener) for when
+//            // this tab is selected.
+//            actionBar.addTab(
+//                    actionBar.newTab()
+//                            .setText(mSectionsPagerAdapter.getPageTitle(i))
+//                            .setTabListener(this));
+//        }
 
 
 
@@ -238,9 +243,9 @@ public class MainActivity extends FragmentActivity implements
         FrameLayout.LayoutParams blueContentParams = new FrameLayout.
                 LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
         blueContentParams.setMargins(blueSubActionButtonContentMargin,
-                blueSubActionButtonContentMargin,
-                blueSubActionButtonContentMargin,
-                blueSubActionButtonContentMargin);
+                                    blueSubActionButtonContentMargin,
+                                    blueSubActionButtonContentMargin,
+                                    blueSubActionButtonContentMargin);
         lCSubBuilder.setLayoutParams(blueContentParams);
         // Set custom layout params
         FrameLayout.LayoutParams blueParams = new FrameLayout.
@@ -310,7 +315,74 @@ public class MainActivity extends FragmentActivity implements
     }
 
 
+    private void initInstances() {
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+        }
 
+        tabLayout = (TabLayout) findViewById(R.id.tabLayout);
+        //tabLayout.addTab(tabLayout.newTab().setText("Tab 1"));
+        //tabLayout.addTab(tabLayout.newTab().setText("Tab 2"));
+        //tabLayout.addTab(tabLayout.newTab().setText("Tab 3"));
+
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+
+
+        viewPager = (ViewPager) findViewById(R.id.viewPager);
+        viewPager.setAdapter(mSectionsPagerAdapter);
+        //viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        tabLayout.setupWithViewPager(viewPager);
+
+
+        tabLayout.setOnTabSelectedListener(
+                new TabLayout.ViewPagerOnTabSelectedListener(viewPager) {
+                    @Override
+                    public void onTabSelected(TabLayout.Tab tab) {
+                        super.onTabSelected(tab);
+                        if(tab.getPosition()!= 0){
+                            bottomCenterButton.setVisibility(View.INVISIBLE);
+                            subActionButtonCamera.setVisibility(View.INVISIBLE);
+                            subActionButtonPic.setVisibility(View.INVISIBLE);
+                            subActionButtonAudio.setVisibility(View.INVISIBLE);
+                            subActionButtonVideo.setVisibility(View.INVISIBLE);
+                            //subActionButtonText.setVisibility(View.INVISIBLE);
+                            subActionButtonGPS.setVisibility(View.INVISIBLE);
+                            subActionButtonSave.setVisibility(View.INVISIBLE);
+                        }
+                    }
+
+                    @Override
+                    public void onTabUnselected(TabLayout.Tab tab) {
+                        super.onTabSelected(tab);
+                        if(tab.getPosition() != 0){
+                            bottomCenterButton.setVisibility(View.VISIBLE);
+                            subActionButtonCamera.setVisibility(View.VISIBLE);
+                            subActionButtonPic.setVisibility(View.VISIBLE);
+                            subActionButtonAudio.setVisibility(View.VISIBLE);
+                            subActionButtonVideo.setVisibility(View.VISIBLE);
+                            //subActionButtonText.setVisibility(View.VISIBLE);
+                            subActionButtonGPS.setVisibility(View.VISIBLE);
+                            subActionButtonSave.setVisibility(View.VISIBLE);
+
+                        }
+                    }
+
+                    @Override
+                    public void onTabReselected(TabLayout.Tab tab) {
+                        super.onTabSelected(tab);
+
+                    }
+                });
+
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
+        drawerToggle = new ActionBarDrawerToggle(MainActivity.this, drawerLayout, R.string.hello_world, R.string.hello_world);
+        drawerLayout.setDrawerListener(drawerToggle);
+
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+    }
 
 
 
@@ -433,59 +505,61 @@ public class MainActivity extends FragmentActivity implements
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-        // When the given tab is selected, switch to the corresponding page in
-        // the ViewPager.
-        mViewPager.setCurrentItem(tab.getPosition());
-//        if(tab.getPosition()!= 0){
-//            Fragment frag = getSupportFragmentManager().findFragmentByTag("android:switcher:"
-//                    + R.id.pager + ":" + 0);
-//
-//            workflow = (WorkflowSectionFragment) frag;
-//            bottomCenterButton = workflow.getBottomCenterButton();
-//            bottomCenterButton.setVisibility(View.GONE);
-//            }
-        if(tab.getPosition()!= 0){
-            bottomCenterButton.setVisibility(View.INVISIBLE);
-            subActionButtonCamera.setVisibility(View.INVISIBLE);
-            subActionButtonPic.setVisibility(View.INVISIBLE);
-            subActionButtonAudio.setVisibility(View.INVISIBLE);
-            subActionButtonVideo.setVisibility(View.INVISIBLE);
-            //subActionButtonText.setVisibility(View.INVISIBLE);
-            subActionButtonGPS.setVisibility(View.INVISIBLE);
-            subActionButtonSave.setVisibility(View.INVISIBLE);
-        }
 
-    }
-
-    @Override
-    public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+//    //@Override
+//    public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+//        // When the given tab is selected, switch to the corresponding page in
+//        // the ViewPager.
+//        //TODO mViewPager
+//        viewPager.setCurrentItem(tab.getPosition());
+////        if(tab.getPosition()!= 0){
+////            Fragment frag = getSupportFragmentManager().findFragmentByTag("android:switcher:"
+////                    + R.id.pager + ":" + 0);
+////
+////            workflow = (WorkflowSectionFragment) frag;
+////            bottomCenterButton = workflow.getBottomCenterButton();
+////            bottomCenterButton.setVisibility(View.GONE);
+////            }
 //        if(tab.getPosition()!= 0){
-//            Fragment frag = getSupportFragmentManager().findFragmentByTag("android:switcher:"
-//                    + R.id.pager + ":" + 0);
-//
-//            workflow = (WorkflowSectionFragment) frag;
-//            bottomCenterButton = workflow.getBottomCenterButton();
-//            bottomCenterButton.setVisibility(View.VISIBLE);
+//            bottomCenterButton.setVisibility(View.INVISIBLE);
+//            subActionButtonCamera.setVisibility(View.INVISIBLE);
+//            subActionButtonPic.setVisibility(View.INVISIBLE);
+//            subActionButtonAudio.setVisibility(View.INVISIBLE);
+//            subActionButtonVideo.setVisibility(View.INVISIBLE);
+//            //subActionButtonText.setVisibility(View.INVISIBLE);
+//            subActionButtonGPS.setVisibility(View.INVISIBLE);
+//            subActionButtonSave.setVisibility(View.INVISIBLE);
 //        }
-        if(tab.getPosition() != 0){
-            bottomCenterButton.setVisibility(View.VISIBLE);
-            subActionButtonCamera.setVisibility(View.VISIBLE);
-            subActionButtonPic.setVisibility(View.VISIBLE);
-            subActionButtonAudio.setVisibility(View.VISIBLE);
-            subActionButtonVideo.setVisibility(View.VISIBLE);
-            //subActionButtonText.setVisibility(View.VISIBLE);
-            subActionButtonGPS.setVisibility(View.VISIBLE);
-            subActionButtonSave.setVisibility(View.VISIBLE);
+//
+//    }
 
-        }
+//    @Override
+//    public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+////        if(tab.getPosition()!= 0){
+////            Fragment frag = getSupportFragmentManager().findFragmentByTag("android:switcher:"
+////                    + R.id.pager + ":" + 0);
+////
+////            workflow = (WorkflowSectionFragment) frag;
+////            bottomCenterButton = workflow.getBottomCenterButton();
+////            bottomCenterButton.setVisibility(View.VISIBLE);
+////        }
+//        if(tab.getPosition() != 0){
+//            bottomCenterButton.setVisibility(View.VISIBLE);
+//            subActionButtonCamera.setVisibility(View.VISIBLE);
+//            subActionButtonPic.setVisibility(View.VISIBLE);
+//            subActionButtonAudio.setVisibility(View.VISIBLE);
+//            subActionButtonVideo.setVisibility(View.VISIBLE);
+//            //subActionButtonText.setVisibility(View.VISIBLE);
+//            subActionButtonGPS.setVisibility(View.VISIBLE);
+//            subActionButtonSave.setVisibility(View.VISIBLE);
+//
+//        }
+//
+//    }
 
-    }
-
-    @Override
-    public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-    }
+//    @Override
+//    public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+//    }
 
 
     private void openPreferredLocationInMap(){
@@ -558,12 +632,12 @@ public class MainActivity extends FragmentActivity implements
                     args.putInt(POIFragment.ARG_SECTION_NUMBER, position );
                     fragment.setArguments(args);
                     return fragment;
-                case 3:
-                    // The other sections of the app are dummy placeholders.
-                    fragment = new CollectionListFragment();
-                    args.putInt(POIFragment.ARG_SECTION_NUMBER, position );
-                    fragment.setArguments(args);
-                    return fragment;
+//                case 3:
+//                    // The other sections of the app are dummy placeholders.
+//                    fragment = new CollectionListFragment();
+//                    args.putInt(POIFragment.ARG_SECTION_NUMBER, position );
+//                    fragment.setArguments(args);
+//                    return fragment;
 
                 default:
                     // getItem is called to instantiate the fragment for the given page.
@@ -576,7 +650,7 @@ public class MainActivity extends FragmentActivity implements
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 4;
+            return 3;
         }
 
         @Override
@@ -584,13 +658,13 @@ public class MainActivity extends FragmentActivity implements
             Locale l = Locale.getDefault();
             switch (position) {
                 case 0:
-                    return getString(R.string.title_section1);
+                    return getString(R.string.title_section1).toUpperCase(l);
                 case 1:
-                    return getString(R.string.title_section2);
+                    return getString(R.string.title_section2).toUpperCase(l);
                 case 2:
                     return getString(R.string.title_section3).toUpperCase(l);
-                case 3:
-                    return "Collection";
+//                case 3:
+//                    return "Collection";
             }
             return null;
         }
@@ -661,7 +735,7 @@ public class MainActivity extends FragmentActivity implements
 
         // Replace whatever is in the fragment_container view with this fragment,
         // and add the transaction to the back stack so the user can navigate back
-          transaction.replace(R.id.pager, fragment);
+          transaction.replace(R.id.viewPager, fragment);
           transaction.addToBackStack(null);
           transaction.commit();
     }
@@ -680,12 +754,14 @@ public class MainActivity extends FragmentActivity implements
             Log.v(LOG_TAG, "gps accuracy: "+ accuracy);
             Log.v(LOG_TAG, "gps: "+latitude+" "+longitude+": "+ accuracy);
 
+            //TODO mViewPager
             //workflow = (LaunchpadSectionFragment) mSectionsPagerAdapter.getItem(0);
             Fragment frag = getSupportFragmentManager().findFragmentByTag("android:switcher:"
-                    + R.id.pager + ":" + mViewPager.getCurrentItem());
+                    + R.id.viewPager + ":" + viewPager.getCurrentItem());
 
+            //TODO mViewPager
             // based on the current position, cast the page to the correct fragment
-            if (mViewPager.getCurrentItem() == 0 && frag != null) {
+            if (viewPager.getCurrentItem() == 0 && frag != null) {
                 workflow = (WorkflowSectionFragment) frag;
                 lblLocation = workflow.getLblLocation();
 

@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:id="@+id/launchpad"
     tools:context=".MainActivity$LaunchpadSectionFragment"
-    android:background="@color/lightbg">
+    android:background="#ffffff">
 
     <ImageView
         android:id="@+id/btnLocationUpdates"
