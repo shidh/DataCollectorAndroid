@@ -3,7 +3,6 @@ package de.mpg.mpdl.www.datacollector.app.ItemList;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -22,26 +21,19 @@ import com.activeandroid.query.Select;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.melnykov.fab.FloatingActionButton;
-import com.squareup.okhttp.OkHttpClient;
 
-import java.io.BufferedReader;
-import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import de.mpg.mpdl.www.datacollector.app.Model.DataItem;
 import de.mpg.mpdl.www.datacollector.app.Model.MetaDataLocal;
 import de.mpg.mpdl.www.datacollector.app.R;
-import de.mpg.mpdl.www.datacollector.app.Retrofit.ImejiAPI;
 import de.mpg.mpdl.www.datacollector.app.Retrofit.MetaDataConverter;
 import de.mpg.mpdl.www.datacollector.app.Retrofit.RetrofitClient;
 import de.mpg.mpdl.www.datacollector.app.Workflow.UploadView.ReadyToUploadCollectionActivity;
 import de.mpg.mpdl.www.datacollector.app.utils.DeviceStatus;
 import retrofit.Callback;
-import retrofit.RestAdapter;
 import retrofit.RetrofitError;
-import retrofit.client.OkClient;
 import retrofit.client.Response;
 
 
@@ -107,8 +99,8 @@ public class ItemListFragment extends Fragment {
 
                 //adapter =  new CustomSwipeAdapter(getActivity(), dataListLocal);
                 //listView.setAdapter(adapter);
-                adapter.notifyDataSetChanged();
             }
+            adapter.notifyDataSetChanged();
 
             if(pDialog != null) {
                 pDialog.hide();
@@ -235,19 +227,6 @@ public class ItemListFragment extends Fragment {
                              Bundle savedInstanceState) {
         Log.v(LOG_TAG, "start onCreateView~~~");
 
-//        List<String> dataList = new ArrayList<String>(Arrays.asList(dummyData));
-        // Now that we have some dummy forecast data, create an ArrayAdapter.
-        // The ArrayAdapter will take data from a source (like our dummy forecast) and
-        // use it to populate the ListView it's attached to.
-
-//        mForecastAdapter = new ArrayAdapter<String>(
-//                getActivity(), // The current context (this activity)
-//                R.layout.list_item_cell, // The name of the layout.
-//                R.id.list_item_forecast_textview, // The ID of the textview to populate.
-//                //R.id.thumbnail,
-//                new ArrayList());
-
-
         dataList = new Select()
                 .from(DataItem.class)
                 .where("isLocal != ?", 1)
@@ -318,9 +297,6 @@ public class ItemListFragment extends Fragment {
     private void updateDataItem(){
         // Showing progress dialog before making http request
         RetrofitClient.getItems(callback, username, password);
-        //pDialog = new ProgressDialog(getActivity());
-        //pDialog.setMessage("Loading...");
-        //pDialog.show();
     }
 
     private void deleteDataItem(String itemId){
@@ -328,62 +304,6 @@ public class ItemListFragment extends Fragment {
         RetrofitClient.deleteItem(itemId, callbackDel, username, password);
     }
 
-
-
-
-
-
-    /*AsyncTask<String, Void, String[]>
-      String:   as the input， in our case is location
-      Void:     is the percentage of the background job， can be called onProgressUpdate() in Main UI
-      String[]: as the output result
-      *
-      */
-    public class FetchItemTask extends AsyncTask<String, Void, List<DataItem>> {
-
-        private final String LOG_TAG = FetchItemTask.class.getSimpleName();
-        private static final String REST_SERVER = DeviceStatus.BASE_URL;
-
-        @Override
-        protected List<DataItem> doInBackground(String... params) {
-            // These two need to be declared outside the try/catch
-            // so that they can be closed in the finally block.
-            HttpURLConnection urlConnection = null;
-            BufferedReader reader = null;
-
-            OkHttpClient okHttpClient = new OkHttpClient();
-            okHttpClient.setWriteTimeout(3000, TimeUnit.MILLISECONDS);
-            OkClient okClient = new OkClient(okHttpClient);
-
-            RestAdapter restAdapter = new RestAdapter.Builder()
-                    .setClient(okClient)
-                    .setEndpoint(REST_SERVER)
-                    .build();
-
-            ImejiAPI imejiAPI = restAdapter.create(ImejiAPI.class);
-
-            List<DataItem> items = new ArrayList<DataItem>();
-            items = imejiAPI.getItems();
-            List<String> ids = new ArrayList<String>();
-            for(DataItem item:items){
-                Log.v(LOG_TAG, item.getFilename());
-                Log.v(LOG_TAG, item.getFileUrl());
-                ids.add(item.getCollectionId());
-            }
-            return items;
-        }
-
-        @Override
-        protected void onPostExecute(List<DataItem> result) {
-            hidePDialog();
-            if (result != null) {
-                dataList = result;
-                adapter.notifyDataSetChanged();
-                // New data is back from the server.  Hooray!
-            }
-        }
-
-    }
 
     public void showToast(String message) {
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();

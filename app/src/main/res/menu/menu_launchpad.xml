@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".MainActivity">
     <item android:id="@+id/POI_list"
-        android:icon="@drawable/action_uploadlist"
+        android:icon="@drawable/action_uploadlist_white"
         android:title="@string/action_uploadList"
         app:showAsAction="always"
         >

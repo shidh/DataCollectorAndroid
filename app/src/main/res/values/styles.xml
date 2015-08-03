@@ -32,4 +32,11 @@
     <style name="LightBarAppCompat5" parent="MaterialDrawerTheme.Light.DarkToolbar.ActionBar"/>
     <style name="LightBarAppCompat6" parent="MaterialDrawerTheme.Light.DarkToolbar.ActionBar.TranslucentStatus"/>
 
+    <style name="StarRatingBar" parent="@android:style/Widget.RatingBar">
+        <item name="android:progressDrawable">@drawable/star_filled</item>
+        <item name="android:minHeight">45dp</item>
+        <item name="android:maxHeight">45dp</item>
+    </style>
+
+
 </resources>

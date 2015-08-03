@@ -238,6 +238,10 @@ public class WorkflowSectionFragment extends Fragment{
         imageView = (ImageView) rootView.findViewById(R.id.imageView);
         ratingView = (RatingBar) rootView.findViewById(R.id.ratingBar);
         ratingView.setIsIndicator(true);
+
+        //LayerDrawable stars = (LayerDrawable) ratingView.getProgressDrawable();
+        //stars.getDrawable(2).setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_ATOP);
+
         lblLocation = (TextView) rootView.findViewById(R.id.accuracy);
         btnStartLocationUpdates = (ImageView) rootView.findViewById(R.id.btnLocationUpdates);
 
@@ -247,8 +251,9 @@ public class WorkflowSectionFragment extends Fragment{
                     @Override
                     public void onClick(View view) {
                         //rootView.findViewById(R.id.save).setVisibility(View.VISIBLE);
-                        takePhoto();
                         meta.setType("image");
+                        takePhoto();
+
                     }
                 });
 
@@ -262,10 +267,8 @@ public class WorkflowSectionFragment extends Fragment{
                                 android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI);
                         gallery.setType("image/*");
                         gallery.setAction(Intent.ACTION_GET_CONTENT);
-                        //gallery.addFlags(
-                        //        Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-                        startActivityForResult(gallery, INTENT_PICK_PHOTO);
                         meta.setType("image");
+                        startActivityForResult(gallery, INTENT_PICK_PHOTO);
 
                     }
                 });
@@ -358,7 +361,7 @@ public class WorkflowSectionFragment extends Fragment{
                             Log.v(LOG_TAG + "when save", gson.toJson(dataItem));
 
                             //change the icon of the view
-                            poi_list.setIcon(getResources().getDrawable(R.drawable.action_uploadlist_green));
+                            poi_list.setIcon(getResources().getDrawable(R.drawable.action_uploadlist_red));
                             //imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_launcher));
 
                             reSetUpView();

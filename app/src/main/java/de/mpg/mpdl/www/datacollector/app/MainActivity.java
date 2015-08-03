@@ -133,49 +133,6 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
         initInstances();
 
-        // Set up the action bar.
-        //final ActionBar actionBar = getActionBar();
-        //final ActionBar actionBar = getSupportActionBar();
-        //assert actionBar != null;
-        //actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
-
-        // Specify that the Home/Up button should not be enabled, since there is no hierarchical
-        // parent.
-        //actionBar.setHomeButtonEnabled(false);
-
-        // Set up the ViewPager with the sections adapter.
-//        mViewPager = (ViewPager) findViewById(R.id.pager);
-//        mViewPager.setAdapter(mSectionsPagerAdapter);
-
-        // When swiping between different sections, select the corresponding
-        // tab. We can also use ActionBar.Tab#select() to do this if we have
-        // a reference to the Tab.
-//        mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-//            @Override
-//            public void onPageSelected(int position) {
-//                actionBar.setSelectedNavigationItem(position);
-//            }
-//        });
-
-        // For each of the sections in the app, add a tab to the action bar.
-//        for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
-//            // Create a tab with text corresponding to the page title defined by
-//            // the adapter. Also specify this Activity object, which implements
-//            // the TabListener interface, as the callback (listener) for when
-//            // this tab is selected.
-//            actionBar.addTab(
-//                    actionBar.newTab()
-//                            .setText(mSectionsPagerAdapter.getPageTitle(i))
-//                            .setTabListener(this));
-//        }
-
-
-
-
-
         // For Location
         // First we need to check availability of play services
         if (checkPlayServices()) {
@@ -185,23 +142,6 @@ public class MainActivity extends AppCompatActivity implements
             createLocationRequest();
         }
 
-        // Show location button click listener
-//        btnShowLocation.setOnClickListener(new View.OnClickListener() {
-//
-//            @Override
-//            public void onClick(View v) {
-//                displayLocation();
-//            }
-//        });
-
-        // Toggling the periodic location updates
-//        btnStartLocationUpdates.setOnClickListener(new View.OnClickListener() {
-//
-//            @Override
-//            public void onClick(View v) {
-//                togglePeriodicLocationUpdates();
-//            }
-//        });
         int redActionButtonSize = getResources().getDimensionPixelSize(R.dimen.red_action_button_size);
         int redActionButtonMargin = getResources().getDimensionPixelOffset(R.dimen.action_button_margin);
         int redActionButtonContentSize = getResources().getDimensionPixelSize(R.dimen.red_action_button_content_size);
@@ -379,8 +319,8 @@ public class MainActivity extends AppCompatActivity implements
         drawerToggle = new ActionBarDrawerToggle(MainActivity.this, drawerLayout, R.string.hello_world, R.string.hello_world);
         drawerLayout.setDrawerListener(drawerToggle);
 
-        getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //getSupportActionBar().setHomeButtonEnabled(true);
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
     }
 
