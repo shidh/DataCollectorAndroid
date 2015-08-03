@@ -257,8 +257,8 @@ public class POIFragment extends Fragment {
 
             //TODO
             //updateDataItem(String AlbumId);
+            //updatePoi("Allen");
             updatePoi(queryKeyword);
-            updatePoi("Allen");
 
             pDialog = new ProgressDialog(getActivity());
             pDialog.setMessage("Loading...");
@@ -316,8 +316,8 @@ public class POIFragment extends Fragment {
                 .target(new LatLng(latitude, longitude)).zoom(12).build();
         googleMap.animateCamera(CameraUpdateFactory
                 .newCameraPosition(cameraPosition));
+        //updatePoi("Allen");
         updatePoi(queryKeyword);
-        updatePoi("Allen");
 
         return rootView;
 
