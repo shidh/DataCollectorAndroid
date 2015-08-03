@@ -21,6 +21,7 @@ import com.activeandroid.query.Select;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.melnykov.fab.FloatingActionButton;
+import com.tuesda.walker.circlerefresh.CircleRefreshLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,8 +60,7 @@ public class ItemListFragment extends Fragment {
     private String password = DeviceStatus.password;
 
     private static final int INTENT_PICK_DATA = 1008;
-
-
+    CircleRefreshLayout jellyLayout;
     private static Gson gson = new GsonBuilder()
             .serializeNulls()
             .excludeFieldsWithoutExposeAnnotation()
@@ -101,6 +101,7 @@ public class ItemListFragment extends Fragment {
                 //listView.setAdapter(adapter);
             }
             adapter.notifyDataSetChanged();
+            jellyLayout.finishRefreshing();
 
             if(pDialog != null) {
                 pDialog.hide();
@@ -227,6 +228,7 @@ public class ItemListFragment extends Fragment {
                              Bundle savedInstanceState) {
         Log.v(LOG_TAG, "start onCreateView~~~");
 
+
         dataList = new Select()
                 .from(DataItem.class)
                 .where("isLocal != ?", 1)
@@ -246,6 +248,38 @@ public class ItemListFragment extends Fragment {
 
         FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
         fab.attachToListView(listView);
+
+
+//        final JellyRefreshLayout jellyLayout = (JellyRefreshLayout) rootView.findViewById(R.id.jelly_refresh);
+//        jellyLayout.setRefreshListener(new JellyRefreshLayout.JellyRefreshListener() {
+//            @Override
+//            public void onRefresh(final JellyRefreshLayout jellyRefreshLayout) {
+//
+//                updateDataItem();
+//                jellyRefreshLayout.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        jellyRefreshLayout.finishRefreshing();
+//                    }
+//                }, 3000);
+//            }
+//        });
+
+        jellyLayout = (CircleRefreshLayout) rootView.findViewById(R.id.jelly_refresh);
+        jellyLayout.setOnRefreshListener(
+                new CircleRefreshLayout.OnCircleRefreshListener() {
+                    @Override
+                    public void refreshing() {
+                        // do something when refresh starts
+                        updateDataItem();
+                    }
+
+                    @Override
+                    public void completeRefresh() {
+                        // do something when refresh complete
+                        //jellyLayout.finishRefreshing();
+                    }
+                });
 
         // set creator
         //listView.setMenuCreator(creator);

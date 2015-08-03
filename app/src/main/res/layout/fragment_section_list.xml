@@ -10,10 +10,24 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context=".MainActivity$ListSectionFragment">
 
-    <ListView xmlns:android="http://schemas.android.com/apk/res/android"
+
+
+    <com.tuesda.walker.circlerefresh.CircleRefreshLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        app:AniBackColor="@color/lightBlue"
+        app:AniForeColor="#ffffffff"
+        app:CircleSmaller="6"
+        android:id="@+id/jelly_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ListView xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/item_list"/>
+
+    </com.tuesda.walker.circlerefresh.CircleRefreshLayout>
+
+
 
     <com.melnykov.fab.FloatingActionButton
         android:id="@+id/fab"

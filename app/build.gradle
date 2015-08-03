@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "de.mpg.mpdl.www.datacollector.app"
-        minSdkVersion 15
+        minSdkVersion 19
         targetSdkVersion 21
         versionCode 1
         versionName "1.0"
@@ -53,6 +53,7 @@ dependencies {
     }
     compile project(':androidRecording')
     compile 'com.github.chrisbanes.photoview:library:1.2.4'
+    compile 'com.github.tuesda:CircleRefreshLayout:92a27db47d'
 
     //compile project(':SwipeMenuListView')
     //compile 'com.github.traex.rippleeffect:library:1.3'
