@@ -48,7 +48,7 @@ public class ItemListFragment extends Fragment {
 
     public static final String ARG_SECTION_NUMBER = "section_number";
     private ProgressDialog pDialog;
-    private List<DataItem> dataList = new ArrayList<DataItem>();
+    public List<DataItem> dataList = new ArrayList<DataItem>();
     //public CustomListAdapter adapter;
     public  CustomSwipeAdapter adapter;
     //SwipeMenuListView listView;
@@ -68,7 +68,7 @@ public class ItemListFragment extends Fragment {
 
     Callback<List<DataItem>> callback = new Callback<List<DataItem>>() {
         @Override
-        public void success(List<DataItem> dataList, Response response) {
+        public void success(List<DataItem> dataListFromServer, Response response) {
             //load all data from imeji
             //adapter =  new CustomListAdapter(getActivity(), dataList);
             List<DataItem> dataListLocal = new ArrayList<DataItem>();
@@ -76,7 +76,7 @@ public class ItemListFragment extends Fragment {
             ActiveAndroid.beginTransaction();
             try {
                 // here get the string of Metadata Json
-                for (DataItem item : dataList) {
+                for (DataItem item : dataListFromServer) {
                     if (item.getCollectionId().equals(collectionID)) {
                         //convertMetaData(item);
 
@@ -94,14 +94,16 @@ public class ItemListFragment extends Fragment {
                 ActiveAndroid.setTransactionSuccessful();
             } finally{
                 ActiveAndroid.endTransaction();
-                //load local data only
-                //adapter =  new CustomListAdapter(getActivity(), dataListLocal);
-
-                //adapter =  new CustomSwipeAdapter(getActivity(), dataListLocal);
-                //listView.setAdapter(adapter);
             }
-            adapter.notifyDataSetChanged();
+
             jellyLayout.finishRefreshing();
+
+            dataList = new Select()
+                    .from(DataItem.class)
+                    .where("isLocal != ?", 1)
+                    .execute();
+            adapter.notifyDataSetChanged();
+
 
             if(pDialog != null) {
                 pDialog.hide();
@@ -165,10 +167,10 @@ public class ItemListFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        updateDataItem();
-        pDialog = new ProgressDialog(getActivity());
-        pDialog.setMessage("Loading...");
-        pDialog.show();
+        //updateDataItem();
+        //pDialog = new ProgressDialog(getActivity());
+        //pDialog.setMessage("Loading...");
+        //pDialog.show();
         Log.v(LOG_TAG, "start onStart~~~");
 
 
@@ -249,21 +251,6 @@ public class ItemListFragment extends Fragment {
         FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
         fab.attachToListView(listView);
 
-
-//        final JellyRefreshLayout jellyLayout = (JellyRefreshLayout) rootView.findViewById(R.id.jelly_refresh);
-//        jellyLayout.setRefreshListener(new JellyRefreshLayout.JellyRefreshListener() {
-//            @Override
-//            public void onRefresh(final JellyRefreshLayout jellyRefreshLayout) {
-//
-//                updateDataItem();
-//                jellyRefreshLayout.postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        jellyRefreshLayout.finishRefreshing();
-//                    }
-//                }, 3000);
-//            }
-//        });
 
         jellyLayout = (CircleRefreshLayout) rootView.findViewById(R.id.jelly_refresh);
         jellyLayout.setOnRefreshListener(
