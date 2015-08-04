@@ -209,13 +209,6 @@ public class WorkflowSectionFragment extends Fragment{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Restore UI state from the savedInstanceState.
-        // This bundle has also been passed to onCreate.
-//        photoFilePath = savedInstanceState.getString("photoFilePath");
-//        boolean myBoolean = savedInstanceState.getBoolean("MyBoolean");
-//        double myDouble = savedInstanceState.getDouble("myDouble");
-//        int myInt = savedInstanceState.getInt("MyInt");
-//        String myString = savedInstanceState.getString("MyString");
         user = new User();
         user.setCompleteName("Allen");
         user.save();
