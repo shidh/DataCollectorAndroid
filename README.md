@@ -1,16 +1,19 @@
 DataCollectorAndroid
 =========================
 
-E-R Diagram
+System Architecture Overview
 -------------
 ![Alt text](https://cloud.githubusercontent.com/assets/1011537/9063371/47fefd82-3ac7-11e5-853a-5bbd22268d76.jpg
+"System Architecture Overview")
+
+E-R Diagram
+-------------
+![Alt text](https://cloud.githubusercontent.com/assets/1011537/9063385/5ada69aa-3ac7-11e5-901d-8cafede85bd1.jpg
 "E-R Diagram")
-
-
 
 ## Third Party Libraries
 
-   compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:design:22.2.1'
     compile 'com.squareup.retrofit:retrofit:1.9.0'
     compile 'com.squareup.okhttp:okhttp-urlconnection:2.0.0'
