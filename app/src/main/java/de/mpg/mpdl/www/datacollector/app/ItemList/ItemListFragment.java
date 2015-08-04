@@ -72,7 +72,6 @@ public class ItemListFragment extends Fragment {
             //load all data from imeji
             //adapter =  new CustomListAdapter(getActivity(), dataList);
             List<DataItem> dataListLocal = new ArrayList<DataItem>();
-
             ActiveAndroid.beginTransaction();
             try {
                 // here get the string of Metadata Json
@@ -95,17 +94,23 @@ public class ItemListFragment extends Fragment {
             } finally{
                 ActiveAndroid.endTransaction();
             }
+            dataList = dataListLocal;
+            //Method 1 doesn't work :(
+//            getActivity().runOnUiThread(new Runnable() {
+//                public void run() {
+//                    adapter.notifyDataSetChanged();
+//                }
+//            });
+
+            //Method 2 dirty but works
+            adapter =  new CustomSwipeAdapter(getActivity(), dataList);
+            listView.setAdapter(adapter);
+
 
             jellyLayout.finishRefreshing();
 
-            dataList = new Select()
-                    .from(DataItem.class)
-                    .where("isLocal != ?", 1)
-                    .execute();
-            adapter.notifyDataSetChanged();
 
-
-            if(pDialog != null) {
+            if (pDialog != null) {
                 pDialog.hide();
             }
             Log.v(LOG_TAG, "get list OK");
@@ -167,7 +172,7 @@ public class ItemListFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        //updateDataItem();
+        updateDataItem();
         //pDialog = new ProgressDialog(getActivity());
         //pDialog.setMessage("Loading...");
         //pDialog.show();
@@ -236,8 +241,8 @@ public class ItemListFragment extends Fragment {
                 .where("isLocal != ?", 1)
                 .execute();
 
-        //adapter =  new CustomListAdapter(getActivity(), dataList);
         adapter =  new CustomSwipeAdapter(getActivity(), dataList);
+        //adapter =  new CustomListAdapter(getActivity(), dataList);
 
 
         //TODO try to change the cell view
@@ -273,8 +278,6 @@ public class ItemListFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //WorkflowSectionFragment newFragment = new WorkflowSectionFragment();
-                //newFragment.show(getActivity().getSupportFragmentManager(), "showWorkflow");
                 Intent intent = new Intent(getActivity(), ReadyToUploadCollectionActivity.class);
                 startActivity(intent);
 
