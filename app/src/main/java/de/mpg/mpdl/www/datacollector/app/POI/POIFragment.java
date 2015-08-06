@@ -14,7 +14,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -56,7 +55,7 @@ public class POIFragment extends Fragment {
     public static final String ARG_SECTION_NUMBER = "section_number";
     private final String LOG_TAG = POIFragment.class.getSimpleName();
     private ProgressDialog pDialog;
-
+    private View rootView;
     private String username = DeviceStatus.username;
     private String password = DeviceStatus.password;
     String queryKeyword = DeviceStatus.queryKeyword;
@@ -173,6 +172,7 @@ public class POIFragment extends Fragment {
             }
 
             //showToast("got new POI members");
+            DeviceStatus.showSnackbar(rootView, "New POI is updated");
 
         }
 
@@ -181,7 +181,8 @@ public class POIFragment extends Fragment {
             Log.v(LOG_TAG, String.valueOf(error.getResponse().getStatus()));
             Log.v(LOG_TAG, String.valueOf(error));
             Log.v(LOG_TAG, "get poi members failed");
-            showToast("update poi members failed");
+            DeviceStatus.showSnackbar(rootView, "update poi members failed");
+
         }
     };
 
@@ -275,7 +276,7 @@ public class POIFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_section_poi, container, false);
+        rootView = inflater.inflate(R.layout.fragment_section_poi, container, false);
         mMapView = (MapView) rootView.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
 
@@ -351,14 +352,6 @@ public class POIFragment extends Fragment {
     private void getDataItemFroPoi(String poiId){
         RetrofitClient.getPoiMembers(poiId, callbackMember, username, password);
     }
-
-
-
-
-    public void showToast(String message) {
-        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
-    }
-
 
     private void moveCamera(GoogleMap map, LatLng target){
         LatLng SYDNEY = new LatLng(-33.88,151.21);

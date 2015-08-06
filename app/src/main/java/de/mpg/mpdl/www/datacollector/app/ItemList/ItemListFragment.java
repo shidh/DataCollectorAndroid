@@ -114,6 +114,7 @@ public class ItemListFragment extends Fragment {
                 pDialog.hide();
             }
             Log.v(LOG_TAG, "get list OK");
+            DeviceStatus.showSnackbar(rootView, "Data List is updated");
 
 
         }
@@ -122,7 +123,8 @@ public class ItemListFragment extends Fragment {
         public void failure(RetrofitError error) {
             Log.v(LOG_TAG, "get list failed");
             Log.v(LOG_TAG, error.toString());
-            showToast("update data failed");
+            DeviceStatus.showSnackbar(rootView, "update data failed");
+
         }
     };
 
@@ -327,12 +329,4 @@ public class ItemListFragment extends Fragment {
         // Showing progress dialog before making http request
         RetrofitClient.deleteItem(itemId, callbackDel, username, password);
     }
-
-
-    public void showToast(String message) {
-        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
-    }
-
-
-
 }

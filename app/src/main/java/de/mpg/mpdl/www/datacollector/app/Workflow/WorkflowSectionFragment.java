@@ -41,7 +41,6 @@ import com.squareup.picasso.Picasso;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -89,7 +88,7 @@ public class WorkflowSectionFragment extends Fragment{
 
     private TypedFile typedFile;
     private String json;
-    private List<DataItem> itemList = new ArrayList<DataItem>();
+    private List<DataItem> itemList;
     private DataItem item = new DataItem();
     private MetaDataLocal meta = new MetaDataLocal();
     private Location currentLocation;
@@ -229,17 +228,17 @@ public class WorkflowSectionFragment extends Fragment{
 
         rootView = inflater.inflate(R.layout.fragment_section_workflow, container, false);
         imageView = (ImageView) rootView.findViewById(R.id.imageView);
+
+        lblLocation = (TextView) rootView.findViewById(R.id.accuracy);
+        btnStartLocationUpdates = (ImageView) rootView.findViewById(R.id.btnLocationUpdates);
+
         ratingView = (RatingBar) rootView.findViewById(R.id.ratingBar);
-        ratingView.setIsIndicator(true);
-        Log.v(LOG_TAG, ratingView.getNumStars() + "");
-        ratingView.setNumStars(5);
-        Log.v(LOG_TAG, ratingView.getNumStars() + "");
+        //ratingView.setIsIndicator(true);
+        //ratingView.setRating((float) 1);
 
         //LayerDrawable stars = (LayerDrawable) ratingView.getProgressDrawable();
         //stars.getDrawable(2).setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_ATOP);
 
-        lblLocation = (TextView) rootView.findViewById(R.id.accuracy);
-        btnStartLocationUpdates = (ImageView) rootView.findViewById(R.id.btnLocationUpdates);
 
 
         ((MainActivity)getActivity()).subActionButtonCamera.setOnClickListener(
@@ -310,60 +309,64 @@ public class WorkflowSectionFragment extends Fragment{
                     @Override
                     public void onClick(View view) {
                         if (meta != null && item != null) {
-                            if (currentLocation != null) {
-                                //showToast("GPS is off");
-                            }
+                            if (item.getFilename() != null) {
+                                if (currentLocation != null) {
+                                    //showToast("GPS is off");
+                                }
 
-                            if(currentLocation !=null) {
-                                meta.setAccuracy(currentLocation.getAccuracy());
-                                meta.setLatitude(currentLocation.getLatitude());
-                                meta.setLongitude(currentLocation.getLongitude());
+                                if (currentLocation != null) {
+                                    meta.setAccuracy(currentLocation.getAccuracy());
+                                    meta.setLatitude(currentLocation.getLatitude());
+                                    meta.setLongitude(currentLocation.getLongitude());
 //                                meta.setAddress(getAddressByCoordinates(currentLocation.getLatitude(),
 //                                        currentLocation.getLongitude()));
+                                }
+                                //remove the tags fragment
+                                //AskMetadataFragment newFragment = new AskMetadataFragment();
+                                //newFragment.show(getActivity().getSupportFragmentManager(), "askMetadata");
+
+                                item.setFilename(fileName);
+                                meta.setTags(null);
+                                //meta.setTitle(meta.getTags().get(0)+"@"+meta.getAddress());
+                                if (meta.getAddress() == null) {
+                                    meta.setAddress("unknown address");
+                                }
+
+                                meta.setTitle(item.getFilename() + "@" + meta.getAddress());
+
+                                meta.setCreator(user.getCompleteName());
+
+                                //add a dataItem to the list on the top of view
+                                item.setCollectionId(collectionID);
+                                item.setLocalPath(filePath);
+                                item.setMetaDataLocal(meta);
+                                item.setLocal(true);
+                                item.setCreatedBy(user);
+
+                                meta.save();
+                                item.save();
+
+                                itemList.add(item);
+
+                                DataItem dataItem = new Select()
+                                        .from(DataItem.class)
+                                        .where("isLocal = ?", true)
+                                        .executeSingle();
+                                meta.save();
+
+                                Log.v(LOG_TAG + "when save", gson.toJson(dataItem));
+
+                                //change the icon of the view
+                                poi_list.setIcon(getResources().getDrawable(R.drawable.action_uploadlist_red));
+                                //imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_launcher));
+
+                                reSetUpView();
+                                //reSetUpAudioView();
+
+                            }else{
+                                DeviceStatus.showSnackbar(rootView, "Please press sensor button start to work");
                             }
-                            //remove the tags fragment
-                            //AskMetadataFragment newFragment = new AskMetadataFragment();
-                            //newFragment.show(getActivity().getSupportFragmentManager(), "askMetadata");
-
-                            item.setFilename(fileName);
-                            meta.setTags(null);
-                            //meta.setTitle(meta.getTags().get(0)+"@"+meta.getAddress());
-                            if(meta.getAddress() == null) {
-                                meta.setAddress("unknown address");
-                            }
-
-                            meta.setTitle(item.getFilename()+"@"+meta.getAddress());
-
-                            meta.setCreator(user.getCompleteName());
-
-                            //add a dataItem to the list on the top of view
-                            item.setCollectionId(collectionID);
-                            item.setLocalPath(filePath);
-                            item.setMetaDataLocal(meta);
-                            item.setLocal(true);
-                            item.setCreatedBy(user);
-
-                            meta.save();
-                            item.save();
-
-                            itemList.add(item);
-
-                            DataItem dataItem = new Select()
-                                    .from(DataItem.class)
-                                    .where("isLocal = ?", true)
-                                    .executeSingle();
-                            meta.save();
-
-                            Log.v(LOG_TAG + "when save", gson.toJson(dataItem));
-
-                            //change the icon of the view
-                            poi_list.setIcon(getResources().getDrawable(R.drawable.action_uploadlist_red));
-                            //imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_launcher));
-
-                            reSetUpView();
-                            //reSetUpAudioView();
-
-                        } else {
+                        }else {
                             showToast("Please press + button start to work");
                         }
                     }
@@ -819,7 +822,7 @@ public class WorkflowSectionFragment extends Fragment{
         }
         readyToPlay = false;
         filePath = StorageUtils.getFileName(true);
-        showToast(filePath);
+        //showToast(filePath);
         fileName = filePath.split("\\/")[filePath.split("\\/").length-1];
         //showToast(fileName);
 
