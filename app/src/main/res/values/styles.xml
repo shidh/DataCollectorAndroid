@@ -7,6 +7,7 @@
         <!-- Customize your theme here.
         <item name="colorPrimary">#2196F3</item>
         -->
+        <item name="ratingBarStyle">?android:attr/ratingBarStyleIndicator</item>
         <item name="colorPrimary">#2196F3</item>
         <item name="colorPrimaryDark">#1565C0</item>
         <item name="colorAccent">#E91E63</item>
@@ -33,9 +34,18 @@
     <style name="LightBarAppCompat6" parent="MaterialDrawerTheme.Light.DarkToolbar.ActionBar.TranslucentStatus"/>
 
     <style name="StarRatingBar" parent="@android:style/Widget.RatingBar">
-        <item name="android:progressDrawable">@drawable/star_filled</item>
-        <item name="android:minHeight">45dp</item>
-        <item name="android:maxHeight">45dp</item>
+        <item name="android:progressDrawable">@drawable/btn_star_holo_light</item>
+        <item name="android:indeterminateDrawable">@drawable/btn_star_holo_light</item>
+        <item name="android:minHeight">65dp</item>
+        <item name="android:maxHeight">65dp</item>
+    </style>
+
+    <style name="Holo.Light.RatingBar.Indicator" parent="@android:style/Widget.RatingBar">
+        <item name="android:progressDrawable">@drawable/ratingbar_holo_light</item>
+        <item name="android:indeterminateDrawable">@drawable/ratingbar_holo_light</item>
+        <item name="android:thumb">@null</item>
+        <item name="android:minHeight">65dp</item>
+        <item name="android:maxHeight">65dp</item>
     </style>
 
 

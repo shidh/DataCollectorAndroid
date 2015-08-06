@@ -19,7 +19,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"/>
+        android:layout_toRightOf="@+id/btnLocationUpdates"
+        android:layout_above="@+id/frameLayout"
+        android:layout_toLeftOf="@+id/accuracy"
+        android:numStars="5"
+        android:minHeight="45dp"
+        android:maxHeight="45dp"
+        android:isIndicator="true"/>
 
     <TextView
         android:id="@+id/accuracy"
@@ -27,6 +33,7 @@
         android:layout_height="wrap_content"
         android:textColor="@color/black"
         android:text="@string/accuracy"
+        android:layout_marginLeft="5dp"
         android:maxLines="3"
         android:singleLine="false"
         android:layout_alignParentRight="true"/>
@@ -35,7 +42,8 @@
         android:background="#8cf7f3ff"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/ratingBar">
+        android:layout_below="@id/btnLocationUpdates"
+        android:id="@+id/frameLayout">
 
         <com.skd.androidrecording.visualizer.VisualizerView
             android:id="@+id/visualizerView"

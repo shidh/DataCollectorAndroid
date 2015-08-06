@@ -231,6 +231,9 @@ public class WorkflowSectionFragment extends Fragment{
         imageView = (ImageView) rootView.findViewById(R.id.imageView);
         ratingView = (RatingBar) rootView.findViewById(R.id.ratingBar);
         ratingView.setIsIndicator(true);
+        Log.v(LOG_TAG, ratingView.getNumStars() + "");
+        ratingView.setNumStars(5);
+        Log.v(LOG_TAG, ratingView.getNumStars() + "");
 
         //LayerDrawable stars = (LayerDrawable) ratingView.getProgressDrawable();
         //stars.getDrawable(2).setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_ATOP);
