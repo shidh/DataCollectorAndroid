@@ -132,7 +132,7 @@ public class POIFragment extends Fragment {
 
                  Picasso.with(getActivity())
                         .load(item.getThumbnailUrl())
-                        .resize(50,50)
+                        .resize(80,80)
                         .centerCrop()
                         .into(new Target(){
                     @Override
