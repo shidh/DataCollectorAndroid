@@ -52,13 +52,15 @@ public class DeviceStatus {
     }
 
     public static void showSnackbar(View rootLayout, String message) {
-        Snackbar.make(rootLayout, message, Snackbar.LENGTH_SHORT)
-                .setAction("Undo", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
+        if(rootLayout != null){
+            Snackbar.make(rootLayout, message, Snackbar.LENGTH_SHORT)
+                    .setAction("Undo", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
 
-                    }
-                }).show();
+                        }
+                    }).show();
+        }
     }
 
 

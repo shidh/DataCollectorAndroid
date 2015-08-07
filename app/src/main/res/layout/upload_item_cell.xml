@@ -5,12 +5,28 @@
     android:background="#ffd8d8d8"
     android:padding="1dip" >
 
-    <ImageView
+
+
+    <FrameLayout
+        android:background="#8cf7f3ff"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:layout_gravity="center"
-        android:id="@+id/upload_item_cell_thumbnail" />
+        android:id="@+id/frameLayout">
+
+        <com.skd.androidrecording.visualizer.VisualizerView
+            android:id="@+id/visualizerView"
+            android:layout_width="match_parent"
+            android:layout_height="250dp">
+        </com.skd.androidrecording.visualizer.VisualizerView>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/upload_item_cell_thumbnail"
+            android:gravity="center"
+            android:layout_gravity="center" />
+
+    </FrameLayout>
 
 
     <TextView
@@ -24,7 +40,6 @@
         android:textColor="#FFF"
         android:text="Title"
         android:typeface="sans"
-        android:textSize="16dip"
-       />
+        android:textSize="16dip"/>
 
 </FrameLayout>

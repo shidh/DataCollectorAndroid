@@ -8,10 +8,11 @@ android {
         applicationId "de.mpg.mpdl.www.datacollector.app"
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 1
-        versionName "1.0"
+        versionCode 4
+        versionName "0.1"
         multiDexEnabled true
     }
+
     buildTypes {
         release {
             minifyEnabled false

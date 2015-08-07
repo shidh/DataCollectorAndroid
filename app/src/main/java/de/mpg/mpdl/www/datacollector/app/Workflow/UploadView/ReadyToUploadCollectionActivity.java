@@ -12,7 +12,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.activeandroid.query.Delete;
 import com.activeandroid.query.Select;
@@ -54,6 +53,7 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
     private DataItem dataItem;
     public GridImageAdapter adapter;
     ListView listView;
+    private View rootView;
     private MenuItem upload;
     private String collectionID = DeviceStatus.collectionID;
     private String username = DeviceStatus.username;
@@ -81,7 +81,7 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
         public void success(ItemImeji dataItem, Response response) {
             //adapter =  new CustomListAdapter(getActivity(), dataList);
             //listView.setAdapter(adapter);
-            showToast("Upload data Successfully");
+            DeviceStatus.showSnackbar(rootView, "Upload data Successfully");
             Log.v(LOG_TAG, dataItem.getId() + ":" + dataItem.getFilename());
             itemIds.add(dataItem.getId());
 
@@ -121,7 +121,7 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
 
         @Override
         public void failure(RetrofitError error) {
-            showToast("Upload data Failed");
+            DeviceStatus.showSnackbar(rootView, "Upload data Failed");
             if (error == null || error.getResponse() == null) {
                 OttoSingleton.getInstance().post(new UploadEvent(null));
             } else {
@@ -141,7 +141,7 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
 
         @Override
         public void success(POI poi, Response response) {
-            showToast("Upload POI success!");
+            DeviceStatus.showSnackbar(rootView, "Upload POI success!");
             Log.v(LOG_TAG, poi.getId());
 
             TypedString typedString = new TypedString(gson.toJson(itemIds));
@@ -154,7 +154,7 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
         @Override
         public void failure(RetrofitError error) {
 
-            showToast("Upload POI Failed");
+            DeviceStatus.showSnackbar(rootView, "Upload POI Failed");
             Log.v(LOG_TAG, String.valueOf(error.getResponse().getStatus()));
             Log.v(LOG_TAG, String.valueOf(error));
 
@@ -193,6 +193,7 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
         Log.e(LOG_TAG, "start onCreate~~~");
         //setContentView(R.layout.fragment_section_list);
         setContentView(R.layout.activity_upload_gridview);
+        rootView = getWindow().getDecorView().findViewById(android.R.id.content);
 
 //        if (savedInstanceState == null) {
 //            getFragmentManager().beginTransaction()
@@ -208,7 +209,7 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
 
 
         if (dataList == null) {
-            DeviceStatus.showToast(this, "Go back to get some data");
+            DeviceStatus.showSnackbar(rootView, "Go back to get some data");
         }
 
         adapter = new GridImageAdapter(this, dataList);
@@ -222,7 +223,7 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 DataItem item = dataList.get((int) id);
-                showToast(item.getFilename()+"\n" +"Long press to delete.");
+                DeviceStatus.showSnackbar(rootView, item.getFilename() + "\n" + "Long press to delete.");
 
                 if(item.getMetaDataLocal() != null) {
                     if(item.getMetaDataLocal().getType().equals("audio")){
@@ -252,7 +253,7 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
                             processButton.setIndeterminateProgressMode(true); // turn on indeterminate progress
                             processButton.setProgress(50); // set progress > 0 & < 100 to display indeterminate progress
                         }else{
-                            showToast("Nothing to upload :)");
+                            DeviceStatus.showSnackbar(rootView, "Nothing to upload :)");
                         }
                     }
                 });
@@ -410,10 +411,5 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
                 e.printStackTrace();
             }
         }
-
-        public void showToast(String message) {
-            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-        }
-
 
 }

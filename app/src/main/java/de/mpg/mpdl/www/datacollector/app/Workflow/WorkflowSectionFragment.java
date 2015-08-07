@@ -41,6 +41,7 @@ import com.squareup.picasso.Picasso;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -88,7 +89,7 @@ public class WorkflowSectionFragment extends Fragment{
 
     private TypedFile typedFile;
     private String json;
-    private List<DataItem> itemList;
+    private List<DataItem> itemList = new ArrayList<DataItem>();
     private DataItem item = new DataItem();
     private MetaDataLocal meta = new MetaDataLocal();
     private Location currentLocation;
@@ -127,6 +128,8 @@ public class WorkflowSectionFragment extends Fragment{
 
     private AudioPlaybackManager playbackManager;
 
+
+
     private PlaybackHandler playbackHandler = new PlaybackHandler() {
         @Override
         public void onPreparePlayback() {
@@ -138,6 +141,13 @@ public class WorkflowSectionFragment extends Fragment{
         }
     };
 
+    public PlaybackHandler getPlaybackHandler() {
+        return playbackHandler;
+    }
+
+    public void setPlaybackHandler(PlaybackHandler playbackHandler) {
+        this.playbackHandler = playbackHandler;
+    }
 
     // The container Activity must implement this interface so the frag can deliver messages
     public interface OnLocationUpdatedListener {
@@ -297,7 +307,10 @@ public class WorkflowSectionFragment extends Fragment{
 //                        startActivityForResult(gallery, INTENT_PICK_AUDIO);
                         imageView.setVisibility(View.INVISIBLE);
                         //playBtn.setVisibility(View.VISIBLE);
+                        visualizerView.setVisibility(View.VISIBLE);
                         record();
+
+
                         meta.setType("audio");
 
                     }
@@ -309,10 +322,7 @@ public class WorkflowSectionFragment extends Fragment{
                     @Override
                     public void onClick(View view) {
                         if (meta != null && item != null) {
-                            if (item.getFilename() != null) {
-                                if (currentLocation != null) {
-                                    //showToast("GPS is off");
-                                }
+                            if (fileName != null) {
 
                                 if (currentLocation != null) {
                                     meta.setAccuracy(currentLocation.getAccuracy());
@@ -358,16 +368,17 @@ public class WorkflowSectionFragment extends Fragment{
 
                                 //change the icon of the view
                                 poi_list.setIcon(getResources().getDrawable(R.drawable.action_uploadlist_red));
-                                //imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_launcher));
+                                //imageView.setImageDrawable(getResources().getDrawable(R.drawable.btn_plus));
 
                                 reSetUpView();
-                                //reSetUpAudioView();
-
+                                if(playbackManager != null) {
+                                    reSetUpAudioView();
+                                }
                             }else{
-                                DeviceStatus.showSnackbar(rootView, "Please press sensor button start to work");
+                                DeviceStatus.showSnackbar(rootView, "Please press sensor button to start work");
                             }
                         }else {
-                            showToast("Please press + button start to work");
+                            showToast("Please press + button to start work");
                         }
                     }
                 });
@@ -420,6 +431,17 @@ public class WorkflowSectionFragment extends Fragment{
         Log.d(LOG_TAG, "onResume");
         //bottomCenterButton.setVisibility(View.VISIBLE);
 
+        playbackHandler = new PlaybackHandler() {
+            @Override
+            public void onPreparePlayback() {
+//            ((MainActivity)getActivity()).runOnUiThread(new Runnable() {
+//                public void run() {
+//                playbackManager.showMediaController();
+//                }
+//            });
+            }
+        };
+
     }
 
 //    @Override
@@ -447,8 +469,12 @@ public class WorkflowSectionFragment extends Fragment{
         OttoSingleton.getInstance().unregister(this);
         Log.d(LOG_TAG, "onPasue");
         //bottomCenterButton.setVisibility(View.INVISIBLE);
-        if(playbackManager !=null) {
-            playbackManager.pause();
+//        if(playbackManager !=null) {
+//            playbackManager.pause();
+//        }
+
+        if(playbackHandler != null) {
+            playbackHandler = null;
         }
     }
 
@@ -479,7 +505,7 @@ public class WorkflowSectionFragment extends Fragment{
                 .from(DataItem.class)
                 .where("isLocal = ?", true)
                 .execute().size() >0) {
-            poi_list.setIcon(getResources().getDrawable(R.drawable.action_uploadlist_blue));
+            poi_list.setIcon(getResources().getDrawable(R.drawable.action_uploadlist_red));
         }
 
     }
@@ -542,6 +568,8 @@ public class WorkflowSectionFragment extends Fragment{
         } else if (requestCode == INTENT_PICK_PHOTO){
             if (resultCode == getActivity().RESULT_OK) {
                 Uri imageUri = data.getData();
+                Log.v(LOG_TAG, imageUri.toString());
+
                 Picasso.with(getActivity())
                         .load(imageUri)
                         .resize(imageView.getWidth(), imageView.getHeight())
@@ -549,6 +577,7 @@ public class WorkflowSectionFragment extends Fragment{
                 filePath = getRealPathFromURI(imageUri);
                 // example /storage/emulated/0/DCIM/Camera/IMG_20150408_170256.jpg
                 fileName = filePath.split("\\/")[filePath.split("\\/").length-1];
+                Log.v(LOG_TAG, fileName);
 
             } else if (resultCode == getActivity().RESULT_CANCELED) {
                 // User cancelled the photo picking
@@ -635,8 +664,8 @@ public class WorkflowSectionFragment extends Fragment{
         Log.v(LOG_TAG+"when save", gson.toJson(dataItem));
 
         //change the icon of the view
-        poi_list.setIcon(getResources().getDrawable(R.drawable.action_uploadlist_blue));
-        //imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_launcher));
+        poi_list.setIcon(getResources().getDrawable(R.drawable.action_uploadlist_red));
+        //imageView.setImageDrawable(getResources().getDrawable(R.drawable.btn_plus));
 
         reSetUpView();
     }
@@ -763,7 +792,9 @@ public class WorkflowSectionFragment extends Fragment{
     }
 
     private void reSetUpView(){
-        imageView.setVisibility(View.INVISIBLE);
+        if(imageView != null) {
+            imageView.setVisibility(View.INVISIBLE);
+        }
         //rootView.findViewById(R.id.save).setVisibility(View.INVISIBLE);
         item = new DataItem();
         meta = new MetaDataLocal();
@@ -772,8 +803,15 @@ public class WorkflowSectionFragment extends Fragment{
     private void reSetUpAudioView(){
         visualizerView.setVisibility(View.INVISIBLE);
         playbackManager.hideMediaController();
+
         item = new DataItem();
         meta = new MetaDataLocal();
+        //TODO
+        //playbackManager.dispose();
+//        playerManager.releasePlayer();
+//        releaseVisualizer();
+//        controller = null;
+        playbackHandler = null;
     }
 
     private void setupVisualizer() {
@@ -862,6 +900,7 @@ public class WorkflowSectionFragment extends Fragment{
             playbackManager.setupPlayback(filePath);
         }
     }
+
 //    private void play() {
 //        Intent i = new Intent(AudioRecordingActivity.this, AudioPlaybackActivity.class);
 //        i.putExtra(VideoPlaybackActivity.FileNameArg, audioFileName);

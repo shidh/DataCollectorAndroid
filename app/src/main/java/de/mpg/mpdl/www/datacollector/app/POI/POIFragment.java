@@ -167,12 +167,7 @@ public class POIFragment extends Fragment {
                     //marker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE));
 
                 }
-
-
             }
-
-            //showToast("got new POI members");
-            DeviceStatus.showSnackbar(rootView, "New POI is updated");
 
         }
 
@@ -182,7 +177,6 @@ public class POIFragment extends Fragment {
             Log.v(LOG_TAG, String.valueOf(error));
             Log.v(LOG_TAG, "get poi members failed");
             DeviceStatus.showSnackbar(rootView, "update poi members failed");
-
         }
     };
 
