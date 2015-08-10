@@ -19,9 +19,11 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -51,30 +53,33 @@ import retrofit.client.Response;
 /**
  * A dummy fragment representing a section of the app, but that simply displays dummy text.
  */
-public class POIFragment extends Fragment {
+public class POIFragment extends Fragment implements OnMapReadyCallback {
     public static final String ARG_SECTION_NUMBER = "section_number";
     private final String LOG_TAG = POIFragment.class.getSimpleName();
     private ProgressDialog pDialog;
     private View rootView;
     private String username = DeviceStatus.username;
     private String password = DeviceStatus.password;
-    String queryKeyword = DeviceStatus.queryKeyword;
-    MapView mMapView;
+    private String queryKeyword = DeviceStatus.queryKeyword;
+
+    private Location currentLocation;
+    private MapView mMapView;
     private GoogleMap googleMap;
+    private CameraPosition cameraPosition;
+
+    private Marker mLastSelectedMarker;
+
 
     private static Gson gson = new GsonBuilder()
             .serializeNulls()
             .excludeFieldsWithoutExposeAnnotation()
             .create();
 
-    private Location currentLocation;
     private double latitude = 48.147899;
     private double longitude = 11.57648;
     private String title = "";
-    CameraPosition cameraPosition;
 
     Callback<List<POI>> callbackAlbum = new Callback<List<POI>>() {
-
         @Override
         public void success(List<POI> pois, Response response) {
             Log.v(LOG_TAG, "get poi OK");
@@ -102,9 +107,7 @@ public class POIFragment extends Fragment {
     Callback<List<DataItem>> callbackMember = new Callback<List<DataItem>>() {
         @Override
         public void success(List<DataItem> dataList, Response response) {
-            //adapter =  new CustomListAdapter(getActivity(), dataList);
             Log.v(LOG_TAG, "get poi members OK");
-            Log.v(LOG_TAG, gson.toJson(dataList));
             hidePDialog();
 
             // here get the string of Metadata Json
@@ -115,8 +118,6 @@ public class POIFragment extends Fragment {
                             metaDataToMetaDataLocal(item.getMetadata());
 
                     item.setMetaDataLocal(metaDataLocal);
-                    //metaDataLocal.save();
-                    //item.save();
 
                     //TODO
                     //1: zoom in and show data markers
@@ -129,11 +130,11 @@ public class POIFragment extends Fragment {
 
 
 
-                 Picasso.with(getActivity())
-                        .load(item.getThumbnailUrl())
-                        .resize(80,80)
-                        .centerCrop()
-                        .into(new Target(){
+                    Picasso.with(getActivity())
+                           .load(item.getThumbnailUrl())
+                           .resize(80,80)
+                           .centerCrop()
+                           .into(new Target(){
                     @Override
                     public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                         // create marker
@@ -142,6 +143,7 @@ public class POIFragment extends Fragment {
                         Log.v(LOG_TAG, title);
                         marker.icon(BitmapDescriptorFactory.fromBitmap(bitmap));
                         //mainLayout.setBackground(new BitmapDrawable(getActivity().getResources(), bitmap));
+
                         googleMap.addMarker(marker);
 
                     }
@@ -157,6 +159,9 @@ public class POIFragment extends Fragment {
                                 .defaultMarker(BitmapDescriptorFactory.HUE_ROSE));
                         googleMap.addMarker(marker);
 
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                                new LatLng(latitude, longitude), 16));
+
                     }
 
                     @Override
@@ -168,6 +173,8 @@ public class POIFragment extends Fragment {
 
                 }
             }
+
+
 
         }
 
@@ -198,7 +205,6 @@ public class POIFragment extends Fragment {
         //updateDataItem(String AlbumId);
         //updatePoi(queryKeyword);
         Log.v(LOG_TAG, "start onCreate~~~");
-
     }
 
     @Override
@@ -213,8 +219,7 @@ public class POIFragment extends Fragment {
     public void onResume(){
         super.onResume();
         Log.v(LOG_TAG, "start onResume~~~");
-
-
+        updatePoi(queryKeyword);
     }
     @Override
     public void onPause(){
@@ -251,7 +256,6 @@ public class POIFragment extends Fragment {
         if (id == R.id.action_refresh) {
 
             //TODO
-            //updateDataItem(String AlbumId);
             //updatePoi("Allen");
             updatePoi(queryKeyword);
 
@@ -284,7 +288,11 @@ public class POIFragment extends Fragment {
         googleMap = mMapView.getMap();
         googleMap.getUiSettings().setZoomControlsEnabled(true);
         googleMap.getUiSettings().setMyLocationButtonEnabled(true);
+        googleMap.setMyLocationEnabled(true);
+        googleMap.getUiSettings().setAllGesturesEnabled(true);
+        googleMap.getUiSettings().setCompassEnabled(true);
 
+        googleMap.getUiSettings().setMapToolbarEnabled(true);
         //googleMap.setBuildingsEnabled(true);
 
         if(currentLocation != null){
@@ -293,26 +301,12 @@ public class POIFragment extends Fragment {
             longitude = currentLocation.getLongitude();
         }
 
-        // create marker
-        //MarkerOptions marker = new MarkerOptions().position(
-        //        new LatLng(latitude, longitude)).title("This is a POI");
-
-        // Changing marker icon
-        //marker.icon(BitmapDescriptorFactory
-        //        .defaultMarker(BitmapDescriptorFactory.HUE_ROSE));
-
-        //marker.draggable();
-        //googleMap.setOnMarkerClickListener();
-
-        // adding marker
-        //googleMap.addMarker(marker);
-
         cameraPosition = new CameraPosition.Builder()
                 .target(new LatLng(latitude, longitude)).zoom(12).build();
         googleMap.animateCamera(CameraUpdateFactory
                 .newCameraPosition(cameraPosition));
         //updatePoi("Allen");
-        updatePoi(queryKeyword);
+        //googleMap.setOnMarkerClickListener(OnMarkerClickListener);
 
         return rootView;
 
@@ -328,8 +322,6 @@ public class POIFragment extends Fragment {
 
         googleMap.moveCamera(CameraUpdateFactory
                 .newCameraPosition(cameraPosition));
-        //getAddressByCoordinates(event.location.getLatitude(), event.location.getLongitude());
-
     }
 
 
@@ -337,15 +329,15 @@ public class POIFragment extends Fragment {
     private void updatePoi(String query){
         RetrofitClient.getPOIsByQuery(query, callbackAlbum, username, password);
     }
-    private void getPoiById(String poiId){
-        RetrofitClient.getPOIById(poiId, callbackAlbum, username, password, new StringConverter());
-    }
-
-
 
     private void getDataItemFroPoi(String poiId){
         RetrofitClient.getPoiMembers(poiId, callbackMember, username, password);
     }
+
+    private void getPoiById(String poiId){
+        RetrofitClient.getPOIById(poiId, callbackAlbum, username, password, new StringConverter());
+    }
+
 
     private void moveCamera(GoogleMap map, LatLng target){
         LatLng SYDNEY = new LatLng(-33.88,151.21);
@@ -371,6 +363,19 @@ public class POIFragment extends Fragment {
                 .tilt(30)                   // Sets the tilt of the camera to 30 degrees
                 .build();                   // Creates a CameraPosition from the builder
         map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+    }
+
+    @Override
+    public void onMapReady(GoogleMap map) {
+//        map.moveCamera(CameraUpdateFactory.newLatLngZoom(
+//                new LatLng(41.889, -87.622), 16));
+//
+//        // You can customize the marker image using images bundled with
+//        // your app, or dynamically generated bitmaps.
+//        map.addMarker(new MarkerOptions()
+//                .icon(BitmapDescriptorFactory.fromResource(R.drawable.house_flag))
+//                .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
+//                .position(new LatLng(41.889, -87.622)));
     }
 
 

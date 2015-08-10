@@ -2,6 +2,7 @@ package de.mpg.mpdl.www.datacollector.app.Workflow.UploadView;
 
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -81,7 +82,6 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
         public void success(ItemImeji dataItem, Response response) {
             //adapter =  new CustomListAdapter(getActivity(), dataList);
             //listView.setAdapter(adapter);
-            DeviceStatus.showSnackbar(rootView, "Upload data Successfully");
             Log.v(LOG_TAG, dataItem.getId() + ":" + dataItem.getFilename());
             itemIds.add(dataItem.getId());
 
@@ -110,13 +110,16 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
                     .where("isLocal = ?", true)
                     .execute().size()<1){
                 //upload a POI as Album on Imeji
-                RetrofitClient.createPOI(createNewPOI(), callbackPoi, username, password);
 
                 //TODO produce a message event to third-party fragment to display the POI on map
                 OttoSingleton.getInstance().post(
                         new UploadEvent(response.getStatus()));
+
+                RetrofitClient.createPOI(createNewPOI(), callbackPoi, username, password);
             }
-            processButton.setProgress(100); // set progress to 100 or -1 to indicate complete or error state
+            //processButton.setProgress(100); // set progress to 100 or -1 to indicate complete or error state
+
+
         }
 
         @Override
@@ -141,33 +144,20 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
 
         @Override
         public void success(POI poi, Response response) {
-            DeviceStatus.showSnackbar(rootView, "Upload POI success!");
-            Log.v(LOG_TAG, poi.getId());
-
+            //DeviceStatus.showSnackbar(rootView, "Upload POI success!");
             TypedString typedString = new TypedString(gson.toJson(itemIds));
 
-            Log.v("json typedString : ", typedString.toString());
+            //Log.v("json typedString : ", typedString.toString());
             RetrofitClient.linkItems(poi.getId(), typedString, username, password, callbackLink);
+
 
         }
 
         @Override
         public void failure(RetrofitError error) {
-
             DeviceStatus.showSnackbar(rootView, "Upload POI Failed");
             Log.v(LOG_TAG, String.valueOf(error.getResponse().getStatus()));
             Log.v(LOG_TAG, String.valueOf(error));
-
-//            RestError restError = (RestError) error.getBodyAs(RestError.class);
-//
-//            if (restError != null)
-//                failure(error);
-//            else
-//            {
-//                //failure(new RetrofitError(error.getMessage()));
-//            }
-//            Log.v(LOG_TAG, String.valueOf(restError.getCode()));
-//            Log.v(LOG_TAG,restError.getStrMessage());
 
         }
     };
@@ -176,7 +166,16 @@ public class ReadyToUploadCollectionActivity extends FragmentActivity {
     Callback<List<String>> callbackLink = new Callback<List<String>>() {
         @Override
         public void success(List<String> strings, Response response) {
-            Log.v(LOG_TAG, gson.toJson(strings));
+            //Log.v(LOG_TAG, gson.toJson(strings));
+            //DeviceStatus.showSnackbar(rootView, "Upload data Successfully");
+            processButton.setProgress(100); // set progress to 100 or -1 to indicate complete or error state
+
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                public void run() {
+                    finish();
+                }
+            }, 1000);
         }
 
         @Override

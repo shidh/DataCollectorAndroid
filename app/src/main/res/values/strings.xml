@@ -41,7 +41,7 @@
 
     <string name="Upload">Upload</string>
     <string name="Error">Error</string>
-    <string name="Complete">Complete</string>
+    <string name="Complete">Upload Successful</string>
     <string name="Success">Success</string>
     <string name="Loading">Loading..</string>
 

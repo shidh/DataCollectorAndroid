@@ -29,7 +29,8 @@ public class CustomSwipeAdapter extends BaseSwipeAdapter {
 
     public CustomSwipeAdapter(Activity activity, List<DataItem> dataItems) {
         this.activity = activity;
-        this.dataItems = dataItems;    }
+        this.dataItems = dataItems;
+    }
 
     //return the `SwipeLayout` resource id in your listview | gridview item layout.
     @Override

@@ -374,6 +374,10 @@ public class MainActivity extends AppCompatActivity implements
                 startLocationUpdates();
             }
         }
+        if (isFirstTime()) {
+            // What you do when the Application is Opened First time Goes here
+            DeviceStatus.showSnackbar(rootView, "first blood");
+        }
         Log.e(LOG_TAG, "start onResume~~~");
     }
 
@@ -799,5 +803,23 @@ public class MainActivity extends AppCompatActivity implements
     protected void stopLocationUpdates() {
         LocationServices.FusedLocationApi.removeLocationUpdates(
                 mGoogleApiClient, this);
+    }
+
+
+    /***
+     * Checks that application runs first time and write flag at SharedPreferences
+     * @return true if 1st time
+     */
+    private boolean isFirstTime()
+    {
+        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+        boolean ranBefore = preferences.getBoolean("RanBefore", false);
+        if (!ranBefore) {
+            // first time
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putBoolean("RanBefore", true);
+            editor.apply();
+        }
+        return !ranBefore;
     }
 }
