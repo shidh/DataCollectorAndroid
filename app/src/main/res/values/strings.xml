@@ -27,6 +27,7 @@
     <string name="ok">OK</string>
     <string name="cancel">Back</string>
 
+    <string name="map_not_ready">Map is not ready yet</string>
     <string name="accuracy">Ac 0\nLa 0\nLo 0</string>
     <string name="lbl_you_are_at">YOU ARE AT</string>
     <string name="btn_get_location">GET MY LOCATION</string>

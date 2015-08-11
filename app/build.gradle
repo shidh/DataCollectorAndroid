@@ -8,8 +8,8 @@ android {
         applicationId "de.mpg.mpdl.www.datacollector.app"
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 6
-        versionName "0.1"
+        versionCode 7
+        versionName "0.2"
         multiDexEnabled true
     }
 
@@ -55,6 +55,7 @@ dependencies {
     compile project(':androidRecording')
     compile 'com.github.chrisbanes.photoview:library:1.2.4'
     compile 'com.github.tuesda:CircleRefreshLayout:92a27db47d'
+    compile 'com.github.amlcurran.showcaseview:library:5.0.0'
 
     //compile project(':SwipeMenuListView')
     //compile 'com.github.traex.rippleeffect:library:1.3'
