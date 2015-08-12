@@ -19,6 +19,7 @@ import java.net.URL;
 
 import de.mpg.mpdl.www.datacollector.app.Event.GetAddressEvent;
 import de.mpg.mpdl.www.datacollector.app.Event.OttoSingleton;
+import de.mpg.mpdl.www.datacollector.app.utils.DeviceStatus;
 
 /**
  * Created by allen on 26/04/15.
@@ -33,7 +34,6 @@ import de.mpg.mpdl.www.datacollector.app.Event.OttoSingleton;
 public class GetAddressByCoordinatesTask extends AsyncTask<Double, Void, String> {
 
     private final String LOG_TAG = GetAddressByCoordinatesTask.class.getSimpleName();
-    private final String GOOGLE_API = "https://maps.googleapis.com/maps/api/geocode/json?";
 
     @Override
     protected String doInBackground(Double... params) {
@@ -53,13 +53,14 @@ public class GetAddressByCoordinatesTask extends AsyncTask<Double, Void, String>
 
         try {
             // Construct the URL for the GoogleMap query
-            final String GOOGLEAPI_BASE_URL = GOOGLE_API;
+            final String GOOGLEAPI_BASE_URL = DeviceStatus.GOOGLE_API;
 
             final String QUERY_PARAM = "latlng";
 
             //latlng=48.147899,11.57648
             Uri builtUri = Uri.parse(GOOGLEAPI_BASE_URL).buildUpon()
-                    .appendQueryParameter(QUERY_PARAM, params[0]+","+params[1])
+                    .appendQueryParameter(QUERY_PARAM, params[0] + "," + params[1])
+                    .appendQueryParameter("key",DeviceStatus.GOOGLE_API_KEY)
                     .build();
 
             URL url = new URL(builtUri.toString());
@@ -92,7 +93,6 @@ public class GetAddressByCoordinatesTask extends AsyncTask<Double, Void, String>
                 return null;
             }
             googleAddressJsonStr = buffer.toString();
-            //Log.v(LOG_TAG, "Json String is: "+googleAddressJsonStr);
 
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error ", e);
@@ -127,7 +127,7 @@ public class GetAddressByCoordinatesTask extends AsyncTask<Double, Void, String>
     protected void onPostExecute(String result) {
         if (result != null) {
             //mForecastAdapter.clear();
-            Log.v(LOG_TAG, result);
+            //Log.v(LOG_TAG, result);
 
             GetAddressEvent event = new GetAddressEvent(result);
             OttoSingleton.getInstance().post(event);

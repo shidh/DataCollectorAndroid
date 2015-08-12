@@ -76,22 +76,9 @@ public class CollectionListFragment extends Fragment{
 
             ActiveAndroid.beginTransaction();
             try {
-                // here get the string of Metadata Json
-//                for (ImejiCollection collection : dataList) {
-//                    collectionLocal.setTitle(collection.getTitle());
-//                    collectionLocal.setContributors(collection.getContributors());
-//                    collectionLocal.setDescription(collection.getDescription());
-//                    collectionLocal.setProfile(collection.getProfile());
-//                    Log.v(LOG_TAG, "collection title: " + String.valueOf(collectionLocal.getTitle()));
-//
-//                    //TODO ActiveAndroid problem
-//                    getCollectionItems(collection.getId());
-//                    collectionListLocal.add(collectionLocal);
-//
-//                }
                 collectionListLocal.clear();
                 for(CollectionLocal collection : dataList){
-                    Log.v(LOG_TAG, "collection title: " + String.valueOf(collection.getTitle()));
+//                    Log.v(LOG_TAG, "collection title: " + String.valueOf(collection.getTitle()));
 
 //                    if (collection.id.equals(collectionID)) {
 //                        getCollectionItems(collection.id);
@@ -113,7 +100,7 @@ public class CollectionListFragment extends Fragment{
 
             }
 
-            Log.v(LOG_TAG, "get list OK");
+//            Log.v(LOG_TAG, "get list OK");
             if(pDialog != null) {
                 pDialog.hide();
             }
@@ -121,9 +108,9 @@ public class CollectionListFragment extends Fragment{
 
         @Override
         public void failure(RetrofitError error) {
-            Log.v(LOG_TAG, "get list failed");
+//            Log.v(LOG_TAG, "get list failed");
             Log.v(LOG_TAG, error.toString());
-            showToast("update data failed");
+//            showToast("update data failed");
         }
     };
 
@@ -144,11 +131,7 @@ public class CollectionListFragment extends Fragment{
                                 metaDataToMetaDataLocal(item.getMetadata());
                         //metaDataLocal.save();
                         item.setMetaDataLocal(metaDataLocal);
-                        Log.v(LOG_TAG, "item filename : " + String.valueOf(item.getFilename()));
-                        Log.v(LOG_TAG, "item title: " + String.valueOf(item.getMetaDataLocal().getTitle()));
                         dataListLocal.add(item);
-                        //item.save();
-                        //load local data only
                     }else{
                         dataListLocal.add(item);
                     }
@@ -165,14 +148,14 @@ public class CollectionListFragment extends Fragment{
 
             }
 
-            Log.v(LOG_TAG, "get list OK");
+//            Log.v(LOG_TAG, "get list OK");
 
         }
 
         @Override
         public void failure(RetrofitError error) {
-            Log.v(LOG_TAG, "get list failed");
-            Log.v(LOG_TAG, error.toString());
+//            Log.v(LOG_TAG, "get list failed");
+//            Log.v(LOG_TAG, error.toString());
             showToast("update data failed");
         }
     };
@@ -187,7 +170,6 @@ public class CollectionListFragment extends Fragment{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        Log.v(LOG_TAG, "start onCreate~~~");
     }
 
     @Override
@@ -197,7 +179,7 @@ public class CollectionListFragment extends Fragment{
         collectionListLocal = new Select()
                 .from(CollectionLocal.class)
                 .execute();
-        Log.v(LOG_TAG,"size: "+ collectionListLocal.size()+"");
+//        Log.v(LOG_TAG,"size: "+ collectionListLocal.size()+"");
 
 
         //TODO try to change the cell view
@@ -216,11 +198,6 @@ public class CollectionListFragment extends Fragment{
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 CollectionLocal dataCollection = (CollectionLocal) adapter.getItem(position);
-                //Context context = getActivity();
-//                int duration = Toast.LENGTH_SHORT;
-//                Toast toast = Toast.makeText(getActivity(), dataCollection.getTitle(), duration);
-//                toast.show();
-
                 Intent showItemsIntent = new Intent(getActivity(), CollectionDetailActivity.class);
                 showItemsIntent.putExtra(Intent.EXTRA_TEXT, dataCollection.id);
 
@@ -237,21 +214,16 @@ public class CollectionListFragment extends Fragment{
     public void onStart() {
         super.onStart();
         updateCollection();
-        Log.v(LOG_TAG, "start onStart~~~");
-
-
     }
 
     @Override
     public void onResume(){
         super.onResume();
-        Log.v(LOG_TAG, "start onResume~~~");
     }
 
     @Override
     public void onPause(){
         super.onPause();
-        Log.v(LOG_TAG, "start onPause~~~");
     }
 
 
@@ -259,7 +231,6 @@ public class CollectionListFragment extends Fragment{
     public void onDestroy() {
         super.onDestroy();
         hidePDialog();
-        Log.v(LOG_TAG, "start onDestroy~~~");
     }
 
     private void hidePDialog() {
@@ -272,20 +243,11 @@ public class CollectionListFragment extends Fragment{
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        Log.v(LOG_TAG, "onAttach");
-
-//        try {
-//            mListener = (OnFragmentInteractionListener) activity;
-//        } catch (ClassCastException e) {
-//            throw new ClassCastException(activity.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        //mListener = null;
     }
 
 
@@ -311,29 +273,6 @@ public class CollectionListFragment extends Fragment{
     }
 
 
-
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        //if (null != mListener) {
-            // Notify the active callbacks interface (the activity, if the
-            // fragment is attached to one) that an item has been selected.
-//            mListener.onFragmentInteraction(DummyContent.ITEMS.get(position).id);
-
-
-            DataItem dataItem = (DataItem) adapter.getItem(position);
-            //Context context = getActivity();
-            int duration = Toast.LENGTH_SHORT;
-            Toast toast = Toast.makeText(getActivity(), dataItem.getCollectionId(), duration);
-            toast.show();
-
-//            Intent showDetailIntent = new Intent(getActivity(), DetailActivity.class);
-//            showDetailIntent.putExtra(Intent.EXTRA_TEXT, dataItem.getFilename());
-//
-//            showDetailIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-//            startActivity(showDetailIntent);
-
-        //}
-    }
-    
 
     private void updateCollection(){
         pDialog = new ProgressDialog(getActivity());

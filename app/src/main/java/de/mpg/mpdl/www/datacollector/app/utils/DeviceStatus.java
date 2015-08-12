@@ -20,6 +20,8 @@ public class DeviceStatus {
     public static final String queryKeyword = "DataCollector";
     public static final String BASE_URL = "https://dev-faces.mpdl.mpg.de/rest/";
     public static final String BASE_StatementUri = "http://dev-faces.mpdl.mpg.de/imeji/statement/";
+    public static final String GOOGLE_API = "https://maps.googleapis.com/maps/api/geocode/json?";
+    public static final String GOOGLE_API_KEY = "AIzaSyCnSRHQQCyDrFYuUHD9XbRTc8Jf6A4KMFE";
     // Checks whether the device currently has a network connection
     public static boolean isNetworkEnabled(Activity activity) {
         ConnectivityManager connMgr = (ConnectivityManager)  activity.getSystemService(Context.CONNECTIVITY_SERVICE);

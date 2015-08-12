@@ -59,7 +59,6 @@ import de.mpg.mpdl.www.datacollector.app.R;
 import de.mpg.mpdl.www.datacollector.app.Workflow.UploadView.ReadyToUploadCollectionActivity;
 import de.mpg.mpdl.www.datacollector.app.utils.DeviceStatus;
 import de.mpg.mpdl.www.datacollector.app.utils.StorageUtils;
-import retrofit.mime.TypedFile;
 
 /**
  * Created by allen on 08/04/15.
@@ -74,21 +73,18 @@ public class WorkflowSectionFragment extends Fragment{
     // Attributes for starting the intent and used by onActivityResult
     private static final int INTENT_ENABLE_GPS = 1000;
     private static final int INTENT_ENABLE_NET = 1001;
-    private static final int INTENT_RECOVER_FROM_AUTH_ERROR = 1003;
     private static final int INTENT_RECOVER_FROM_PLAY_SERVICES_ERROR = 1004;
     private static final int INTENT_TAKE_PHOTO = 1005;
     private static final int INTENT_PICK_PHOTO = 1006;
-    private static final int INTENT_PICK_VIDEO = 1007;
     private static final int INTENT_PICK_AUDIO = 1007;
     private static final int INTENT_PICK_DATA = 1008;
+    private static final int INTENT_PICK_VIDEO = 1009;
 
 
     private final String LOG_TAG = WorkflowSectionFragment.class.getSimpleName();
     public static final String ARG_SECTION_NUMBER = "section_number";
     private String collectionID = DeviceStatus.collectionID;
 
-    private TypedFile typedFile;
-    private String json;
     private List<DataItem> itemList = new ArrayList<DataItem>();
     private DataItem item = new DataItem();
     private MetaDataLocal meta = new MetaDataLocal();
@@ -201,7 +197,6 @@ public class WorkflowSectionFragment extends Fragment{
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        Log.d(LOG_TAG, "onAttach");
 
         // This makes sure that the container activity has implemented
         // the callback interface. If not, it throws an exception.
@@ -222,15 +217,12 @@ public class WorkflowSectionFragment extends Fragment{
         user.setCompleteName("Allen");
         user.save();
         setHasOptionsMenu(true);
-        Log.d(LOG_TAG, "onCreate");
     }
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.d(LOG_TAG, "onCreateView");
-
         if (savedInstanceState != null) {
             // Restore last state for checked position.
             filePath = savedInstanceState.getString("photoFilePath");
@@ -245,11 +237,6 @@ public class WorkflowSectionFragment extends Fragment{
         ratingView = (RatingBar) rootView.findViewById(R.id.ratingBar);
         //ratingView.setIsIndicator(true);
         //ratingView.setRating((float) 1);
-
-        //LayerDrawable stars = (LayerDrawable) ratingView.getProgressDrawable();
-        //stars.getDrawable(2).setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_ATOP);
-
-
 
         ((MainActivity)getActivity()).subActionButtonCamera.setOnClickListener(
                 new View.OnClickListener() {
@@ -287,30 +274,20 @@ public class WorkflowSectionFragment extends Fragment{
                                 MediaStore.Video.Media.INTERNAL_CONTENT_URI);
                         gallery.setType("video/*");
                         gallery.setAction(Intent.ACTION_GET_CONTENT);
-                        //gallery.addFlags(
-                        //        Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+                        meta.setType("video");
+
                         startActivityForResult(gallery, INTENT_PICK_VIDEO);
                     }
                 });
 
-        //TODO place a sound wave thumbnail for audio
         ((MainActivity)getActivity()).subActionButtonAudio.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-//                        Intent gallery = new Intent(Intent.ACTION_PICK,
-//                                MediaStore.Audio.Media.INTERNAL_CONTENT_URI);
-//                        gallery.setType("audio/*");
-//                        gallery.setAction(Intent.ACTION_GET_CONTENT);
-//                        //gallery.addFlags(
-//                        //        Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-//                        startActivityForResult(gallery, INTENT_PICK_AUDIO);
                         imageView.setVisibility(View.INVISIBLE);
                         //playBtn.setVisibility(View.VISIBLE);
                         visualizerView.setVisibility(View.VISIBLE);
                         record();
-
-
                         meta.setType("audio");
 
                     }
@@ -328,12 +305,7 @@ public class WorkflowSectionFragment extends Fragment{
                                     meta.setAccuracy(currentLocation.getAccuracy());
                                     meta.setLatitude(currentLocation.getLatitude());
                                     meta.setLongitude(currentLocation.getLongitude());
-//                                meta.setAddress(getAddressByCoordinates(currentLocation.getLatitude(),
-//                                        currentLocation.getLongitude()));
                                 }
-                                //remove the tags fragment
-                                //AskMetadataFragment newFragment = new AskMetadataFragment();
-                                //newFragment.show(getActivity().getSupportFragmentManager(), "askMetadata");
 
                                 item.setFilename(fileName);
                                 meta.setTags(null);
@@ -364,8 +336,6 @@ public class WorkflowSectionFragment extends Fragment{
                                         .executeSingle();
                                 meta.save();
 
-                                Log.v(LOG_TAG + "when save", gson.toJson(dataItem));
-
                                 //change the icon of the view
                                 poi_list.setIcon(getResources().getDrawable(R.drawable.action_uploadlist_red));
                                 //imageView.setImageDrawable(getResources().getDrawable(R.drawable.btn_plus));
@@ -393,14 +363,6 @@ public class WorkflowSectionFragment extends Fragment{
                     }
                 });
 
-//        playBtn = (Button) rootView.findViewById(R.id.playBtn);
-//        playBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                //play();
-//            }
-//        });
-//        playBtn.setVisibility(View.INVISIBLE);
         visualizerView = (VisualizerView) rootView.findViewById(R.id.visualizerView);
         setupVisualizer();
         visualizerView.setOnTouchListener(new View.OnTouchListener() {
@@ -419,7 +381,7 @@ public class WorkflowSectionFragment extends Fragment{
     @Override
     public void onStart() {
         super.onStart();
-        Log.d(LOG_TAG, "onStart");
+//        Log.d(LOG_TAG, "onStart");
     }
 
 
@@ -428,7 +390,7 @@ public class WorkflowSectionFragment extends Fragment{
     public void onResume() {
         super.onResume();
         OttoSingleton.getInstance().register(this);
-        Log.d(LOG_TAG, "onResume");
+//        Log.d(LOG_TAG, "onResume");
         //bottomCenterButton.setVisibility(View.VISIBLE);
 
         playbackHandler = new PlaybackHandler() {
@@ -444,35 +406,10 @@ public class WorkflowSectionFragment extends Fragment{
 
     }
 
-//    @Override
-//    public void onSaveInstanceState(Bundle savedInstanceState) {
-//        super.onSaveInstanceState(savedInstanceState);
-//        Log.v(LOG_TAG, "onSaveInstanceState");
-//        // Save UI state changes to the savedInstanceState.
-//        // This bundle will be passed to onCreate if the process is
-//        // killed and restarted.
-//        savedInstanceState.putString("photoFilePath", photoFilePath);
-//    }
-//
-//    @Override
-//    public void onActivityCreated(Bundle savedInstanceState) {
-//        super.onActivityCreated(savedInstanceState);
-//        if (savedInstanceState != null) {
-//            // Restore last state for checked position.
-//            photoFilePath = savedInstanceState.getString("photoFilePath");
-//        }
-//    }
-
     @Override
     public void onPause() {
         super.onPause();
         OttoSingleton.getInstance().unregister(this);
-        Log.d(LOG_TAG, "onPasue");
-        //bottomCenterButton.setVisibility(View.INVISIBLE);
-//        if(playbackManager !=null) {
-//            playbackManager.pause();
-//        }
-
         if(playbackHandler != null) {
             playbackHandler = null;
         }
@@ -481,10 +418,6 @@ public class WorkflowSectionFragment extends Fragment{
     @Override
     public void onStop() {
         super.onStop();
-//        if(playbackManager !=null) {
-//            playbackManager.dispose();
-//            playbackHandler = null;
-//        }
      }
 
     @Override
@@ -492,7 +425,6 @@ public class WorkflowSectionFragment extends Fragment{
         super.onDestroy();
         recordStop();
         releaseVisualizer();
-        Log.v(LOG_TAG, "start onDestroy~~~");
     }
 
     // for the POI_list icon in menu_launchpad
@@ -541,8 +473,7 @@ public class WorkflowSectionFragment extends Fragment{
                         Toast.LENGTH_SHORT).show();
             }
         } else if (requestCode == INTENT_TAKE_PHOTO) {
-            Log.v(LOG_TAG+ " resultCode", String.valueOf(resultCode));
-            if (resultCode == getActivity().RESULT_OK) {
+            if (resultCode == Activity.RESULT_OK) {
                 //Bitmap photo = (Bitmap) data.getExtras().get("output");
                 //imageView.setImageBitmap(photo);
 
@@ -560,13 +491,13 @@ public class WorkflowSectionFragment extends Fragment{
 
                 }
 
-            } else if (resultCode == getActivity().RESULT_CANCELED) {
+            } else if (resultCode == Activity.RESULT_CANCELED) {
                 // User cancelled the photo capture
             } else{
                 takePhoto();
             }
         } else if (requestCode == INTENT_PICK_PHOTO){
-            if (resultCode == getActivity().RESULT_OK) {
+            if (resultCode == Activity.RESULT_OK) {
                 Uri imageUri = data.getData();
                 Log.v(LOG_TAG, imageUri.toString());
 
@@ -574,30 +505,36 @@ public class WorkflowSectionFragment extends Fragment{
                         .load(imageUri)
                         .resize(imageView.getWidth(), imageView.getHeight())
                         .into(imageView);
+                imageView.setVisibility(View.VISIBLE);
+
                 filePath = getRealPathFromURI(imageUri);
                 // example /storage/emulated/0/DCIM/Camera/IMG_20150408_170256.jpg
                 fileName = filePath.split("\\/")[filePath.split("\\/").length-1];
-                Log.v(LOG_TAG, fileName);
+                Log.v(LOG_TAG, filePath);
 
-            } else if (resultCode == getActivity().RESULT_CANCELED) {
+            } else if (resultCode == Activity.RESULT_CANCELED) {
                 // User cancelled the photo picking
             }
-        } else if (requestCode == INTENT_PICK_VIDEO){
-            if (resultCode == getActivity().RESULT_OK) {
+        }
+        else if (requestCode == INTENT_PICK_VIDEO){
+            if (resultCode == Activity.RESULT_OK) {
                 Uri videoUri = data.getData();
                 Picasso.with(getActivity())
                         .load(videoUri)
                         .resize(imageView.getWidth(), imageView.getHeight())
                         .into(imageView);
+                imageView.setVisibility(View.VISIBLE);
+
                 filePath = getRealPathFromURI(videoUri);
                 // example /storage/emulated/0/DCIM/Camera/IMG_20150408_170256.jpg
                 fileName = filePath.split("\\/")[filePath.split("\\/").length-1];
 
-            } else if (resultCode == getActivity().RESULT_CANCELED) {
+            } else if (resultCode == Activity.RESULT_CANCELED) {
                 // User cancelled the photo picking
             }
-        } else if (requestCode == INTENT_PICK_AUDIO){
-            if (resultCode == getActivity().RESULT_OK) {
+        }
+        else if (requestCode == INTENT_PICK_AUDIO){
+            if (resultCode == Activity.RESULT_OK) {
                 Uri audioUri = data.getData();
                 Picasso.with(getActivity())
                         .load(audioUri)
@@ -607,11 +544,11 @@ public class WorkflowSectionFragment extends Fragment{
                 // example /storage/emulated/0/DCIM/Camera/IMG_20150408_170256.jpg
                 fileName = filePath.split("\\/")[filePath.split("\\/").length-1];
 
-            } else if (resultCode == getActivity().RESULT_CANCELED) {
+            } else if (resultCode == Activity.RESULT_CANCELED) {
                 // User cancelled the photo picking
             }
         }else if (requestCode == INTENT_PICK_DATA){
-            if (resultCode == getActivity().RESULT_OK) {
+            if (resultCode == Activity.RESULT_OK) {
                 Uri fileUri = data.getData();
                 Picasso.with(getActivity())
                         .load(fileUri)
@@ -621,7 +558,7 @@ public class WorkflowSectionFragment extends Fragment{
                 // example /storage/emulated/0/DCIM/Camera/IMG_20150408_170256.jpg
                 fileName = filePath.split("\\/")[filePath.split("\\/").length-1];
 
-            } else if (resultCode == getActivity().RESULT_CANCELED) {
+            } else if (resultCode == Activity.RESULT_CANCELED) {
                 // User cancelled the photo picking
             }
         }
@@ -633,7 +570,6 @@ public class WorkflowSectionFragment extends Fragment{
     public void onGetMetadataFromUser(MetadataIsReadyEvent event) {
 
         meta.setTags(event.tags);
-        Log.v(LOG_TAG, event.tags.get(0));
         meta.setTitle(meta.getTags().get(0)+"@"+meta.getAddress());
 
         meta.setCreator(user.getCompleteName());
@@ -649,8 +585,6 @@ public class WorkflowSectionFragment extends Fragment{
         meta.save();
         item.save();
 
-        Log.v(LOG_TAG, item.getMetaDataLocal().getTags().get(0));
-        Log.v(LOG_TAG, item.getFilename());
         itemList.add(item);
 
         DataItem dataItem = new Select()
@@ -660,8 +594,6 @@ public class WorkflowSectionFragment extends Fragment{
         if(dataItem.getMetaDataLocal().getTags() == null){
             meta.save();
         }
-
-        Log.v(LOG_TAG+"when save", gson.toJson(dataItem));
 
         //change the icon of the view
         poi_list.setIcon(getResources().getDrawable(R.drawable.action_uploadlist_red));
@@ -716,7 +648,6 @@ public class WorkflowSectionFragment extends Fragment{
             fileName = photoFileName + ".jpg";
 
             //Toast.makeText(getActivity(), photoFilePath, Toast.LENGTH_LONG).show();
-            Log.v(LOG_TAG, filePath);
             // Create the storage directory if it does not exist
             if (!storageDir.exists() && !storageDir.mkdirs()) {
                 filePath = null;
@@ -748,15 +679,6 @@ public class WorkflowSectionFragment extends Fragment{
         mediaScanIntent.setData(contentUri);
         getActivity().sendBroadcast(mediaScanIntent);
     }
-
-//    private void upload(){
-//        typedFile = new TypedFile("multipart/form-data", new File(photoFilePath));
-//        json = "{ \"collectionId\" : \"Qwms6Gs040FBS264\"}";
-//
-//        item = new DataItem();
-//        RetrofitClient.uploadItem(typedFile, json, callback, username, password);
-//    }
-
 
     public String encodeBae64(String src){
         // Sending side

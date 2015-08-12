@@ -91,7 +91,6 @@ public class CollectionGridAdaptor extends BaseAdapter {
         if(dataItems.size()>0) {
             // getting item data for the row
             CollectionLocal collection = dataItems.get(position);
-            Log.v("Adaptor##", collection.getTitle());
 
             if(collection.getItems()!=null) {
 
@@ -100,7 +99,6 @@ public class CollectionGridAdaptor extends BaseAdapter {
                 //TODO get the first or last item m from collection
                 if(collection.getItems().size()>0) {
                     DataItem m = collection.getItems().get(0);
-                    Log.v("Adaptor##", m.getThumbnailUrl());
 
                     //imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                     Picasso.with(activity)

@@ -281,7 +281,6 @@ public class MainActivity extends AppCompatActivity implements
         //viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.setupWithViewPager(viewPager);
 
-
         tabLayout.setOnTabSelectedListener(
                 new TabLayout.ViewPagerOnTabSelectedListener(viewPager) {
                     @Override
@@ -342,7 +341,7 @@ public class MainActivity extends AppCompatActivity implements
 
             mGoogleApiClient.connect();
         }
-        Log.e(LOG_TAG, "start onStart~~~");
+//        Log.e(LOG_TAG, "start onStart~~~");
     }
 
 //    @Override
@@ -360,7 +359,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onRestart() {
         super.onRestart();
-        Log.e(LOG_TAG, "start onRestart~~~");
+//        Log.e(LOG_TAG, "start onRestart~~~");
     }
 
     @Override
@@ -374,11 +373,11 @@ public class MainActivity extends AppCompatActivity implements
                 startLocationUpdates();
             }
         }
-        if (isFirstTime()) {
-            // What you do when the Application is Opened First time Goes here
-            DeviceStatus.showSnackbar(rootView, "first blood");
-        }
-        Log.e(LOG_TAG, "start onResume~~~");
+//        if (isFirstTime()) {
+//            // What you do when the Application is Opened First time Goes here
+//            DeviceStatus.showSnackbar(rootView, "first blood");
+//        }
+//        Log.e(LOG_TAG, "start onResume~~~");
     }
 
 //    @Override
@@ -405,7 +404,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         }
 
-        Log.e(LOG_TAG, "start onPause~~~");
+//        Log.e(LOG_TAG, "start onPause~~~");
     }
 
     @Override
@@ -414,10 +413,7 @@ public class MainActivity extends AppCompatActivity implements
         if (mGoogleApiClient.isConnected()) {
             mGoogleApiClient.disconnect();
         }
-
-
-
-        Log.e(LOG_TAG, "start onStop~~~");
+//        Log.e(LOG_TAG, "start onStop~~~");
     }
 
     @Override
@@ -427,7 +423,7 @@ public class MainActivity extends AppCompatActivity implements
         //new Delete().from(MetaDataLocal.class).execute(); // all records
 
         //new Delete().from(DataItem.class).where("isLocal = ?", 1).execute();
-        Log.e(LOG_TAG, "start onDestroy~~~");
+//        Log.e(LOG_TAG, "start onDestroy~~~");
     }
 
 
@@ -485,7 +481,7 @@ public class MainActivity extends AppCompatActivity implements
             Toast toast = Toast.makeText(this,  "Couldn't call " + location +
                     ", no receiving apps installed!", duration);
             toast.show();
-            Log.d(LOG_TAG, "Couldn't call " + location + ", no receiving apps installed!");
+//            Log.d(LOG_TAG, "Couldn't call " + location + ", no receiving apps installed!");
         }
     }
 
@@ -532,13 +528,6 @@ public class MainActivity extends AppCompatActivity implements
                     args.putInt(POIFragment.ARG_SECTION_NUMBER, position );
                     fragment.setArguments(args);
                     return fragment;
-//                case 3:
-//                    // The other sections of the app are dummy placeholders.
-//                    fragment = new CollectionListFragment();
-//                    args.putInt(POIFragment.ARG_SECTION_NUMBER, position );
-//                    fragment.setArguments(args);
-//                    return fragment;
-
                 default:
                     // getItem is called to instantiate the fragment for the given page.
                     // Return a PlaceholderFragment (defined as a static inner class below).
@@ -616,7 +605,7 @@ public class MainActivity extends AppCompatActivity implements
         mLastLocation = location;
         //DeviceStatus.showSnackbar(rootView, "Location data updated!");
 
-        Log.i(LOG_TAG,"Location data updated!");
+//        Log.i(LOG_TAG,"Location data updated!");
         // Displaying the new location on UI
         displayLocation();
         LocationChangedEvent event = new LocationChangedEvent(location);
@@ -652,8 +641,6 @@ public class MainActivity extends AppCompatActivity implements
             latitude = mLastLocation.getLatitude();
             longitude = mLastLocation.getLongitude();
             accuracy = mLastLocation.getAccuracy();
-            Log.v(LOG_TAG, "gps accuracy: "+ accuracy);
-            Log.v(LOG_TAG, "gps: "+latitude+" "+longitude+": "+ accuracy);
 
             Fragment frag = getSupportFragmentManager().findFragmentByTag("android:switcher:"
                     + R.id.viewPager + ":" + viewPager.getCurrentItem());
@@ -689,7 +676,7 @@ public class MainActivity extends AppCompatActivity implements
                 } else{
                     ratingView.setRating((float) 1);
                 }
-                Log.v(LOG_TAG,"Location view is updated");
+//                Log.v(LOG_TAG,"Location view is updated");
 
             } else{
 //                workflow = (WorkflowSectionFragment) frag;
@@ -697,7 +684,7 @@ public class MainActivity extends AppCompatActivity implements
 //                AudioPlaybackManager audioPlaybackManager = workflow.getPlaybackManager();
 //                voiceView.setVisibility(View.INVISIBLE);
 //                audioPlaybackManager.hideMediaController();
-                Log.v(LOG_TAG,"workflow LaunchpadSectionFragment is null");
+//                Log.v(LOG_TAG,"workflow LaunchpadSectionFragment is null");
             }
         } else {
             DeviceStatus.showSnackbar(rootView, "Couldn't get the location, make sure GPS is enabled");

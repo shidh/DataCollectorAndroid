@@ -97,7 +97,8 @@ public class GridImageAdapter extends BaseAdapter {
 
         if(itemFile.exists()) {
             if(m.getMetaDataLocal() != null) {
-                if (m.getMetaDataLocal().getType().equals("image")) {
+                if (m.getMetaDataLocal().getType().equals("image")
+                        || m.getMetaDataLocal().getType().equals("video")) {
                     BitmapFactory.Options options = new BitmapFactory.Options();
                     options.inJustDecodeBounds = true;
                     Bitmap myBitmap = BitmapFactory.decodeFile(m.getLocalPath(), options);
@@ -109,12 +110,10 @@ public class GridImageAdapter extends BaseAdapter {
                     imageView.setImageBitmap(myBitmap);
                 } else if (m.getMetaDataLocal().getType().equals("audio")) {
                     imageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.play));
-
-
                 }
+                title.setText(m.getMetaDataLocal().getTitle());
             }
         }
-        title.setText(m.getMetaDataLocal().getTitle());
 
         //DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         //date.setText(dateFormat.format(new Date()));

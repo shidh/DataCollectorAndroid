@@ -87,22 +87,14 @@ public class POIFragment extends Fragment implements GoogleMap.OnMarkerClickList
     Callback<List<POI>> callbackAlbum = new Callback<List<POI>>() {
         @Override
         public void success(List<POI> pois, Response response) {
-            Log.v(LOG_TAG, "get poi OK");
-            Log.v(LOG_TAG, gson.toJson(pois));
-            Log.v(LOG_TAG, String.valueOf(response.getStatus()));
-
             for (POI poi : pois) {
-                Log.v(LOG_TAG, poi.getId());
-
                 getDataItemFroPoi(poi.getId());
             }
         }
 
         @Override
         public void failure(RetrofitError error) {
-            Log.v(LOG_TAG, String.valueOf(error));
             Log.v(LOG_TAG, String.valueOf(error.getResponse()));
-
             Log.v(LOG_TAG, "get poi failed");
 
         }
@@ -112,7 +104,6 @@ public class POIFragment extends Fragment implements GoogleMap.OnMarkerClickList
     Callback<List<DataItem>> callbackMember = new Callback<List<DataItem>>() {
         @Override
         public void success(List<DataItem> dataList, Response response) {
-            Log.v(LOG_TAG, "get poi members OK");
             hidePDialog();
 
             List<DataItem> dataListLocal = new ArrayList<DataItem>();
@@ -132,7 +123,6 @@ public class POIFragment extends Fragment implements GoogleMap.OnMarkerClickList
 
         @Override
         public void failure(RetrofitError error) {
-            Log.v(LOG_TAG, String.valueOf(error.getResponse().getStatus()));
             Log.v(LOG_TAG, String.valueOf(error));
             Log.v(LOG_TAG, "get poi members failed");
             DeviceStatus.showSnackbar(rootView, "update poi members failed");
@@ -144,7 +134,6 @@ public class POIFragment extends Fragment implements GoogleMap.OnMarkerClickList
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        Log.v(LOG_TAG, "onAttach");
     }
 
 
@@ -153,30 +142,24 @@ public class POIFragment extends Fragment implements GoogleMap.OnMarkerClickList
         super.onCreate(savedInstanceState);
         // Add this line in order for this fragment to handle menu events.
         setHasOptionsMenu(true);
-        //TODO
-        //updateDataItem(String AlbumId);
-        //updatePoi(queryKeyword);
-        Log.v(LOG_TAG, "start onCreate~~~");
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        Log.v(LOG_TAG, "start onStart~~~");
-
-
     }
 
     @Override
     public void onResume(){
         super.onResume();
-        Log.v(LOG_TAG, "start onResume~~~");
         updatePoi(queryKeyword);
+        mMapView.onResume();
+
     }
     @Override
     public void onPause(){
         super.onPause();
-        Log.v(LOG_TAG, "start onPause~~~");
+        mMapView.onPause();
     }
 
 
@@ -184,7 +167,8 @@ public class POIFragment extends Fragment implements GoogleMap.OnMarkerClickList
     public void onDestroy() {
         super.onDestroy();
         hidePDialog();
-        Log.v(LOG_TAG, "start onDestroy~~~");
+        mMapView.onDestroy();
+
     }
 
     private void hidePDialog() {
@@ -207,8 +191,6 @@ public class POIFragment extends Fragment implements GoogleMap.OnMarkerClickList
         int id = item.getItemId();
         if (id == R.id.action_refresh) {
 
-            //TODO
-            //updatePoi("Allen");
             updatePoi(queryKeyword);
 
             pDialog = new ProgressDialog(getActivity());
@@ -218,9 +200,6 @@ public class POIFragment extends Fragment implements GoogleMap.OnMarkerClickList
         }
         return super.onOptionsItemSelected(item);
     }
-
-
-
 
 
     @Override
@@ -271,9 +250,6 @@ public class POIFragment extends Fragment implements GoogleMap.OnMarkerClickList
 
 
     public void onMapReady(GoogleMap map) {
-        Log.v(LOG_TAG, "map is ready ");
-        //googleMap = map;
-
         googleMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
         googleMap.setMyLocationEnabled(true);
         googleMap.setBuildingsEnabled(true);
@@ -326,7 +302,6 @@ public class POIFragment extends Fragment implements GoogleMap.OnMarkerClickList
 
 
         moveCamera(googleMap, latlng, 12, null);
-        //addMarkersToMap();
         updatePoi(queryKeyword);
 
     }
@@ -362,7 +337,6 @@ public class POIFragment extends Fragment implements GoogleMap.OnMarkerClickList
         final GoogleMap.CancelableCallback callback = new GoogleMap.CancelableCallback() {
             @Override
             public void onFinish() {
-                Log.v(LOG_TAG, "finish");
                 marker.hideInfoWindow();
                 marker.showInfoWindow();
             }
@@ -420,15 +394,12 @@ public class POIFragment extends Fragment implements GoogleMap.OnMarkerClickList
                                                             .position(new LatLng(markerLatitude, markerLongitude))
                                                             .snippet(fileUrl)
                                                             .title(title);
-                                    Log.v(LOG_TAG, title);
                                     marker.icon(BitmapDescriptorFactory.fromBitmap(bitmap));
-                                    //mainLayout.setBackground(new BitmapDrawable(getActivity().getResources(), bitmap));
                                     googleMap.addMarker(marker);
                                 }
 
                                 @Override
                                 public void onBitmapFailed(final Drawable errorDrawable) {
-                                    Log.d("TAG", "FAILED");
                                     // create marker
                                     MarkerOptions marker = new MarkerOptions().position(
                                             new LatLng(markerLatitude, markerLongitude)).title(title);
@@ -440,7 +411,7 @@ public class POIFragment extends Fragment implements GoogleMap.OnMarkerClickList
 
                                 @Override
                                 public void onPrepareLoad(final Drawable placeHolderDrawable) {
-                                    Log.d("TAG", "Prepare Load");
+                                    //Log.d("TAG", "Prepare Load");
                                 }
                             });
                 }

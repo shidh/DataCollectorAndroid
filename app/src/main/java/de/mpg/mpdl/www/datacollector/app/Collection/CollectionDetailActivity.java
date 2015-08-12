@@ -104,8 +104,6 @@ public class CollectionDetailActivity extends Activity {
                         MetaDataLocal metaDataLocal = MetaDataConverter.
                                 metaDataToMetaDataLocal(item.getMetadata());
                         item.setMetaDataLocal(metaDataLocal);
-                        Log.v(LOG_TAG, "item filename : " + String.valueOf(item.getFilename()));
-                        Log.v(LOG_TAG, "item title: " + String.valueOf(item.getMetaDataLocal().getTitle()));
                         dataListLocal.add(item);
                         //item.save();
                     }
@@ -120,13 +118,10 @@ public class CollectionDetailActivity extends Activity {
 
                 }
 
-                Log.v(LOG_TAG, "get list OK");
-
             }
 
             @Override
             public void failure(RetrofitError error) {
-                Log.v(LOG_TAG, "get list failed");
                 Log.v(LOG_TAG, error.toString());
             }
         };
@@ -137,8 +132,6 @@ public class CollectionDetailActivity extends Activity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            Log.v(LOG_TAG, "start onCreateView~~~");
-
             Intent intent = getActivity().getIntent();
             if (intent != null && intent.hasExtra(Intent.EXTRA_TEXT)) {
                 dataCollectionId = intent.getStringExtra(Intent.EXTRA_TEXT);

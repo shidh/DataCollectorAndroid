@@ -14,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.activeandroid.ActiveAndroid;
 import com.activeandroid.query.Select;
@@ -81,11 +80,8 @@ public class ItemListFragment extends Fragment {
 
                         MetaDataLocal metaDataLocal = MetaDataConverter.
                                 metaDataToMetaDataLocal(item.getMetadata());
-                        Log.v(LOG_TAG, gson.toJson(metaDataLocal));
                         metaDataLocal.save();
                         item.setMetaDataLocal(metaDataLocal);
-                        Log.v(LOG_TAG, String.valueOf(item.getFilename()));
-                        Log.v(LOG_TAG, String.valueOf(item.getMetaDataLocal().getTitle()));
                         dataListLocal.add(item);
                         item.save();
                     }
@@ -113,8 +109,7 @@ public class ItemListFragment extends Fragment {
             if (pDialog != null) {
                 pDialog.hide();
             }
-            Log.v(LOG_TAG, "get list OK");
-            DeviceStatus.showSnackbar(rootView, "Data List is updated");
+//            DeviceStatus.showSnackbar(rootView, "Data List is updated");
 
 
         }
@@ -122,7 +117,6 @@ public class ItemListFragment extends Fragment {
         @Override
         public void failure(RetrofitError error) {
             Log.v(LOG_TAG, "get list failed");
-            Log.v(LOG_TAG, error.toString());
             DeviceStatus.showSnackbar(rootView, "update data failed");
 
         }
@@ -138,14 +132,10 @@ public class ItemListFragment extends Fragment {
             //dataList.remove();
             adapter =  new CustomSwipeAdapter(getActivity(), dataList);
             listView.setAdapter(adapter);
-
-
-            Log.v(LOG_TAG, "remove item" + response + "OK");
         }
 
         @Override
         public void failure(RetrofitError error) {
-            Log.v(LOG_TAG, "delete item failed");
             Log.v(LOG_TAG, error.toString());
         }
     };
@@ -158,7 +148,6 @@ public class ItemListFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        Log.v(LOG_TAG, "onAttach");
     }
 
 
@@ -167,33 +156,21 @@ public class ItemListFragment extends Fragment {
         super.onCreate(savedInstanceState);
         // Add this line in order for this fragment to handle menu events.
         setHasOptionsMenu(true);
-
-        Log.v(LOG_TAG, "start onCreate~~~");
     }
 
     @Override
     public void onStart() {
         super.onStart();
         updateDataItem();
-        //pDialog = new ProgressDialog(getActivity());
-        //pDialog.setMessage("Loading...");
-        //pDialog.show();
-        Log.v(LOG_TAG, "start onStart~~~");
-
-
     }
 
     @Override
     public void onResume(){
         super.onResume();
-        Log.v(LOG_TAG, "start onResume~~~");
-
-
     }
     @Override
     public void onPause(){
         super.onPause();
-        Log.v(LOG_TAG, "start onPause~~~");
     }
 
 
@@ -201,7 +178,6 @@ public class ItemListFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         hidePDialog();
-        Log.v(LOG_TAG, "start onDestroy~~~");
     }
 
     private void hidePDialog() {
@@ -235,9 +211,6 @@ public class ItemListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.v(LOG_TAG, "start onCreateView~~~");
-
-
         dataList = new Select()
                 .from(DataItem.class)
                 .where("isLocal != ?", 1)
@@ -282,11 +255,6 @@ public class ItemListFragment extends Fragment {
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), ReadyToUploadCollectionActivity.class);
                 startActivity(intent);
-
-//                Intent pickFile = new Intent(Intent.ACTION_PICK);
-//                pickFile.setAction(Intent.ACTION_GET_CONTENT);
-//                startActivityForResult(pickFile, INTENT_PICK_DATA);
-
             }
         });
 
@@ -294,15 +262,9 @@ public class ItemListFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 DataItem dataItem = (DataItem) adapter.getItem(position);
-                //Context context = getActivity();
-                int duration = Toast.LENGTH_SHORT;
-                //Toast toast = Toast.makeText(getActivity(), dataItem.getCollectionId(), duration);
-                //toast.show();
 
                 Intent showDetailIntent = new Intent(getActivity(), DetailActivity.class);
                 showDetailIntent.putExtra(Intent.EXTRA_TEXT, dataItem.getFilename());
-
-                showDetailIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
                 startActivity(showDetailIntent);
             }
         });
