@@ -58,4 +58,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_activity_collection_detail">activity_collection_detail</string>
 
+    <string name="next">next</string>
+    <string name="got">Got it!</string>
+
 </resources>

@@ -26,6 +26,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.activeandroid.query.Select;
+import com.github.amlcurran.showcaseview.ApiUtils;
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.Target;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
@@ -69,7 +73,7 @@ import retrofit.mime.TypedFile;
 /**
  * A fragment that launches other parts of the demo application.
  */
-public class WorkflowSectionFragment extends Fragment{
+public class WorkflowSectionFragment extends Fragment implements View.OnClickListener{
 
     // Attributes for starting the intent and used by onActivityResult
     private static final int INTENT_ENABLE_GPS = 1000;
@@ -119,7 +123,6 @@ public class WorkflowSectionFragment extends Fragment{
 
     //private Button recordBtn, playBtn;
 
-
     private User user;
     private MenuItem poi_list;
     private FloatingActionButton bottomCenterButton;
@@ -129,6 +132,11 @@ public class WorkflowSectionFragment extends Fragment{
     private AudioPlaybackManager playbackManager;
 
 
+    //for showcaseView
+    private ShowcaseView showcaseView;
+    private int counter = 0;
+    private final ApiUtils apiUtils = new ApiUtils();
+    View.OnClickListener listener = this;
 
     private PlaybackHandler playbackHandler = new PlaybackHandler() {
         @Override
@@ -148,6 +156,7 @@ public class WorkflowSectionFragment extends Fragment{
     public void setPlaybackHandler(PlaybackHandler playbackHandler) {
         this.playbackHandler = playbackHandler;
     }
+
 
     // The container Activity must implement this interface so the frag can deliver messages
     public interface OnLocationUpdatedListener {
@@ -248,8 +257,6 @@ public class WorkflowSectionFragment extends Fragment{
 
         //LayerDrawable stars = (LayerDrawable) ratingView.getProgressDrawable();
         //stars.getDrawable(2).setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_ATOP);
-
-
 
         ((MainActivity)getActivity()).subActionButtonCamera.setOnClickListener(
                 new View.OnClickListener() {
@@ -420,9 +427,27 @@ public class WorkflowSectionFragment extends Fragment{
     public void onStart() {
         super.onStart();
         Log.d(LOG_TAG, "onStart");
+
     }
 
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
+        //TODO
+        //if (((MainActivity) getActivity()).isFirstTime()) {
+            view.post(new Runnable() {
+                @Override
+                public void run() {
+                    showcaseView = new ShowcaseView.Builder(getActivity())
+                            .setTarget(new ViewTarget(rootView.findViewById(R.id.btnLocationUpdates)))
+                            .setOnClickListener(listener)
+                            .build();
+                    showcaseView.setButtonText(getString(R.string.next));
+                }
+            });
+        //}
+    }
 
     @Override
     public void onResume() {
@@ -806,8 +831,6 @@ public class WorkflowSectionFragment extends Fragment{
 
         item = new DataItem();
         meta = new MetaDataLocal();
-        //TODO
-        //playbackManager.dispose();
 //        playerManager.releasePlayer();
 //        releaseVisualizer();
 //        controller = null;
@@ -867,7 +890,6 @@ public class WorkflowSectionFragment extends Fragment{
         recordingThread = new AudioRecordingThread(filePath, new AudioRecordingHandler() { //pass file name where to store the recorded audio
             @Override
             public void onFftDataCapture(final byte[] bytes) {
-                //TODO
                 //start thread on Main Activity?
                 ((MainActivity)getActivity()).runOnUiThread(new Runnable() {
                     public void run() {
@@ -907,4 +929,49 @@ public class WorkflowSectionFragment extends Fragment{
 //        startActivityForResult(i, 0);
 //    }
 
+    private void setAlpha(float alpha, View... views) {
+        if (apiUtils.isCompatWithHoneycomb()) {
+            for (View view : views) {
+                view.setAlpha(alpha);
+            }
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        //TODO
+        //if (((MainActivity) getActivity()).isFirstTime()) {
+            switch (counter) {
+                case 0:
+                    showcaseView.setShowcase(new ViewTarget(btnStartLocationUpdates), true);
+                    break;
+
+                case 1:
+                    showcaseView.setShowcase(new ViewTarget(lblLocation), true);
+                    break;
+
+                case 2:
+                    showcaseView.setShowcase(new ViewTarget(ratingView), true);
+                    showcaseView.setContentTitle("Check it out");
+                    showcaseView.setContentText("You don't always need a target to showcase");
+                    showcaseView.setButtonText(getString(R.string.got));
+                    setAlpha(0.2f, btnStartLocationUpdates, lblLocation, ratingView);
+                    break;
+
+                case 3:
+                    showcaseView.setTarget(Target.NONE);
+                    showcaseView.setContentTitle("Check it out");
+                    showcaseView.setContentText("You don't always need a target to showcase");
+                    showcaseView.setButtonText(getString(R.string.got));
+                    setAlpha(0.2f, btnStartLocationUpdates, lblLocation, ratingView);
+                    break;
+
+                case 4:
+                    showcaseView.hide();
+                    setAlpha(1.0f, btnStartLocationUpdates, lblLocation, ratingView);
+                    break;
+            }
+            counter++;
+        }
+    //}
 }

@@ -376,7 +376,7 @@ public class MainActivity extends AppCompatActivity implements
         }
         if (isFirstTime()) {
             // What you do when the Application is Opened First time Goes here
-            DeviceStatus.showSnackbar(rootView, "first blood");
+            //DeviceStatus.showSnackbar(rootView, "first blood");
         }
         Log.e(LOG_TAG, "start onResume~~~");
     }
@@ -427,7 +427,16 @@ public class MainActivity extends AppCompatActivity implements
         //new Delete().from(MetaDataLocal.class).execute(); // all records
 
         //new Delete().from(DataItem.class).where("isLocal = ?", 1).execute();
-        Log.e(LOG_TAG, "start onDestroy~~~");
+        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+        boolean ranBefore = preferences.getBoolean("RanBefore", false);
+        if (!ranBefore) {
+            // first time
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putBoolean("RanBefore", true);
+            editor.apply();
+        }
+
+        Log.e(LOG_TAG, ranBefore+"");
     }
 
 
@@ -652,8 +661,8 @@ public class MainActivity extends AppCompatActivity implements
             latitude = mLastLocation.getLatitude();
             longitude = mLastLocation.getLongitude();
             accuracy = mLastLocation.getAccuracy();
-            Log.v(LOG_TAG, "gps accuracy: "+ accuracy);
-            Log.v(LOG_TAG, "gps: "+latitude+" "+longitude+": "+ accuracy);
+            //Log.v(LOG_TAG, "gps accuracy: "+ accuracy);
+            //Log.v(LOG_TAG, "gps: "+latitude+" "+longitude+": "+ accuracy);
 
             Fragment frag = getSupportFragmentManager().findFragmentByTag("android:switcher:"
                     + R.id.viewPager + ":" + viewPager.getCurrentItem());
@@ -810,16 +819,11 @@ public class MainActivity extends AppCompatActivity implements
      * Checks that application runs first time and write flag at SharedPreferences
      * @return true if 1st time
      */
-    private boolean isFirstTime()
-    {
+    public boolean isFirstTime() {
         SharedPreferences preferences = getPreferences(MODE_PRIVATE);
         boolean ranBefore = preferences.getBoolean("RanBefore", false);
-        if (!ranBefore) {
-            // first time
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putBoolean("RanBefore", true);
-            editor.apply();
-        }
+        Log.v(LOG_TAG, "first blood"+ranBefore);
+
         return !ranBefore;
     }
 }
