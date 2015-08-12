@@ -312,7 +312,7 @@ public class POIFragment extends Fragment implements GoogleMap.OnMarkerClickList
                 .zoom(12)
                 .build();
 
-        Log.v(LOG_TAG, latitude + ":" + longitude);
+        //Log.v(LOG_TAG, latitude + ":" + longitude);
 
 //        // Move the camera instantly to location with a zoom of 15.
 //        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, 15));
@@ -403,10 +403,10 @@ public class POIFragment extends Fragment implements GoogleMap.OnMarkerClickList
             if (item != null) {
                 MetaDataLocal metaDataLocal = item.getMetaDataLocal();
                 if(metaDataLocal != null) {
-                    latitude = metaDataLocal.getLatitude();
-                    longitude = metaDataLocal.getLongitude();
-                    title = metaDataLocal.getTitle();
-                    fileUrl = item.getWebResolutionUrlUrl();
+                    final double markerLatitude = metaDataLocal.getLatitude();
+                    final double markerLongitude = metaDataLocal.getLongitude();
+                    final String title = metaDataLocal.getTitle();
+                    final String fileUrl = item.getWebResolutionUrlUrl();
 
                     Picasso.with(getActivity())
                             .load(item.getThumbnailUrl())
@@ -417,7 +417,7 @@ public class POIFragment extends Fragment implements GoogleMap.OnMarkerClickList
                                 public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                                     // create marker
                                     MarkerOptions marker = new MarkerOptions()
-                                                            .position(new LatLng(latitude, longitude))
+                                                            .position(new LatLng(markerLatitude, markerLongitude))
                                                             .snippet(fileUrl)
                                                             .title(title);
                                     Log.v(LOG_TAG, title);
@@ -431,7 +431,7 @@ public class POIFragment extends Fragment implements GoogleMap.OnMarkerClickList
                                     Log.d("TAG", "FAILED");
                                     // create marker
                                     MarkerOptions marker = new MarkerOptions().position(
-                                            new LatLng(latitude, longitude)).title(title);
+                                            new LatLng(markerLatitude, markerLongitude)).title(title);
                                     // Changing marker icon
                                     marker.icon(BitmapDescriptorFactory
                                             .defaultMarker(BitmapDescriptorFactory.HUE_ROSE));
