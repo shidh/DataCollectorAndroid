@@ -666,23 +666,21 @@ public class WorkflowSectionFragment extends Fragment{
         String result = null;
 
         if(Build.VERSION.SDK_INT <19) {
+            //content://media/external/images/media/81
             Cursor cursor = getActivity().getContentResolver().query(contentURI, null, null, null, null);
             if (cursor == null) { // Source is Dropbox or other similar local file path
                 result = contentURI.getPath();
             } else {
                 cursor.moveToFirst();
-                //content://com.android.providers.media.documents/document/image%3A34726
-                //content://media/external/images/media/81
                 int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
                 result = cursor.getString(idx);
                 cursor.close();
             }
         }else{
+            //if SDK > 4.4 Kitkat
+            //content://com.android.providers.media.documents/document/image:4726
 
-            /* now extract ID from Uri path using getLastPathSegment() and then split with ":"
-            then call get Uri to for Internal storage or External storage for media I have used getUri()
-            */
-
+            //Extract ID from Uri path using getLastPathSegment() and then split with ":"
             String id = contentURI.getLastPathSegment().split(":")[1];
             final String[] imageColumns = {MediaStore.Images.Media.DATA };
             final String imageOrderBy = null;
@@ -708,20 +706,6 @@ public class WorkflowSectionFragment extends Fragment{
 
         return MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
     }
-
-//    private String getRealPathFromURI(Uri contentUri) {
-//        String result;
-//
-//        String[] projection = { MediaStore.Images.Media.DATA };
-//
-//        Cursor cursor = getActivity().getContentResolver().query(contentUri, projection, null, null, null);
-//        cursor.moveToFirst();
-//
-//        int columnIndex = cursor.getColumnIndex(projection[0]);
-//        result = cursor.getString(columnIndex); // returns null
-//        cursor.close();
-//        return result;
-//    }
 
     private void addImageToGallery(String filePath) {
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
