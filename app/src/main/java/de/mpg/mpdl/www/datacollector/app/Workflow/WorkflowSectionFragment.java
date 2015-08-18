@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.location.Location;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -259,6 +260,7 @@ public class WorkflowSectionFragment extends Fragment{
                                 android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI);
                         gallery.setType("image/*");
                         gallery.setAction(Intent.ACTION_GET_CONTENT);
+                        gallery.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
                         meta.setType("image");
                         startActivityForResult(gallery, INTENT_PICK_PHOTO);
 
@@ -437,7 +439,9 @@ public class WorkflowSectionFragment extends Fragment{
                 .from(DataItem.class)
                 .where("isLocal = ?", true)
                 .execute().size() >0) {
-            poi_list.setIcon(getResources().getDrawable(R.drawable.action_uploadlist_red));
+            if(poi_list != null) {
+                poi_list.setIcon(getResources().getDrawable(R.drawable.action_uploadlist_red));
+            }
         }
 
     }
@@ -659,18 +663,65 @@ public class WorkflowSectionFragment extends Fragment{
     }
 
     private String getRealPathFromURI(Uri contentURI) {
-        String result;
-        Cursor cursor = getActivity().getContentResolver().query(contentURI, null, null, null, null);
-        if (cursor == null) { // Source is Dropbox or other similar local file path
-            result = contentURI.getPath();
-        } else {
-            cursor.moveToFirst();
-            int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-            result = cursor.getString(idx);
-            cursor.close();
+        String result = null;
+
+        if(Build.VERSION.SDK_INT <19) {
+            Cursor cursor = getActivity().getContentResolver().query(contentURI, null, null, null, null);
+            if (cursor == null) { // Source is Dropbox or other similar local file path
+                result = contentURI.getPath();
+            } else {
+                cursor.moveToFirst();
+                //content://com.android.providers.media.documents/document/image%3A34726
+                //content://media/external/images/media/81
+                int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+                result = cursor.getString(idx);
+                cursor.close();
+            }
+        }else{
+
+            /* now extract ID from Uri path using getLastPathSegment() and then split with ":"
+            then call get Uri to for Internal storage or External storage for media I have used getUri()
+            */
+
+            String id = contentURI.getLastPathSegment().split(":")[1];
+            final String[] imageColumns = {MediaStore.Images.Media.DATA };
+            final String imageOrderBy = null;
+
+            Uri uri = getUri();
+
+            Cursor imageCursor = getActivity().getContentResolver().query(uri, imageColumns,
+                    MediaStore.Images.Media._ID + "=" + id, null, imageOrderBy);
+
+            if (imageCursor.moveToFirst()) {
+                result = imageCursor.getString(imageCursor.getColumnIndex(MediaStore.Images.Media.DATA));
+            }
+            Log.v("path",result ); // use selectedImagePath
         }
         return result;
     }
+
+    // By using this method get the Uri of Internal/External Storage for Media
+    private Uri getUri() {
+        String state = Environment.getExternalStorageState();
+        if(!state.equalsIgnoreCase(Environment.MEDIA_MOUNTED))
+            return MediaStore.Images.Media.INTERNAL_CONTENT_URI;
+
+        return MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+    }
+
+//    private String getRealPathFromURI(Uri contentUri) {
+//        String result;
+//
+//        String[] projection = { MediaStore.Images.Media.DATA };
+//
+//        Cursor cursor = getActivity().getContentResolver().query(contentUri, projection, null, null, null);
+//        cursor.moveToFirst();
+//
+//        int columnIndex = cursor.getColumnIndex(projection[0]);
+//        result = cursor.getString(columnIndex); // returns null
+//        cursor.close();
+//        return result;
+//    }
 
     private void addImageToGallery(String filePath) {
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);

@@ -13,7 +13,6 @@ import de.mpg.mpdl.www.datacollector.app.Model.ImejiModel.MetaData;
  * Created by allen on 01/04/15.
  */
 
-//@Table(name = "DataItem", id = "_id")
 @Table(name = "DataItem")
 public class DataItem extends Model {
 
