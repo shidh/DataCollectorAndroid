@@ -2,6 +2,7 @@ package de.mpg.mpdl.www.datacollector.app.POI;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
@@ -63,8 +64,9 @@ public class POIFragment extends Fragment implements GoogleMap.OnMarkerClickList
     private final String LOG_TAG = POIFragment.class.getSimpleName();
     private ProgressDialog pDialog;
     private View rootView;
-    private String username = DeviceStatus.username;
-    private String password = DeviceStatus.password;
+    private String username;
+    private String password;
+    private SharedPreferences mPrefs;
     private String queryKeyword = DeviceStatus.queryKeyword;
 
     private Location currentLocation;
@@ -142,6 +144,10 @@ public class POIFragment extends Fragment implements GoogleMap.OnMarkerClickList
         super.onCreate(savedInstanceState);
         // Add this line in order for this fragment to handle menu events.
         setHasOptionsMenu(true);
+
+        mPrefs = getActivity().getSharedPreferences("myPref", 0);
+        username = mPrefs.getString("username", "");
+        password = mPrefs.getString("password", "");
     }
 
     @Override

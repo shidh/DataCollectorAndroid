@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/tools"
+    android:background="@drawable/nav_header_bg"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark">
+
+    <!--<ImageView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:id="@+id/backgroundImage"-->
+        <!--android:src="@drawable/nav_header_bg"-->
+        <!--android:scaleType="centerCrop" />-->
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/button_plus_greyout"
+        android:id="@+id/profileImage"
+        android:layout_margin="66dp"
+        app:border_width="2dp"
+        app:border_color="@color/blue"
+        android:layout_marginTop="15dp"
+        android:layout_centerHorizontal="true"  />
+
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/usernameLayout"
+        android:layout_marginTop="46dp"
+        android:layout_below="@+id/profileImage">
+        <EditText
+            android:id="@+id/username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Username" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="46dp"
+        android:id="@+id/passwordLayout"
+        android:layout_below="@+id/usernameLayout">
+        <EditText
+            android:id="@+id/password"
+            android:inputType="textPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Password" />
+    </android.support.design.widget.TextInputLayout>
+
+
+    <com.dd.processbutton.FlatButton
+        android:id="@+id/confirm_save_button"
+        style="?android:textAppearanceSmall"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
+        android:text="Login"
+        android:textStyle="bold"
+        android:textColor="@android:color/white"
+        custom:pb_colorNormal="@color/blue"
+        android:layout_below="@+id/passwordLayout"
+        android:layout_centerHorizontal="true" />
+</RelativeLayout>

@@ -3,6 +3,7 @@ package de.mpg.mpdl.www.datacollector.app.Collection;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -59,9 +60,9 @@ public class CollectionListFragment extends Fragment{
      * Views.
      */
     private CollectionGridAdaptor adapter;
-
-    private String username = DeviceStatus.username;
-    private String password = DeviceStatus.password;
+    private SharedPreferences mPrefs;
+    private String username;
+    private String password;
 
     private static Gson gson = new GsonBuilder()
             .serializeNulls()
@@ -170,6 +171,10 @@ public class CollectionListFragment extends Fragment{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
+        mPrefs = getActivity().getSharedPreferences("myPref", 0);
+        username = mPrefs.getString("username","");
+        password = mPrefs.getString("password","");
     }
 
     @Override

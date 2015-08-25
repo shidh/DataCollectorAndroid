@@ -34,8 +34,7 @@ public class RetrofitClient {
     public static void getItems(Callback<List<DataItem>> callback,
                                 String username,
                                 String password) {
-        // Create a very simple REST adapter which points the GitHub API
-        // endpoint.
+        // Create a very simple REST adapter which points the API end point
 
         ImejiAPI imejiAPI = ServiceGenerator.createService(ImejiAPI.class, REST_SERVER, username, password);
 

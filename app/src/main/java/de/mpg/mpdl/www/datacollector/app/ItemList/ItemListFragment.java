@@ -3,6 +3,7 @@ package de.mpg.mpdl.www.datacollector.app.ItemList;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -55,8 +56,9 @@ public class ItemListFragment extends Fragment {
     private View rootView;
     private final String LOG_TAG = ItemListFragment.class.getSimpleName();
     private String collectionID = DeviceStatus.collectionID;
-    private String username = DeviceStatus.username;
-    private String password = DeviceStatus.password;
+    private String username;
+    private String password;
+    private SharedPreferences mPrefs;
 
     private static final int INTENT_PICK_DATA = 1008;
     CircleRefreshLayout jellyLayout;
@@ -156,6 +158,9 @@ public class ItemListFragment extends Fragment {
         super.onCreate(savedInstanceState);
         // Add this line in order for this fragment to handle menu events.
         setHasOptionsMenu(true);
+        mPrefs = getActivity().getSharedPreferences("myPref", 0);
+        username = mPrefs.getString("username", "");
+        password = mPrefs.getString("password", "");
     }
 
     @Override

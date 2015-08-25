@@ -14,8 +14,8 @@ import android.widget.Toast;
  */
 public class DeviceStatus {
 
-    public static final String username = "shi@mpdl.mpg.de";
-    public static final String password = "allen";
+    //public static final String username = "shi@mpdl.mpg.de";
+    //public static final String password = "allen";
     public static final String collectionID = "DCQVKA8esikfRTWi";
     public static final String queryKeyword = "DataCollector";
     public static final String BASE_URL = "https://dev-faces.mpdl.mpg.de/rest/";

@@ -3,7 +3,7 @@
     <!-- Base application theme.
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar"></style>
     -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="DataCollectorAppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here.
         <item name="colorPrimary">#2196F3</item>
         -->

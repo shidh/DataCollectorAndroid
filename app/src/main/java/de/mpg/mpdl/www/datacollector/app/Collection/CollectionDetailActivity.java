@@ -3,6 +3,7 @@ package de.mpg.mpdl.www.datacollector.app.Collection;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -48,6 +49,7 @@ public class CollectionDetailActivity extends Activity {
                     .add(R.id.collection_container, new CollectionItemFragment())
                     .commit();
         }
+
     }
 
 
@@ -85,9 +87,9 @@ public class CollectionDetailActivity extends Activity {
 
         private final String LOG_TAG = CollectionItemFragment.class.getSimpleName();
         private String collectionID = DeviceStatus.collectionID;
-        private String username = DeviceStatus.username;
-        private String password = DeviceStatus.password;
-
+        SharedPreferences mPrefs;
+        private String username;
+        private String password;
 
         Callback<List<DataItem>> callbackItems = new Callback<List<DataItem>>() {
             @Override
@@ -132,6 +134,11 @@ public class CollectionDetailActivity extends Activity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
+
+            mPrefs = getActivity().getSharedPreferences("myPref", 0);
+            username = mPrefs.getString("username", "");
+            password = mPrefs.getString("password", "");
+
             Intent intent = getActivity().getIntent();
             if (intent != null && intent.hasExtra(Intent.EXTRA_TEXT)) {
                 dataCollectionId = intent.getStringExtra(Intent.EXTRA_TEXT);

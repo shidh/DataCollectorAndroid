@@ -609,7 +609,6 @@ public class WorkflowSectionFragment extends Fragment{
     @Subscribe
     public void onGetNewLocationFromGPS(LocationChangedEvent event){
         currentLocation = event.location;
-
         getAddressByCoordinates(event.location.getLatitude(), event.location.getLongitude());
     }
 

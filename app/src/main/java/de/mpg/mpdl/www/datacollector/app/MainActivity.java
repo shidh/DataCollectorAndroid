@@ -9,6 +9,7 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -18,16 +19,19 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.dd.processbutton.FlatButton;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -61,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener,
         WorkflowSectionFragment.OnLocationUpdatedListener,
-        MetadataFragment.OnFragmentInteractionListener{
+        MetadataFragment.OnFragmentInteractionListener {
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -70,9 +74,17 @@ public class MainActivity extends AppCompatActivity implements
     //new ui
     DrawerLayout drawerLayout;
     ActionBarDrawerToggle drawerToggle;
+    Boolean wouldShow = false;
     Toolbar toolbar;
     TabLayout tabLayout;
     ViewPager viewPager;
+    NavigationView navigation;
+    EditText usernameView;
+    EditText passwordView;
+    String username;
+    String password;
+    SharedPreferences mPrefs;
+
     private View rootView;
 
     /**
@@ -132,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements
 
 
         int code = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-        if(code != ConnectionResult.SUCCESS) {
+        if (code != ConnectionResult.SUCCESS) {
             Dialog dialog = GooglePlayServicesUtil.getErrorDialog(code, this, 1);
             dialog.show();
         }
@@ -190,9 +202,9 @@ public class MainActivity extends AppCompatActivity implements
         FrameLayout.LayoutParams blueContentParams = new FrameLayout.
                 LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
         blueContentParams.setMargins(blueSubActionButtonContentMargin,
-                                    blueSubActionButtonContentMargin,
-                                    blueSubActionButtonContentMargin,
-                                    blueSubActionButtonContentMargin);
+                blueSubActionButtonContentMargin,
+                blueSubActionButtonContentMargin,
+                blueSubActionButtonContentMargin);
         lCSubBuilder.setLayoutParams(blueContentParams);
         // Set custom layout params
         FrameLayout.LayoutParams blueParams = new FrameLayout.
@@ -228,9 +240,9 @@ public class MainActivity extends AppCompatActivity implements
                 .addSubActionView(subActionButtonCamera)
                 .addSubActionView(subActionButtonPic)
                 .addSubActionView(subActionButtonAudio)
-                //.addSubActionView(subActionButtonGPS)
+                        //.addSubActionView(subActionButtonGPS)
                 .addSubActionView(subActionButtonVideo)
-                //.addSubActionView(subActionButtonText)
+                        //.addSubActionView(subActionButtonText)
                 .addSubActionView(subActionButtonSave)
                 .setRadius(redActionMenuRadius)
                 .setStartAngle(-180)
@@ -286,31 +298,16 @@ public class MainActivity extends AppCompatActivity implements
                     @Override
                     public void onTabSelected(TabLayout.Tab tab) {
                         super.onTabSelected(tab);
-                        if(tab.getPosition()!= 0){
-                            bottomCenterButton.setVisibility(View.INVISIBLE);
-                            subActionButtonCamera.setVisibility(View.INVISIBLE);
-                            subActionButtonPic.setVisibility(View.INVISIBLE);
-                            subActionButtonAudio.setVisibility(View.INVISIBLE);
-                            subActionButtonVideo.setVisibility(View.INVISIBLE);
-                            //subActionButtonText.setVisibility(View.INVISIBLE);
-                            subActionButtonGPS.setVisibility(View.INVISIBLE);
-                            subActionButtonSave.setVisibility(View.INVISIBLE);
+                        if (tab.getPosition() != 0) {
+                            hideButtons();
                         }
                     }
 
                     @Override
                     public void onTabUnselected(TabLayout.Tab tab) {
                         super.onTabSelected(tab);
-                        if(tab.getPosition() != 0){
-                            bottomCenterButton.setVisibility(View.VISIBLE);
-                            subActionButtonCamera.setVisibility(View.VISIBLE);
-                            subActionButtonPic.setVisibility(View.VISIBLE);
-                            subActionButtonAudio.setVisibility(View.VISIBLE);
-                            subActionButtonVideo.setVisibility(View.VISIBLE);
-                            //subActionButtonText.setVisibility(View.VISIBLE);
-                            subActionButtonGPS.setVisibility(View.VISIBLE);
-                            subActionButtonSave.setVisibility(View.VISIBLE);
-
+                        if (tab.getPosition() != 0) {
+                            showButtons();
                         }
                     }
 
@@ -322,16 +319,106 @@ public class MainActivity extends AppCompatActivity implements
                 });
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
-        drawerToggle = new ActionBarDrawerToggle(MainActivity.this, drawerLayout, R.string.hello_world, R.string.hello_world);
-        drawerLayout.setDrawerListener(drawerToggle);
+        drawerToggle = new ActionBarDrawerToggle(MainActivity.this, drawerLayout, R.string.hello_world, R.string.hello_world) {
+//            @Override
+//            public void onDrawerClosed(View view) {
+//                invalidateOptionsMenu();
+//                if(wouldShow){
+//                    showButtons();
+//                    wouldShow = false;
+//                }
+//            }
+//
+//            @Override
+//            public void onDrawerOpened(View drawerView) {
+//                invalidateOptionsMenu();
+//                if(bottomCenterButton.getVisibility() == View.VISIBLE){
+//                    wouldShow = true;
+//                    hideButtons();
+//                }
+//            }
 
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                if (slideOffset == 0) {
+                    // drawer closed
+                    if(wouldShow){
+                        showButtons();
+                        wouldShow = false;
+                    }
+                    invalidateOptionsMenu();
+                } else {
+                    // started opening
+                    if(bottomCenterButton.getVisibility() == View.VISIBLE){
+                        wouldShow = true;
+                        hideButtons();
+                    }
+                    invalidateOptionsMenu();
+                }
+                super.onDrawerSlide(drawerView, slideOffset);
+            }
+
+        };
+
+        drawerLayout.setDrawerListener(drawerToggle);
         //getSupportActionBar().setHomeButtonEnabled(true);
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //getSupportActionBar().setIcon(R.mipmap.ic_launcher);
+
+        navigation = (NavigationView) findViewById(R.id.navigation);
+        usernameView  = (EditText) navigation.findViewById(R.id.username);
+        passwordView  = (EditText) navigation.findViewById(R.id.password);
+
+        mPrefs = this.getSharedPreferences("myPref", 0);
+        usernameView.setText(mPrefs.getString("username", ""));
+        passwordView.setText(mPrefs.getString("password", ""));
+
+        FlatButton saveButton = (FlatButton) navigation.findViewById(R.id.confirm_save_button);
+
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                boolean cancel = false;
+                View focusView = null;
+
+                username = usernameView.getText().toString();
+                password = passwordView.getText().toString();
+
+                usernameView.setError(null);
+                passwordView.setError(null);
+
+                // Check for a valid password, if the user entered one.
+                if (TextUtils.isEmpty(username)) {
+                    usernameView.setError(getString(R.string.error_field_required));
+                    focusView = usernameView;
+                    cancel = true;
+                }else if (TextUtils.isEmpty(password)) {
+                    passwordView.setError(getString(R.string.error_field_required));
+                    focusView = passwordView;
+                    cancel = true;
+                }
+
+                if (cancel) {
+                    // There was an error, focus the first form field with an error.
+                    focusView.requestFocus();
+                } else {
+                    usernameView.setEnabled(false);
+                    passwordView.setEnabled(false);
+
+                    mPrefs = getSharedPreferences("myPref", 0);
+                    SharedPreferences.Editor mEditor = mPrefs.edit();
+                    mEditor.putString("username", username).apply();
+                    mEditor.putString("password", password).apply();
+                    DeviceStatus.showSnackbar(rootView, "Saved Successfully");
+                    drawerLayout.closeDrawers();
+                }
+
+
+            }
+        });
 
     }
-
-
-
 
 
     @Override
@@ -398,7 +485,7 @@ public class MainActivity extends AppCompatActivity implements
     protected void onPause() {
         super.onPause();
         //onSaveInstanceState();
-        if(mGoogleApiClient != null) {
+        if (mGoogleApiClient != null) {
             if (mRequestingLocationUpdates && mGoogleApiClient.isConnected()) {
                 stopLocationUpdates();
             }
@@ -458,18 +545,18 @@ public class MainActivity extends AppCompatActivity implements
     }
 
 
-    private void openPreferredLocationInMap(){
+    private void openPreferredLocationInMap() {
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         String location = sharedPrefs.getString(
-                                getString(R.string.pref_location_key),
-                                getString(R.string.pref_location_default));
+                getString(R.string.pref_location_key),
+                getString(R.string.pref_location_default));
 
         // Using the URI scheme for showing a location found on a map.  This super-handy
         // intent can is detailed in the "Common Intents" page of Android's developer site:
         // http://developer.android.com/guide/components/intents-common.html#Maps
         Uri geoLocation = Uri.parse("geo:0,0?").buildUpon()
-                             .appendQueryParameter("q", location)
-                             .build();
+                .appendQueryParameter("q", location)
+                .build();
 
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setData(geoLocation);
@@ -478,7 +565,7 @@ public class MainActivity extends AppCompatActivity implements
             startActivity(intent);
         } else {
             int duration = Toast.LENGTH_SHORT;
-            Toast toast = Toast.makeText(this,  "Couldn't call " + location +
+            Toast toast = Toast.makeText(this, "Couldn't call " + location +
                     ", no receiving apps installed!", duration);
             toast.show();
 //            Log.d(LOG_TAG, "Couldn't call " + location + ", no receiving apps installed!");
@@ -506,33 +593,33 @@ public class MainActivity extends AppCompatActivity implements
 
             Fragment fragment;
             Bundle args = new Bundle();
-            Log.v(LOG_TAG ,position+"");
+            //Log.v(LOG_TAG, position + "");
 
             switch (position) {
                 case 0:
                     // The first section of the app
-                    fragment =  new WorkflowSectionFragment();
-                    args.putInt(WorkflowSectionFragment.ARG_SECTION_NUMBER, position );
+                    fragment = new WorkflowSectionFragment();
+                    args.putInt(WorkflowSectionFragment.ARG_SECTION_NUMBER, position);
                     fragment.setArguments(args);
                     return fragment;
 
                 case 1:
-                    fragment =  new ItemListFragment();
-                    args.putInt(ItemListFragment.ARG_SECTION_NUMBER, position );
+                    fragment = new ItemListFragment();
+                    args.putInt(ItemListFragment.ARG_SECTION_NUMBER, position);
                     fragment.setArguments(args);
                     return fragment;
 
                 case 2:
                     // The other sections of the app are dummy placeholders.
                     fragment = new POIFragment();
-                    args.putInt(POIFragment.ARG_SECTION_NUMBER, position );
+                    args.putInt(POIFragment.ARG_SECTION_NUMBER, position);
                     fragment.setArguments(args);
                     return fragment;
                 default:
                     // getItem is called to instantiate the fragment for the given page.
                     // Return a PlaceholderFragment (defined as a static inner class below).
                     return new WorkflowSectionFragment();
-             }
+            }
         }
 
 
@@ -560,17 +647,13 @@ public class MainActivity extends AppCompatActivity implements
     }
 
 
-
-
-
-
-     /*
-     * Google api callback methods which needs for  GoogleApiClient
-     *
-     * Called by Location Services when the request to connect the client
-     * finishes successfully. At this point, you can request the current
-     * location or start periodic updates
-     */
+    /*
+    * Google api callback methods which needs for  GoogleApiClient
+    *
+    * Called by Location Services when the request to connect the client
+    * finishes successfully. At this point, you can request the current
+    * location or start periodic updates
+    */
     @Override
     public void onConnectionFailed(ConnectionResult result) {
         Log.i(LOG_TAG, "Connection failed: ConnectionResult.getErrorCode() = "
@@ -596,17 +679,12 @@ public class MainActivity extends AppCompatActivity implements
     }
 
 
-
     // the method which needs to be implemented for LocationListener
     @Override
     @Produce
     public void onLocationChanged(Location location) {
         // Assign the new location
         mLastLocation = location;
-        //DeviceStatus.showSnackbar(rootView, "Location data updated!");
-
-//        Log.i(LOG_TAG,"Location data updated!");
-        // Displaying the new location on UI
         displayLocation();
         LocationChangedEvent event = new LocationChangedEvent(location);
         OttoSingleton.getInstance().post(event);
@@ -625,14 +703,14 @@ public class MainActivity extends AppCompatActivity implements
 
         // Replace whatever is in the fragment_container view with this fragment,
         // and add the transaction to the back stack so the user can navigate back
-          transaction.replace(R.id.viewPager, fragment);
-          transaction.addToBackStack(null);
-          transaction.commit();
+        transaction.replace(R.id.viewPager, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
     /**
      * Method to display the location on UI
-     * */
+     */
     private void displayLocation() {
         double accuracy = 0.0;
         double longitude = 0.0;
@@ -652,33 +730,33 @@ public class MainActivity extends AppCompatActivity implements
                 lblLocation = workflow.getLblLocation();
 
                 // Call a method in the LaunchpadSectionFragment to update its content
-                double accuracyImprecise = new BigDecimal(accuracy ).
+                double accuracyImprecise = new BigDecimal(accuracy).
                         setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-                double latitudeImprecise = new BigDecimal(latitude ).
+                double latitudeImprecise = new BigDecimal(latitude).
                         setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-                double longitudeImprecise = new BigDecimal(longitude ).
+                double longitudeImprecise = new BigDecimal(longitude).
                         setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-                lblLocation.setText("Ac "+accuracyImprecise + "\n"
-                        +"La "+latitudeImprecise +"\n"
-                        +"Lo "+longitudeImprecise);
+                lblLocation.setText("Ac " + accuracyImprecise + "\n"
+                        + "La " + latitudeImprecise + "\n"
+                        + "Lo " + longitudeImprecise);
 
                 //Log.v(LOG_TAG, String.valueOf(ratingView.getNumStars()));
                 //Log.v(LOG_TAG, String.valueOf(ratingView.getRating()));
                 ratingView = workflow.getRatingView();
-                if(accuracy<11 && accuracy>0){
+                if (accuracy < 11 && accuracy > 0) {
                     ratingView.setRating((float) 5);
-                } else if(accuracy>=11&&accuracy<15){
+                } else if (accuracy >= 11 && accuracy < 15) {
                     ratingView.setRating((float) 4.5);
-                } else if(accuracy>=15&&accuracy<30){
+                } else if (accuracy >= 15 && accuracy < 30) {
                     ratingView.setRating((float) 4);
-                } else if(accuracy>=13&&accuracy<50){
+                } else if (accuracy >= 13 && accuracy < 50) {
                     ratingView.setRating((float) 3);
-                } else{
+                } else {
                     ratingView.setRating((float) 1);
                 }
 //                Log.v(LOG_TAG,"Location view is updated");
 
-            } else{
+            } else {
 //                workflow = (WorkflowSectionFragment) frag;
 //                VisualizerView voiceView = workflow.getVisualizerView();
 //                AudioPlaybackManager audioPlaybackManager = workflow.getPlaybackManager();
@@ -694,7 +772,7 @@ public class MainActivity extends AppCompatActivity implements
 
     /**
      * Method to toggle periodic location updates
-     * */
+     */
     private void togglePeriodicLocationUpdates(ImageView btnStartLocationUpdates) {
         if (mGoogleApiClient.isConnected()) {
             if (!mRequestingLocationUpdates) {
@@ -719,18 +797,16 @@ public class MainActivity extends AppCompatActivity implements
                         .into(btnStartLocationUpdates);
                 Log.d(LOG_TAG, "Periodic location updates stopped!");
             }
-        } else{
+        } else {
             DeviceStatus.showSnackbar(rootView, "Can not connect the Google Location Service");
             mGoogleApiClient.reconnect();
         }
     }
 
 
-
-
     /**
      * Creating google api client object
-     * */
+     */
     protected synchronized void buildGoogleApiClient() {
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -740,7 +816,7 @@ public class MainActivity extends AppCompatActivity implements
 
     /**
      * Method to verify google play services on the device
-     * */
+     */
     private boolean checkPlayServices() {
         int resultCode = GooglePlayServicesUtil
                 .isGooglePlayServicesAvailable(this);
@@ -760,13 +836,9 @@ public class MainActivity extends AppCompatActivity implements
     }
 
 
-
-
-
-
     /**
      * Creating location request object
-     * */
+     */
     protected void createLocationRequest() {
         mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(UPDATE_INTERVAL);
@@ -778,7 +850,7 @@ public class MainActivity extends AppCompatActivity implements
     /**
      * Starting the location updates periodically by sending a request to Location
      * Services
-     * */
+     */
     protected void startLocationUpdates() {
         LocationServices.FusedLocationApi.requestLocationUpdates(
                 mGoogleApiClient, mLocationRequest, this);
@@ -795,10 +867,10 @@ public class MainActivity extends AppCompatActivity implements
 
     /***
      * Checks that application runs first time and write flag at SharedPreferences
+     *
      * @return true if 1st time
      */
-    private boolean isFirstTime()
-    {
+    private boolean isFirstTime() {
         SharedPreferences preferences = getPreferences(MODE_PRIVATE);
         boolean ranBefore = preferences.getBoolean("RanBefore", false);
         if (!ranBefore) {
@@ -809,4 +881,28 @@ public class MainActivity extends AppCompatActivity implements
         }
         return !ranBefore;
     }
+
+
+    private void hideButtons() {
+        bottomCenterButton.setVisibility(View.INVISIBLE);
+        subActionButtonCamera.setVisibility(View.INVISIBLE);
+        subActionButtonPic.setVisibility(View.INVISIBLE);
+        subActionButtonAudio.setVisibility(View.INVISIBLE);
+        subActionButtonVideo.setVisibility(View.INVISIBLE);
+        //subActionButtonText.setVisibility(View.INVISIBLE);
+        subActionButtonGPS.setVisibility(View.INVISIBLE);
+        subActionButtonSave.setVisibility(View.INVISIBLE);
+    }
+
+    private void showButtons() {
+        bottomCenterButton.setVisibility(View.VISIBLE);
+        subActionButtonCamera.setVisibility(View.VISIBLE);
+        subActionButtonPic.setVisibility(View.VISIBLE);
+        subActionButtonAudio.setVisibility(View.VISIBLE);
+        subActionButtonVideo.setVisibility(View.VISIBLE);
+        //subActionButtonText.setVisibility(View.VISIBLE);
+        subActionButtonGPS.setVisibility(View.VISIBLE);
+        subActionButtonSave.setVisibility(View.VISIBLE);
+    }
+
 }
