@@ -664,7 +664,7 @@ public class WorkflowSectionFragment extends Fragment{
     private String getRealPathFromURI(Uri contentURI) {
         String result = null;
 
-        if(Build.VERSION.SDK_INT <19) {
+        if(Build.VERSION.SDK_INT <20) {
             //content://media/external/images/media/81
             Cursor cursor = getActivity().getContentResolver().query(contentURI, null, null, null, null);
             if (cursor == null) { // Source is Dropbox or other similar local file path
