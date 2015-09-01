@@ -59,9 +59,7 @@ public class ItemListFragment extends Fragment {
     private String username;
     private String password;
     private SharedPreferences mPrefs;
-
-    private static final int INTENT_PICK_DATA = 1008;
-    CircleRefreshLayout jellyLayout;
+    private CircleRefreshLayout jellyLayout;
     private static Gson gson = new GsonBuilder()
             .serializeNulls()
             .excludeFieldsWithoutExposeAnnotation()
@@ -92,13 +90,9 @@ public class ItemListFragment extends Fragment {
             } finally{
                 ActiveAndroid.endTransaction();
             }
-            dataList = dataListLocal;
             //Method 1 doesn't work :(
-//            getActivity().runOnUiThread(new Runnable() {
-//                public void run() {
-//                    adapter.notifyDataSetChanged();
-//                }
-//            });
+//            dataList = dataListLocal;
+//            adapter.notifyDataSetChanged();
 
             //Method 2 dirty but works
             adapter =  new CustomSwipeAdapter(getActivity(), dataList);
@@ -223,7 +217,6 @@ public class ItemListFragment extends Fragment {
 
         adapter =  new CustomSwipeAdapter(getActivity(), dataList);
         //adapter =  new CustomListAdapter(getActivity(), dataList);
-
 
         //TODO try to change the cell view
         rootView = inflater.inflate(R.layout.fragment_section_list, container, false);
