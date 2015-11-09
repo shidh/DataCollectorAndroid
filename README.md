@@ -1,6 +1,12 @@
 DataCollectorAndroid
 =========================
 
+
+Use Case Analysis
+-------------
+![Alt text](https://cloud.githubusercontent.com/assets/1011537/11033952/d9e64b30-86e7-11e5-8160-1436c72d9173.png
+"Use Case Analysis")
+
 System Architecture Overview
 -------------
 ![Alt text](https://cloud.githubusercontent.com/assets/1011537/9063371/47fefd82-3ac7-11e5-853a-5bbd22268d76.jpg
@@ -10,6 +16,16 @@ E-R Diagram
 -------------
 ![Alt text](https://cloud.githubusercontent.com/assets/1011537/9063385/5ada69aa-3ac7-11e5-901d-8cafede85bd1.jpg
 "E-R Diagram")
+
+WorkFlow Diagram
+-------------
+![Alt text](https://cloud.githubusercontent.com/assets/1011537/11033950/d9c8793e-86e7-11e5-9e3a-abe7439667bd.png
+"WorkFlow Diagram")
+
+Model-View-Controller
+-------------
+![Alt text](https://cloud.githubusercontent.com/assets/1011537/11033951/d9db0a18-86e7-11e5-9ffe-358c9331e233.png
+"Model-View-Controller")
 
 ## Third Party Libraries
 
